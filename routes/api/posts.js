@@ -38,4 +38,18 @@ router.post(
   }
 );
 
+router.get("/user/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate({
+      path: "posts",
+      options: { sort: { date: -1 } },
+    });
+
+    res.json(user.posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
+
 module.exports = router;
