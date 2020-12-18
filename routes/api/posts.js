@@ -53,21 +53,50 @@ router.get("/user/:id", async (req, res) => {
   }
 });
 
-// Like a post
-router.post("/like/:id", auth, async (req, res) => {
-  const post = await Post.findById(req.params.id);
+// Like or unlike a post
+router.post("/:id/like", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
 
-  if (post.likes.some((like) => like.user.toString() === req.user.id)) {
-    return res
-      .status(400)
-      .json({ errors: [{ msg: "You have already liked this post!" }] });
+    // Unlike post if already liked
+    if (post.likes.some((like) => like.user.toString() === req.user.id)) {
+      post.likes = post.likes.filter(
+        (like) => like.user._id.toString() !== req.user.id
+      );
+      await post.save();
+
+      return res.json(post.likes);
+    }
+
+    post.likes.unshift({ user: req.user.id });
+
+    await post.save();
+
+    res.json(post.likes);
+  } catch (err) {
+    res.status(500);
+    res.json({ errors: [{ msg: "500: Server error" }] });
   }
+});
 
-  post.likes.unshift(req.user.id);
+// Comment on a post
+router.post("/:id/comment", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
 
-  await post.save();
+    const comment = {
+      user: req.user.id,
+      text: req.body.text,
+    };
+    post.comments.unshift(comment);
 
-  res.json(post.likes);
+    await post.save();
+
+    res.json(post);
+  } catch (err) {
+    res.status(500);
+    res.json({ errors: [{ msg: "500: Server error" }] });
+  }
 });
 
 module.exports = router;
