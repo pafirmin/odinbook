@@ -38,6 +38,7 @@ router.post(
   }
 );
 
+// Get posts by user
 router.get("/user/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id).populate({
@@ -50,6 +51,23 @@ router.get("/user/:id", async (req, res) => {
     console.error(err);
     res.status(500).json({ errors: [{ msg: "500: Server error" }] });
   }
+});
+
+// Like a post
+router.post("/like/:id", auth, async (req, res) => {
+  const post = await Post.findById(req.params.id);
+
+  if (post.likes.some((like) => like.user.toString() === req.user.id)) {
+    return res
+      .status(400)
+      .json({ errors: [{ msg: "You have already liked this post!" }] });
+  }
+
+  post.likes.unshift(req.user.id);
+
+  await post.save();
+
+  res.json(post.likes);
 });
 
 module.exports = router;
