@@ -4,7 +4,6 @@ const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
-const { findById } = require("../../models/Post");
 
 // Make a post
 router.post(
@@ -52,7 +51,7 @@ router.get("/user/:id", async (req, res) => {
   }
 });
 
-// Get newsfeed posts
+// Get friends' posts
 router.get("/feed", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate("friends", [
@@ -65,8 +64,6 @@ router.get("/feed", auth, async (req, res) => {
         return friend.user;
       }
     });
-
-    console.log(friends);
 
     const posts = await Post.find({ user: { $in: friends } }).sort({
       date: -1,
@@ -130,6 +127,21 @@ router.post("/:id/comment", auth, async (req, res) => {
     res.status(500);
     res.json({ errors: [{ msg: "500: Server error" }] });
   }
+});
+
+// Like a comment
+router.post("/:post_id/comments/:comment_id/like", auth, async (req, res) => {
+  const post = await Post.findById(req.params.post_id);
+
+  const comment = post.comments.find(
+    (comment) => comment._id === req.params.comment_id
+  );
+
+  comment.likes.unshift({ user: req.user.id });
+
+  await post.save();
+
+  res.json(comment.likes);
 });
 
 // Delete a post
