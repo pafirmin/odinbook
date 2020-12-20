@@ -28,6 +28,7 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+// Get current user's profile
 router.get("/me", auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({
@@ -35,7 +36,28 @@ router.get("/me", auth, async (req, res) => {
     }).populate("user", ["firstName", "familyName"]);
 
     if (!profile) {
-      return res.status(400).json({ msg: "There is no profile for this user" });
+      return res
+        .status(404)
+        .json({ errors: [{ msg: "There is no profile for this user" }] });
+    }
+
+    res.json(profile);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// Get profile by ID
+router.get("/:user_id", auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      user: req.params.user_id,
+    }).populate("user", ["firstName", "familyName"]);
+
+    if (!profile) {
+      return res
+        .status(404)
+        .json({ errors: [{ msg: "There is no profile for this user" }] });
     }
 
     res.json(profile);

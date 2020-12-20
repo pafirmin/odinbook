@@ -4,6 +4,7 @@ const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
+const { findById } = require("../../models/Post");
 
 // Make a post
 router.post(
@@ -48,6 +49,33 @@ router.get("/user/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
+
+// Get newsfeed posts
+router.get("/feed", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate("friends", [
+      "status",
+      "user",
+    ]);
+
+    const friends = user.friends.map((friend) => {
+      if (friend.status === "accepted") {
+        return friend.user;
+      }
+    });
+
+    console.log(friends);
+
+    const posts = await Post.find({ user: { $in: friends } }).sort({
+      date: -1,
+    });
+
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "500: Server error" });
   }
 });
 
@@ -101,6 +129,28 @@ router.post("/:id/comment", auth, async (req, res) => {
   } catch (err) {
     res.status(500);
     res.json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
+
+// Delete a post
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ msg: "Post not found" });
+    }
+
+    if (post.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "Unauthorized" });
+    }
+
+    await post.remove();
+
+    res.json({ msg: "Post removed" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "500: Server error" });
   }
 });
 

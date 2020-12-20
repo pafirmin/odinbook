@@ -73,7 +73,7 @@ router.post(
 );
 
 // Send friend request
-router.post("/:id/addfriend", auth, async (req, res) => {
+router.post("/:id/add", auth, async (req, res) => {
   try {
     const sender = req.user.id;
     const recipient = req.params.id;
@@ -101,13 +101,14 @@ router.post("/:id/addfriend", auth, async (req, res) => {
     );
 
     await User.findByIdAndUpdate(
-      { _id: sender },
+      { sender },
       {
         $push: { friends: senderReq },
       }
     );
+
     await User.findByIdAndUpdate(
-      { _id: recipient },
+      { recipient },
       {
         $push: { friends: recipientReq },
       }
@@ -121,7 +122,7 @@ router.post("/:id/addfriend", auth, async (req, res) => {
 });
 
 // Accept friend request
-router.post("/:id/acceptfriend", auth, async (req, res) => {
+router.post("/:id/accept", auth, async (req, res) => {
   await Friend.findOneAndUpdate(
     {
       user: req.params.id,
