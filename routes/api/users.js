@@ -100,7 +100,7 @@ router.post("/:id/addfriend", auth, async (req, res) => {
       { upsert: true, new: true }
     );
 
-    const res = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       { _id: sender },
       {
         $push: { friends: senderReq },
@@ -113,7 +113,7 @@ router.post("/:id/addfriend", auth, async (req, res) => {
       }
     );
 
-    res.json(res);
+    res.json("Friend request sent");
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");

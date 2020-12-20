@@ -8,7 +8,7 @@ const FriendSchema = new Schema({
   },
   status: {
     type: String,
-    enums: ["recieved", "pending", "accepted"],
+    enums: ["recieved", "seen", "pending", "accepted"],
   },
   date: {
     type: Date,
