@@ -20,8 +20,6 @@ router.post(
     try {
       const user = await User.findById(req.user.id).select("-password");
 
-      console.log(user);
-
       newPost = new Post({
         user: req.user.id,
         name: user.fullName,
@@ -54,30 +52,35 @@ router.get("/user/:id", async (req, res) => {
 });
 
 // Like or unlike a post
-router.post("/:id/like", auth, async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
+router.post(
+  "/:id/like",
+  auth,
+  [check("text", "Message cannot be empty").trim().not().isEmpty()],
+  async (req, res) => {
+    try {
+      const post = await Post.findById(req.params.id);
 
-    // Unlike post if already liked
-    if (post.likes.some((like) => like.user.toString() === req.user.id)) {
-      post.likes = post.likes.filter(
-        (like) => like.user._id.toString() !== req.user.id
-      );
+      // Unlike post if already liked
+      if (post.likes.some((like) => like.user.toString() === req.user.id)) {
+        post.likes = post.likes.filter(
+          (like) => like.user._id.toString() !== req.user.id
+        );
+        await post.save();
+
+        return res.json(post.likes);
+      }
+
+      post.likes.unshift({ user: req.user.id });
+
       await post.save();
 
-      return res.json(post.likes);
+      res.json(post.likes);
+    } catch (err) {
+      res.status(500);
+      res.json({ errors: [{ msg: "500: Server error" }] });
     }
-
-    post.likes.unshift({ user: req.user.id });
-
-    await post.save();
-
-    res.json(post.likes);
-  } catch (err) {
-    res.status(500);
-    res.json({ errors: [{ msg: "500: Server error" }] });
   }
-});
+);
 
 // Comment on a post
 router.post("/:id/comment", auth, async (req, res) => {
@@ -86,9 +89,11 @@ router.post("/:id/comment", auth, async (req, res) => {
 
     const comment = {
       user: req.user.id,
+      name: req.user.name,
       text: req.body.text,
     };
-    post.comments.unshift(comment);
+
+    post.comments.push(comment);
 
     await post.save();
 

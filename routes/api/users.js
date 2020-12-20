@@ -3,7 +3,9 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
+const Friend = require("../../models/Friend");
 const router = express.Router();
+const auth = require("../../middleware/auth");
 require("dotenv").config();
 
 // Make a new user
@@ -69,5 +71,74 @@ router.post(
     }
   }
 );
+
+// Send friend request
+router.post("/:id/addfriend", auth, async (req, res) => {
+  try {
+    const sender = req.user.id;
+    const recipient = req.params.id;
+
+    if (sender === recipient) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "Cannot add yourself as a friend!" }] });
+    }
+
+    const senderReq = await Friend.findOneAndUpdate(
+      {
+        user: recipient,
+      },
+      { $set: { status: "recieved" } },
+      { upsert: true, new: true }
+    );
+
+    const recipientReq = await Friend.findOneAndUpdate(
+      {
+        user: sender,
+      },
+      { $set: { status: "pending" } },
+      { upsert: true, new: true }
+    );
+
+    const res = await User.findByIdAndUpdate(
+      { _id: sender },
+      {
+        $push: { friends: senderReq },
+      }
+    );
+    await User.findByIdAndUpdate(
+      { _id: recipient },
+      {
+        $push: { friends: recipientReq },
+      }
+    );
+
+    res.json(res);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+// Accept friend request
+router.post("/:id/acceptfriend", auth, async (req, res) => {
+  await Friend.findOneAndUpdate(
+    {
+      user: req.params.id,
+    },
+    { $set: { status: "accepted" } },
+    { upsert: true, new: true }
+  );
+
+  await Friend.findOneAndUpdate(
+    {
+      user: req.user.id,
+    },
+    { $set: { status: "accepted" } },
+    { upsert: true, new: true }
+  );
+
+  res.json("Friend accepted");
+});
 
 module.exports = router;

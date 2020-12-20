@@ -22,6 +22,7 @@ const UserSchema = new Schema(
     friends: [
       {
         type: mongoose.Types.ObjectId,
+        ref: "friend",
       },
     ],
     date: {
