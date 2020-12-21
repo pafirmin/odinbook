@@ -4,10 +4,40 @@ const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
-
 // Make a post
 router.post(
   "/",
+  auth,
+  [check("text", "Post text cannot be empty").trim().not().isEmpty()],
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      newPost = new Post({
+        user: req.user.id,
+        name: req.user.name,
+        recipient: null,
+        recipientName: null,
+        text: req.body.text,
+      });
+
+      await newPost.save();
+
+      res.json(newPost);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+    }
+  }
+);
+
+// Post to user's wall
+router.post(
+  "/user/:user_id",
   auth,
   [check("text").trim().not().isEmpty()],
   async (req, res) => {
@@ -18,11 +48,15 @@ router.post(
     }
 
     try {
-      const user = await User.findById(req.user.id).select("-password");
+      const recipient = await User.findById(req.params.user_id).select(
+        "-password"
+      );
 
       newPost = new Post({
         user: req.user.id,
-        name: user.fullName,
+        name: req.user.name,
+        recipient: recipient._id,
+        recipientName: recipient.fullName,
         text: req.body.text,
       });
 
@@ -37,9 +71,9 @@ router.post(
 );
 
 // Get posts by user
-router.get("/user/:id", async (req, res) => {
+router.get("/user/:user_id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).populate({
+    const user = await User.findById(req.params.user_id).populate({
       path: "posts",
       options: { sort: { date: -1 } },
     });
@@ -64,6 +98,8 @@ router.get("/feed", auth, async (req, res) => {
         return friend.user;
       }
     });
+
+    friends.push(user._id);
 
     const posts = await Post.find({ user: { $in: friends } }).sort({
       date: -1,

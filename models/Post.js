@@ -9,6 +9,13 @@ const PostSchema = new Schema({
   name: {
     type: String,
   },
+  recipient: {
+    type: mongoose.Types.ObjectId,
+    ref: "user",
+  },
+  recipientName: {
+    type: String,
+  },
   text: {
     type: String,
     required: true,
