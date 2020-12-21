@@ -20,8 +20,8 @@ router.post(
       newPost = new Post({
         user: req.user.id,
         name: req.user.name,
-        recipient: null,
-        recipientName: null,
+        recipient: req.user.id,
+        recipientName: req.user.name,
         text: req.body.text,
       });
 
@@ -101,9 +101,11 @@ router.get("/feed", auth, async (req, res) => {
 
     friends.push(user._id);
 
-    const posts = await Post.find({ user: { $in: friends } }).sort({
-      date: -1,
-    });
+    const posts = await Post.find({ user: { $in: friends } })
+      .sort({
+        date: -1,
+      })
+      .populate("likes.user", ["firstName", "familyName"]);
 
     res.json(posts);
   } catch (err) {
@@ -128,14 +130,14 @@ router.post(
         );
         await post.save();
 
-        return res.json(post.likes);
+        return res.json({ status: "unliked" });
       }
 
       post.likes.unshift({ user: req.user.id });
 
       await post.save();
 
-      res.json(post.likes);
+      res.json({ status: "liked" });
     } catch (err) {
       res.status(500);
       res.json({ errors: [{ msg: "500: Server error" }] });

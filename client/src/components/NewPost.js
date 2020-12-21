@@ -40,7 +40,7 @@ const NewPost = ({ posts, setPosts }) => {
 
   return (
     <div>
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <form style={{ textAlign: "center" }} onSubmit={(e) => handleSubmit(e)}>
         <TextInput
           type="text"
           name="text"

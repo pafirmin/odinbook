@@ -111,6 +111,7 @@ body {
   color: rgb(33, 33, 33);
   background: linear-gradient(#72c8dd, #f6f0cf, #8accb8);
   background-position: center;
+  background-attachment: fixed;
   height: 100vh;
 }
 ol,
@@ -145,6 +146,14 @@ h2 {
 * {
   box-sizing: border-box;
 }
+
+.main-wrapper {
+  margin: auto;
+  width: 50%;
+  background-color: #fff;
+  min-height: 100vh;
+}
+
 .auth-form {
   background-color: #ffffff;
   color: rgb(41, 41, 41);

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import NewPost from "./NewPost";
+import Post from "./Post";
 
 const NewsFeed = () => {
   const [posts, setPosts] = useState([]);
@@ -29,7 +30,7 @@ const NewsFeed = () => {
     <div>
       <NewPost posts={posts} setPosts={setPosts} />
       {posts.map((post) => (
-        <p key={post._id}>{post.text}</p>
+        <Post key={post._id} post={post} />
       ))}
     </div>
   );
