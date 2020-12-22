@@ -4,7 +4,7 @@ export const TextInput = styled.input`
   font: inherit;
   padding: 6px;
   border: 1px solid #c3c3c3;
-  border-radius: none;
+  border-radius: 0;
   background-color: #fff;
 `;
 

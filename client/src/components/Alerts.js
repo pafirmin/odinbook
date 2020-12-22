@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { AlertContext } from "../contexts/AlertContext";
 import { AlertContainer, Alert } from "./Utils";
 
 const Alerts = () => {
-  const { alerts, setAlerts } = useContext(AlertContext);
+  const { alerts } = useContext(AlertContext);
 
   return (
     <AlertContainer>

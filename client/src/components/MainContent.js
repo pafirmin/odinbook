@@ -10,9 +10,9 @@ const MainContent = () => {
 
   return (
     <Switch>
+      <Route path="/login" component={LogIn} />
+      <Route path="/createaccount" component={CreateAccount} />
       <div className="main-wrapper">
-        <Route path="/login" component={LogIn} />
-        <Route path="/createaccount" component={CreateAccount} />
         {state.isAuthenticated && <Route exact path="/" component={NewsFeed} />}
       </div>
     </Switch>

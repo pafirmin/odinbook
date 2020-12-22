@@ -2,7 +2,7 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap");
 html,
 body,
 div,
@@ -107,8 +107,8 @@ section {
 }
 body {
   line-height: 1;
-  font-family: "Poppins", sans-serif;
-  color: rgb(33, 33, 33);
+  font-family: "Roboto", sans-serif;
+  color: rgb(67, 67, 67);
   background: linear-gradient(#72c8dd, #f6f0cf, #8accb8);
   background-position: center;
   background-attachment: fixed;
@@ -149,8 +149,7 @@ h2 {
 
 .main-wrapper {
   margin: auto;
-  width: 50%;
-  background-color: #fff;
+  width: 800px;
   min-height: 100vh;
 }
 

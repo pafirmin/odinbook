@@ -8,6 +8,28 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 require("dotenv").config();
 
+router.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate("friends");
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
 // Make a new user
 router.post(
   "/",

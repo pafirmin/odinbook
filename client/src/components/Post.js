@@ -3,24 +3,46 @@ import moment from "moment";
 import styled from "styled-components";
 import axios from "axios";
 import { AuthContext } from "../contexts/AuthContext";
+import Comments from "./CommentSection";
 
 const PostContainer = styled.div`
-  box-shadow: 0px 0px 4px 1px #d2d2d2;
+  box-shadow: 2px 2px 8px #7d7d7d;
   margin: 16px auto;
   width: 80%;
   padding: 8px;
   border-radius: 8px;
+  background-color: #fff;
 `;
 
-const LikeThumb = styled.i`
+const SocialDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #c3c3c3;
+  padding: 8px 0;
+`;
+
+const SocialIcon = styled.i`
+  font-size: 1.3em;
+  color: #6b6b6b;
+  padding-right: 0.5rem;
+`;
+
+const LikeThumb = styled(SocialIcon)`
   color: ${(props) => (props.isLiked ? "#2d9ee9" : "#6b6b6b")};
-  font-size: 1.1em;
+`;
+
+const SocialBtn = styled.button`
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
 `;
 
 const Post = ({ post }) => {
   const { state } = useContext(AuthContext);
   const [likes, setLikes] = useState(post.likes);
   const [isLiked, setIsLiked] = useState(false);
+  const [comments, setComments] = useState(post.comments);
 
   useEffect(() => {
     setIsLiked(likes.map((like) => like.user._id).includes(state.userID));
@@ -48,18 +70,22 @@ const Post = ({ post }) => {
         <h3 style={{ fontSize: "1.2em" }}>{post.name}</h3>
         <time style={{ fontSize: "0.8em" }}>{moment(post.date).fromNow()}</time>
       </div>
-      <div>{post.text}</div>
-      <div>
-        <span>{post.comments.length} comments</span>
-        <span>
+      <div style={{ margin: "8px 0" }}>{post.text}</div>
+      <SocialDiv>
+        <span>{likes.length} likes</span>
+        <span>{comments.length} comments</span>
+      </SocialDiv>
+      <SocialDiv>
+        <SocialBtn onClick={handleLike}>
           <LikeThumb isLiked={isLiked} className="fas fa-thumbs-up" />
-          {likes.length}
-        </span>
-      </div>
-      <div>
-        <button>Comment</button>
-        <button onClick={handleLike}>Like</button>
-      </div>
+          {isLiked ? "You liked this" : "Like"}
+        </SocialBtn>
+        <SocialBtn>
+          <SocialIcon className="far fa-comments" />
+          Comment
+        </SocialBtn>
+      </SocialDiv>
+      <Comments comments={comments} setComments={setComments} post={post} />
     </PostContainer>
   );
 };

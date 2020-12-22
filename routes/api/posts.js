@@ -39,7 +39,7 @@ router.post(
 router.post(
   "/user/:user_id",
   auth,
-  [check("text").trim().not().isEmpty()],
+  [check("text", "Post text cannot be empty").trim().not().isEmpty()],
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -105,7 +105,8 @@ router.get("/feed", auth, async (req, res) => {
       .sort({
         date: -1,
       })
-      .populate("likes.user", ["firstName", "familyName"]);
+      .populate("likes.user", ["firstName", "familyName"])
+      .populate("comments");
 
     res.json(posts);
   } catch (err) {
@@ -115,57 +116,63 @@ router.get("/feed", auth, async (req, res) => {
 });
 
 // Like or unlike a post
+router.post("/:id/like", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    // Unlike post if already liked
+    if (post.likes.some((like) => like.user.toString() === req.user.id)) {
+      post.likes = post.likes.filter(
+        (like) => like.user._id.toString() !== req.user.id
+      );
+      await post.save();
+
+      return res.json(post.likes);
+    }
+
+    post.likes.unshift({ user: req.user.id });
+
+    await post.save();
+
+    res.json(post.likes);
+  } catch (err) {
+    res.status(500);
+    res.json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
+
+// Comment on a post
 router.post(
-  "/:id/like",
+  "/:id/comment",
   auth,
-  [check("text", "Message cannot be empty").trim().not().isEmpty()],
+  [check("text", "Comment text cannot be empty").trim().not().isEmpty()],
   async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
       const post = await Post.findById(req.params.id);
 
-      // Unlike post if already liked
-      if (post.likes.some((like) => like.user.toString() === req.user.id)) {
-        post.likes = post.likes.filter(
-          (like) => like.user._id.toString() !== req.user.id
-        );
-        await post.save();
+      const comment = {
+        user: req.user.id,
+        name: req.user.name,
+        text: req.body.text,
+      };
 
-        return res.json(post.likes);
-      }
-
-      post.likes.unshift({ user: req.user.id });
+      post.comments.push(comment);
 
       await post.save();
 
-      res.json(post.likes);
+      res.json(post.comments);
     } catch (err) {
       res.status(500);
       res.json({ errors: [{ msg: "500: Server error" }] });
     }
   }
 );
-
-// Comment on a post
-router.post("/:id/comment", auth, async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-
-    const comment = {
-      user: req.user.id,
-      name: req.user.name,
-      text: req.body.text,
-    };
-
-    post.comments.push(comment);
-
-    await post.save();
-
-    res.json(post);
-  } catch (err) {
-    res.status(500);
-    res.json({ errors: [{ msg: "500: Server error" }] });
-  }
-});
 
 // Like a comment
 router.post("/:post_id/comments/:comment_id/like", auth, async (req, res) => {
@@ -198,6 +205,38 @@ router.delete("/:id", auth, async (req, res) => {
     await post.remove();
 
     res.json({ msg: "Post removed" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "500: Server error" });
+  }
+});
+
+// Delete a comment
+router.delete("/:post_id/comments/:comment_id", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.post_id);
+
+    const comment = post.comments.find(
+      (comment) => comment._id.toString() === req.params.comment_id
+    );
+
+    if (!comment) {
+      return res.status(404).json({ errors: [{ msg: "Comment not found" }] });
+    }
+
+    if (comment.user.toString() !== req.user.id) {
+      return res.status(401).json({ errors: [{ msg: "401: Unauthorised" }] });
+    }
+
+    const removeIndex = post.comments.map((comment) =>
+      comment._id.toString().indexOf(req.params.comment_id)
+    );
+
+    post.comments.splice(removeIndex, 1);
+
+    await post.save();
+
+    res.json(post.comments);
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: "500: Server error" });
