@@ -1,10 +1,21 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
+import styled from "styled-components";
 import { AlertContext } from "../contexts/AlertContext";
 import { AuthContext } from "../contexts/AuthContext";
-import { Button, TextInput } from "./Utils";
+import { Button } from "./Utils";
 
-const NewPost = ({ posts, setPosts }) => {
+const PostArea = styled.textarea`
+  resize: none;
+  font: inherit;
+  padding: 0.7rem;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #c6c6c6;
+  margin: 0.5rem auto;
+`;
+
+const NewPost = ({ posts, setPosts, formShow }) => {
   const [newPost, setNewPost] = useState({ text: "" });
   const { state } = useContext(AuthContext);
   const { setAlerts } = useContext(AlertContext);
@@ -27,6 +38,7 @@ const NewPost = ({ posts, setPosts }) => {
 
       const res = await axios.post("/api/posts", body, config);
 
+      setNewPost({ text: "" });
       setPosts([res.data, ...posts]);
       setAlerts([{ text: "Post successful!", type: "success" }]);
     } catch (err) {
@@ -40,10 +52,21 @@ const NewPost = ({ posts, setPosts }) => {
 
   return (
     <div>
-      <form style={{ textAlign: "center" }} onSubmit={(e) => handleSubmit(e)}>
-        <TextInput
-          type="text"
+      <form
+        style={{
+          width: "80%",
+          textAlign: "center",
+          background: "#fff",
+          margin: "auto",
+          marginTop: "-.7rem",
+          padding: "8px",
+          display: formShow ? "block" : "none",
+        }}
+        onSubmit={(e) => handleSubmit(e)}
+      >
+        <PostArea
           name="text"
+          placeholder="Your message here..."
           value={newPost.text}
           onChange={(e) => handleChange(e)}
         />

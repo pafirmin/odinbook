@@ -10,8 +10,7 @@ const CommentBox = styled(TextInput)`
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
   padding-left: 12px;
-  background-color: #f3f3f3;
-  border: none;
+  border: 1px solid #d5d5d5;
 `;
 
 const Comments = ({ post, setComments }) => {
@@ -58,6 +57,7 @@ const Comments = ({ post, setComments }) => {
     <div style={{ marginTop: "8px" }}>
       <form style={{ display: "flex" }} onSubmit={(e) => handleSubmit(e)}>
         <CommentBox
+          id={`comment-box-${post._id}`}
           name="text"
           placeholder="Post a comment"
           value={newComment.text}
