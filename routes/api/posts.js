@@ -130,14 +130,14 @@ router.post(
         );
         await post.save();
 
-        return res.json({ status: "unliked" });
+        return res.json(post.likes);
       }
 
       post.likes.unshift({ user: req.user.id });
 
       await post.save();
 
-      res.json({ status: "liked" });
+      res.json(post.likes);
     } catch (err) {
       res.status(500);
       res.json({ errors: [{ msg: "500: Server error" }] });

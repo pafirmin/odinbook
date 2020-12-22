@@ -1,4 +1,4 @@
-import React, { useContext, useReducer } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import moment from "moment";
 import styled from "styled-components";
 import axios from "axios";
@@ -12,38 +12,31 @@ const PostContainer = styled.div`
   border-radius: 8px;
 `;
 
-const LikesReducer = (state, action) => {
-  switch (action.type) {
-    case "like":
-      return { likes: state.likes + 1 };
-    case "unlike":
-      return { likes: state.likes - 1 };
-    default:
-      throw new Error();
-  }
-};
+const LikeThumb = styled.i`
+  color: ${(props) => (props.isLiked ? "#2d9ee9" : "#6b6b6b")};
+  font-size: 1.1em;
+`;
 
 const Post = ({ post }) => {
-  const initialState = {
-    likes: post.likes.length,
-  };
-  const [state, dispatch] = useReducer(LikesReducer, initialState);
-  const auth = useContext(AuthContext);
+  const { state } = useContext(AuthContext);
+  const [likes, setLikes] = useState(post.likes);
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    setIsLiked(likes.map((like) => like.user._id).includes(state.userID));
+  }, []);
 
   const handleLike = async () => {
     try {
       const config = {
         headers: {
-          Authorization: `bearer ${auth.state.token}`,
+          Authorization: `bearer ${state.token}`,
         },
       };
       const res = await axios.post(`/api/posts/${post._id}/like`, {}, config);
 
-      const action = res.data.status === "liked" ? "like" : "unlike";
-
-      dispatch({
-        type: action,
-      });
+      setLikes(res.data);
+      setIsLiked(!isLiked);
     } catch (err) {
       console.error(err);
     }
@@ -58,7 +51,10 @@ const Post = ({ post }) => {
       <div>{post.text}</div>
       <div>
         <span>{post.comments.length} comments</span>
-        <span>{state.likes} likes</span>
+        <span>
+          <LikeThumb isLiked={isLiked} className="fas fa-thumbs-up" />
+          {likes.length}
+        </span>
       </div>
       <div>
         <button>Comment</button>

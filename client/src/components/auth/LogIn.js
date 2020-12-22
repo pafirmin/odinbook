@@ -38,6 +38,7 @@ const LogIn = () => {
         type: "login",
         payload: {
           token: res.data.token,
+          userID: res.data.userID,
         },
       });
 

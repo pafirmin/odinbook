@@ -50,6 +50,7 @@ const CreateAccount = () => {
         type: "login",
         payload: {
           token: res.data.token,
+          user: res.data.userID,
         },
       });
 
