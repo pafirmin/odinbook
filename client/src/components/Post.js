@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import moment from "moment";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { AuthContext } from "../contexts/AuthContext";
@@ -8,16 +9,20 @@ import Comments from "./CommentSection";
 const PostContainer = styled.div`
   box-shadow: 2px 2px 8px #7d7d7d;
   margin: 16px auto;
-  width: 80%;
+  width: 90%;
   padding: 0.8rem;
   border-radius: 8px;
   background-color: #fff;
+
+  @media (max-width: 700px) {
+    border-radius: 0;
+  }
 `;
 
 const SocialDiv = styled.div`
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #c3c3c3;
+  border-bottom: 1px solid #c6c6c6;
   padding: 0.2rem 0;
 `;
 
@@ -82,7 +87,9 @@ const Post = ({ post }) => {
   return (
     <PostContainer>
       <div>
-        <h3 style={{ fontSize: "1.2em" }}>{post.name}</h3>
+        <Link to={`/user/${post.user}`}>
+          <h3 style={{ fontSize: "1.2em" }}>{post.name}</h3>
+        </Link>
         <time style={{ fontSize: "0.8em", color: "#626262" }}>
           {moment(post.date).fromNow()}
         </time>

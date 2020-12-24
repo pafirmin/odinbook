@@ -3,7 +3,7 @@ import styled from "styled-components";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import NewPost from "./NewPost";
-import Post from "./Post";
+import PostList from "./PostList";
 import { Button } from "./Utils";
 
 const NewPostBtn = styled(Button)`
@@ -46,13 +46,10 @@ const NewsFeed = () => {
   return (
     <div>
       <div style={{ textAlign: "center" }}>
-        {" "}
         <NewPostBtn onClick={toggleForm}>Post something...</NewPostBtn>
       </div>
       <NewPost posts={posts} setPosts={setPosts} formShow={formShow} />
-      {posts.map((post) => (
-        <Post key={post._id} post={post} />
-      ))}
+      <PostList posts={posts} />
     </div>
   );
 };

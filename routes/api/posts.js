@@ -37,7 +37,7 @@ router.post(
 
 // Post to user's wall
 router.post(
-  "/user/:user_id",
+  "/users/:user_id",
   auth,
   [check("text", "Post text cannot be empty").trim().not().isEmpty()],
   async (req, res) => {
@@ -85,6 +85,22 @@ router.get("/user/:user_id", async (req, res) => {
   }
 });
 
+// Get user's wall posts
+router.get("/user/:user_id/wall", async (req, res) => {
+  try {
+    const posts = await Post.find({ recipient: req.params.user_id })
+      .populate("likes.user", ["firstName", "familyName"])
+      .sort({
+        date: -1,
+      });
+
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
+
 // Get friends' posts
 router.get("/feed", auth, async (req, res) => {
   try {
@@ -105,8 +121,7 @@ router.get("/feed", auth, async (req, res) => {
       .sort({
         date: -1,
       })
-      .populate("likes.user", ["firstName", "familyName"])
-      .populate("comments");
+      .populate("likes.user", ["firstName", "familyName"]);
 
     res.json(posts);
   } catch (err) {

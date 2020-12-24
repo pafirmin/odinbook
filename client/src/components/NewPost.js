@@ -61,11 +61,14 @@ const NewPost = ({ posts, setPosts, formShow }) => {
           marginTop: "-.7rem",
           padding: "8px",
           display: formShow ? "block" : "none",
+          boxShadow: "2px 2px 8px #7d7d7d",
+          borderRadius: "8px",
         }}
         onSubmit={(e) => handleSubmit(e)}
       >
         <PostArea
           name="text"
+          rows={3}
           placeholder="Your message here..."
           value={newPost.text}
           onChange={(e) => handleChange(e)}

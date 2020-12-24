@@ -32,10 +32,7 @@ const Comment = ({ comment, handleDelete, commentShow }) => {
         <div>{comment.text}</div>
       </div>
       {comment.user === state.userID && (
-        <DeleteBtn
-          style={{ alignSelf: "flex-start" }}
-          onClick={() => handleDelete(comment._id)}
-        >
+        <DeleteBtn onClick={() => handleDelete(comment._id)}>
           <i className="fas fa-trash-alt"></i>
         </DeleteBtn>
       )}

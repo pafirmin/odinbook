@@ -4,6 +4,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import CreateAccount from "./auth/CreateAccount";
 import LogIn from "./auth/LogIn";
 import NewsFeed from "./NewsFeed";
+import UserPage from "./UserPage";
 
 const MainContent = () => {
   const { state } = useContext(AuthContext);
@@ -13,6 +14,7 @@ const MainContent = () => {
       <Route path="/login" component={LogIn} />
       <Route path="/createaccount" component={CreateAccount} />
       <div className="main-wrapper">
+        <Route path="/user/:userID" component={UserPage} />
         {state.isAuthenticated && <Route exact path="/" component={NewsFeed} />}
       </div>
     </Switch>

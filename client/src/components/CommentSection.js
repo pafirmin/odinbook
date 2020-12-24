@@ -13,7 +13,7 @@ const ShowCommentsBtn = styled.button`
   cursor: pointer;
   background-color: #f4f4f4;
   margin-top: 0.4rem;
-  width: 30%;
+  width: 200px;
 
   &:hover {
     background-color: #d9d9d9;

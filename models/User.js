@@ -25,6 +25,20 @@ const UserSchema = new Schema(
         ref: "friend",
       },
     ],
+    profile: {
+      picture: {
+        type: String,
+      },
+      location: {
+        type: String,
+      },
+      bio: {
+        type: String,
+      },
+      occupation: {
+        type: String,
+      },
+    },
     date: {
       type: Date,
       default: Date.now,
@@ -32,6 +46,8 @@ const UserSchema = new Schema(
   },
   { toJSON: { virtuals: true } }
 );
+
+UserSchema.index({ "$**": "text" });
 
 UserSchema.virtual("fullName").get(function () {
   return this.firstName + " " + this.familyName;

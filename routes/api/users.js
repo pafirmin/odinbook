@@ -4,13 +4,16 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 const Friend = require("../../models/Friend");
-const router = express.Router();
 const auth = require("../../middleware/auth");
 require("dotenv").config();
+const router = express.Router();
 
-router.get("/", auth, async (req, res) => {
+// Get current user
+router.get("/", async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).populate("friends");
+    const user = await User.findById(req.user.id)
+      .select("-password")
+      .populate("friends");
 
     res.json(user);
   } catch (err) {
@@ -19,9 +22,11 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id)
+      .select("-password")
+      .populate("friends");
 
     res.json(user);
   } catch (err) {
@@ -102,6 +107,30 @@ router.post(
     }
   }
 );
+
+// Update profile
+router.post("/profile", auth, async (req, res) => {
+  try {
+    const { location, bio, occupation } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        profile: {
+          location,
+          bio,
+          occupation,
+        },
+      },
+      { new: true }
+    ).select("-password");
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
 
 // Send friend request
 router.post("/:id/add", auth, async (req, res) => {
