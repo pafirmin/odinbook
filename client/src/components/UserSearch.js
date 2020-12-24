@@ -30,6 +30,7 @@ const UserSearch = () => {
   return (
     <form onSubmit={(e) => handleSubmit(e)}>
       <TextInput
+        placeholder="Find your friends..."
         type="text"
         name="query"
         onChange={(e) => handleChange(e)}

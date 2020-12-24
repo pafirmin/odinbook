@@ -4,10 +4,10 @@ import UserSearch from "../UserSearch";
 
 const UserPanel = () => {
   return (
-    <div style={{ display: "flex" }}>
+    <nav style={{ display: "flex", gap: "1.5rem" }}>
       <UserSearch />
       <FriendRequests />
-    </div>
+    </nav>
   );
 };
 
