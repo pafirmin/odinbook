@@ -22,6 +22,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get a user
 router.get("/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
@@ -144,35 +145,29 @@ router.post("/:id/add", auth, async (req, res) => {
         .json({ errors: [{ msg: "Cannot add yourself as a friend!" }] });
     }
 
-    const senderReq = await Friend.findOneAndUpdate(
+    const toRecipient = await Friend.findOneAndUpdate(
       {
-        user: recipient,
+        user: sender,
       },
       { $set: { status: "recieved" } },
       { upsert: true, new: true }
     );
 
-    const recipientReq = await Friend.findOneAndUpdate(
+    const toSender = await Friend.findOneAndUpdate(
       {
-        user: sender,
+        user: recipient,
       },
       { $set: { status: "pending" } },
       { upsert: true, new: true }
     );
 
-    await User.findByIdAndUpdate(
-      { sender },
-      {
-        $push: { friends: senderReq },
-      }
-    );
+    await User.findByIdAndUpdate(sender, {
+      $addToSet: { friends: toSender },
+    });
 
-    await User.findByIdAndUpdate(
-      { recipient },
-      {
-        $push: { friends: recipientReq },
-      }
-    );
+    await User.findByIdAndUpdate(recipient, {
+      $addToSet: { friends: toRecipient },
+    });
 
     res.json("Friend request sent");
   } catch (err) {

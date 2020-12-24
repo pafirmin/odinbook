@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { AlertContext } from "../contexts/AlertContext";
-import { AuthContext } from "../contexts/AuthContext";
-import { Button } from "./Utils";
+import { AlertContext } from "../../contexts/AlertContext";
+import { AuthContext } from "../../contexts/AuthContext";
+import { Button } from "../Utils";
 
 const PostArea = styled.textarea`
   resize: none;

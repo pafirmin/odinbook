@@ -3,8 +3,8 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
-import { AuthContext } from "../contexts/AuthContext";
-import Comments from "./CommentSection";
+import { AuthContext } from "../../contexts/AuthContext";
+import Comments from "../comments/CommentSection";
 
 const PostContainer = styled.div`
   box-shadow: 2px 2px 8px #7d7d7d;

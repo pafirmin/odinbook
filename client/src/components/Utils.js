@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const TextInput = styled.input`
   font: inherit;
   padding: 6px;
-  border: 1px solid #c3c3c3;
+  border: none;
   border-radius: 0;
   background-color: #fff;
 `;

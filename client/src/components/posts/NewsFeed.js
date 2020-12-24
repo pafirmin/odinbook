@@ -1,10 +1,10 @@
 import axios from "axios";
 import styled from "styled-components";
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import NewPost from "./NewPost";
 import PostList from "./PostList";
-import { Button } from "./Utils";
+import { Button } from "../Utils";
 
 const NewPostBtn = styled(Button)`
   border-radius: 20px;

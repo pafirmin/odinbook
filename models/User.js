@@ -47,7 +47,7 @@ const UserSchema = new Schema(
   { toJSON: { virtuals: true } }
 );
 
-UserSchema.index({ "$**": "text" });
+UserSchema.index({ firstName: "text", familyName: "text" });
 
 UserSchema.virtual("fullName").get(function () {
   return this.firstName + " " + this.familyName;

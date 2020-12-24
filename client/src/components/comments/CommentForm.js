@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Button, TextInput } from "./Utils";
-import { AuthContext } from "../contexts/AuthContext";
-import { AlertContext } from "../contexts/AlertContext";
+import { Button, TextInput } from "../Utils";
+import { AuthContext } from "../../contexts/AuthContext";
+import { AlertContext } from "../../contexts/AlertContext";
 
 const CommentBox = styled(TextInput)`
   width: 100%;

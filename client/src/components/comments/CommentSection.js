@@ -1,8 +1,8 @@
 import React, { Fragment, useContext, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { AuthContext } from "../contexts/AuthContext";
-import { AlertContext } from "../contexts/AlertContext";
+import { AuthContext } from "../../contexts/AuthContext";
+import { AlertContext } from "../../contexts/AlertContext";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 

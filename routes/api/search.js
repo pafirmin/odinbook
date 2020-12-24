@@ -7,9 +7,9 @@ router.post("/", async (req, res) => {
   try {
     const query = req.body.query;
 
-    const user = await User.find({ $text: { $search: query } });
+    const users = await User.find({ $text: { $search: query } });
 
-    res.json(user);
+    res.json(users);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");

@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { Switch, Route } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
-import CreateAccount from "./auth/CreateAccount";
-import LogIn from "./auth/LogIn";
-import NewsFeed from "./NewsFeed";
-import UserPage from "./UserPage";
+import { AuthContext } from "../../contexts/AuthContext";
+import CreateAccount from "../auth/CreateAccount";
+import LogIn from "../auth/LogIn";
+import NewsFeed from "../posts/NewsFeed";
+import UserPage from "../profile/UserPage";
 
 const MainContent = () => {
   const { state } = useContext(AuthContext);
