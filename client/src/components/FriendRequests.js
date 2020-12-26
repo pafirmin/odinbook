@@ -2,8 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../contexts/AuthContext";
 import styled from "styled-components";
-import { Button } from "./Utils";
-import { Link } from "react-router-dom";
 import FriendRequestListItem from "./FriendRequestListItem";
 
 const Notification = styled.div`
@@ -32,7 +30,8 @@ const DropDown = styled.div`
   height: 200px;
   background-color: #fff;
   box-shadow: 2px 2px 8px #7d7d7d;
-  padding: 6px;
+  padding: 0.5rem;
+  text-align: center;
 `;
 
 const FriendRequest = () => {
@@ -77,9 +76,11 @@ const FriendRequest = () => {
         />
         {requests.length > 0 && <Notification>{requests.length}</Notification>}
         <DropDown show={showDropDown}>
+          <span>Friend requests</span>
           <ul>
             {requests.map((request) => (
               <FriendRequestListItem
+                key={request._id}
                 user={request.user}
                 requests={requests}
                 setRequests={setRequests}
@@ -90,14 +91,11 @@ const FriendRequest = () => {
           {!requests.length && (
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                width: "100%",
+                color: "#9d9d9d",
+                marginTop: "3em",
               }}
             >
-              No pending friend requests
+              You have no pending friend requests
             </div>
           )}
         </DropDown>

@@ -5,6 +5,7 @@ import CreateAccount from "../auth/CreateAccount";
 import LogIn from "../auth/LogIn";
 import NewsFeed from "../posts/NewsFeed";
 import UserPage from "../profile/UserPage";
+import SearchResults from "../SearchResults";
 
 const MainContent = () => {
   const { state } = useContext(AuthContext);
@@ -16,6 +17,7 @@ const MainContent = () => {
       <div className="main-wrapper">
         <Route path="/user/:userID" component={UserPage} />
         {state.isAuthenticated && <Route exact path="/" component={NewsFeed} />}
+        <Route path="/search" component={SearchResults} />
       </div>
     </Switch>
   );

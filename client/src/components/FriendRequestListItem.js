@@ -10,11 +10,16 @@ const DropDownItem = styled.li`
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #c3c3c3;
+  padding: 0.1rem 0;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
 `;
 
 const FriendAccepted = styled(DropDownItem)`
   background: #d5ffd5;
-  padding: 10px 0;
+  padding: 0.8rem 0;
 `;
 
 const FriendRequestListItem = ({ user, requests, setRequests, requestID }) => {
@@ -29,11 +34,7 @@ const FriendRequestListItem = ({ user, requests, setRequests, requestID }) => {
         },
       };
 
-      const res = await axios.post(
-        `/api/requests/${userID}/accept`,
-        {},
-        config
-      );
+      await axios.post(`/api/requests/${userID}/accept`, {}, config);
 
       setAccepted(true);
 
@@ -46,6 +47,7 @@ const FriendRequestListItem = ({ user, requests, setRequests, requestID }) => {
       console.error(err);
     }
   };
+
   return (
     <div>
       {accepted ? (

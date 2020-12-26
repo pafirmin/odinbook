@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const TextInput = styled.input`
   font: inherit;
-  padding: 6px;
+  padding: 0.4em;
   border: none;
   border-radius: 0;
   background-color: #fff;
@@ -12,7 +12,7 @@ export const Button = styled.button`
   color: ${({ variant }) => getColour(variant).font};
   border: none;
   background-color: ${({ variant }) => getColour(variant).bg};
-  padding: 8px;
+  padding: 0.5em;
   cursor: pointer;
   font: inherit;
 `;

@@ -16,4 +16,19 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    const query = req.query.user;
+
+    const users = await User.find({ $text: { $search: query } }).select(
+      "-password"
+    );
+
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
 module.exports = router;

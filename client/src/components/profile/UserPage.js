@@ -38,9 +38,7 @@ const UserPage = () => {
   return (
     <div>
       <div style={{ display: "grid", gridTemplateColumns: "3fr 8fr" }}>
-        {user && (
-          <UserProfile profile={user.profile} userName={user.fullName} />
-        )}
+        {user && <UserProfile user={user} />}
         <PostList posts={posts} />
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { TextInput, Button } from "../Utils";
 import { AuthContext } from "../../contexts/AuthContext";
 import { AlertContext } from "../../contexts/AlertContext";
@@ -8,6 +8,7 @@ import { AlertContext } from "../../contexts/AlertContext";
 const LogIn = () => {
   const { setAlerts } = useContext(AlertContext);
   const { dispatch } = useContext(AuthContext);
+  const [successfulLogin, setSuccessfulLogin] = useState(false);
   const [userDetails, setUserDetails] = useState({
     email: "",
     password: "",
@@ -42,6 +43,7 @@ const LogIn = () => {
         },
       });
 
+      setSuccessfulLogin(true);
       setAlerts([{ text: "Login successful!", type: "success" }]);
     } catch (err) {
       const errorArray = err.response.data.errors.map((err) => {
@@ -54,6 +56,7 @@ const LogIn = () => {
 
   return (
     <div>
+      {successfulLogin && <Redirect to="/" />}
       <form className="auth-form" onSubmit={(e) => handleSubmit(e)}>
         <header className="form-header">
           <h2>Log in</h2>
