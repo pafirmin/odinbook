@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -26,7 +26,9 @@ const SearchResults = () => {
   return (
     <div>
       {results.map((user) => (
-        <p>{user.fullName}</p>
+        <p key={user._id}>
+          <Link to={`/user/${user._id}`}>{user.fullName}</Link>
+        </p>
       ))}
     </div>
   );

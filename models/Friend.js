@@ -6,6 +6,10 @@ const FriendSchema = new Schema({
     type: mongoose.Types.ObjectId,
     ref: "user",
   },
+  self: {
+    type: mongoose.Types.ObjectId,
+    ref: "user",
+  },
   status: {
     type: String,
     enums: ["recieved", "seen", "pending", "accepted"],

@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../contexts/AuthContext";
 import styled from "styled-components";
 import FriendRequestListItem from "./FriendRequestListItem";
+import { listenForRequests } from "../socket/Socket";
 
 const Notification = styled.div`
   border-radius: 50%;
@@ -26,6 +27,7 @@ const DropDown = styled.div`
   display: ${({ show }) => (show ? "block" : "none")};
   color: #434343;
   position: absolute;
+  right: 0;
   width: 300px;
   height: 200px;
   background-color: #fff;
@@ -34,13 +36,17 @@ const DropDown = styled.div`
   text-align: center;
 `;
 
-const FriendRequest = () => {
+const FriendRequests = () => {
   const [requests, setRequests] = useState([]);
   const [showDropDown, setShowDropdown] = useState(false);
   const { state } = useContext(AuthContext);
 
   useEffect(() => {
     fetchRequests();
+  }, [state.user]);
+
+  useEffect(() => {
+    listenForRequests(setRequests);
   }, []);
 
   const fetchRequests = async () => {
@@ -104,4 +110,4 @@ const FriendRequest = () => {
   );
 };
 
-export default FriendRequest;
+export default FriendRequests;

@@ -37,6 +37,7 @@ router.post("/:id/", auth, async (req, res) => {
 
     const toRecipient = await Friend.findOneAndUpdate(
       {
+        self: recipient,
         user: sender,
       },
       { $set: { status: "recieved" } },
@@ -45,6 +46,7 @@ router.post("/:id/", auth, async (req, res) => {
 
     const toSender = await Friend.findOneAndUpdate(
       {
+        self: sender,
         user: recipient,
       },
       { $set: { status: "pending" } },
@@ -59,7 +61,7 @@ router.post("/:id/", auth, async (req, res) => {
       $addToSet: { friends: toRecipient },
     });
 
-    res.json("Friend request sent");
+    res.json(toRecipient);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
@@ -71,6 +73,7 @@ router.post("/:id/accept", auth, async (req, res) => {
   await Friend.findOneAndUpdate(
     {
       user: req.params.id,
+      self: req.user.id,
     },
     { $set: { status: "accepted" } },
     { upsert: true, new: true }
@@ -78,6 +81,7 @@ router.post("/:id/accept", auth, async (req, res) => {
 
   await Friend.findOneAndUpdate(
     {
+      self: req.params.id,
       user: req.user.id,
     },
     { $set: { status: "accepted" } },

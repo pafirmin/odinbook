@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import authReducer from "../AuthReducer";
+import { connectSocket } from "../socket/Socket";
 
 const AuthContext = createContext();
 
@@ -22,7 +23,10 @@ const AuthProvider = ({ children }) => {
           userID,
         },
       });
+    connectSocket(userID);
   }, []);
+
+  useEffect(() => {}, []);
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>

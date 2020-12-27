@@ -3,8 +3,9 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button } from "../Utils";
+import { sendFriendRequest } from "../../socket/Socket";
 
-const AddFriendBtn = styled(Button)`
+const ProfileBtn = styled(Button)`
   font-size: 0.8em;
   border-radius: 20px;
 `;
@@ -13,6 +14,9 @@ const Profile = ({ user }) => {
   const { state } = useContext(AuthContext);
   const { location, bio, occupation } = user.profile;
   const isCurrentUserProfile = state.userID === user._id;
+  const userIsFriend = user.friends.some(
+    (friend) => friend.user === state.userID && friend.status === "accepted"
+  );
 
   const addFriend = async () => {
     try {
@@ -24,9 +28,24 @@ const Profile = ({ user }) => {
 
       const res = await axios.post(`/api/requests/${user._id}`, {}, config);
 
-      console.log(res.data);
+      sendFriendRequest(res.data);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const getButton = () => {
+    if (userIsFriend) {
+      return <ProfileBtn variant="success">Friends</ProfileBtn>;
+    } else if (!isCurrentUserProfile) {
+      return (
+        <ProfileBtn onClick={addFriend}>
+          {" "}
+          <i className="fas fa-user-friends" /> Add as friend
+        </ProfileBtn>
+      );
+    } else {
+      return <ProfileBtn>Edit profile</ProfileBtn>;
     }
   };
 
@@ -51,12 +70,7 @@ const Profile = ({ user }) => {
         }}
       >
         <h2>{user.fullName}</h2>
-        {!isCurrentUserProfile && (
-          <AddFriendBtn onClick={addFriend}>
-            {" "}
-            <i className="fas fa-user-friends" /> Add as friend
-          </AddFriendBtn>
-        )}
+        {getButton()}
       </header>
       <ul>
         <li>{location}</li>

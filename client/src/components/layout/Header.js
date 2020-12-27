@@ -1,20 +1,18 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Button } from "../Utils";
+import UserSearch from "../UserSearch";
 import UserPanel from "./UserPanel";
 
 const Header = () => {
-  const { state, dispatch } = useContext(AuthContext);
+  const { state } = useContext(AuthContext);
   return (
     <header className="main-header">
-      <Link to="/">
-        <h1 className="main-title">Odinbook</h1>
-      </Link>
-      {state.isAuthenticated && <UserPanel />}
-      <Button onClick={() => dispatch({ action: { type: "logout" } })}>
-        Sign out
-      </Button>
+      <h1 className="main-title">
+        <Link to="/">Odinbook</Link>
+      </h1>
+      <UserSearch />
+      <UserPanel />
     </header>
   );
 };

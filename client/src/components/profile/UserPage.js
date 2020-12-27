@@ -10,7 +10,7 @@ const UserPage = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const fetchUser = async (req, res) => {
+    const fetchUser = async () => {
       try {
         const res = await axios.get(`/api/users/${userID}`);
 
@@ -20,10 +20,10 @@ const UserPage = () => {
       }
     };
     fetchUser();
-  }, []);
+  }, [userID]);
 
   useEffect(() => {
-    const fetchPosts = async (req, res) => {
+    const fetchPosts = async () => {
       try {
         const res = await axios.get(`/api/posts/user/${userID}/wall`);
 
@@ -33,7 +33,7 @@ const UserPage = () => {
       }
     };
     fetchPosts();
-  }, []);
+  }, [userID]);
 
   return (
     <div>

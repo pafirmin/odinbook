@@ -19,6 +19,9 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    profilePic: {
+      type: String,
+    },
     friends: [
       {
         type: mongoose.Types.ObjectId,
@@ -28,21 +31,39 @@ const UserSchema = new Schema(
     profile: {
       picture: {
         type: String,
+        default: "",
       },
       location: {
         type: String,
+        default: "",
       },
       bio: {
         type: String,
+        default: "",
       },
       occupation: {
         type: String,
+        default: "",
       },
     },
     date: {
       type: Date,
       default: Date.now,
     },
+    notifications: [
+      {
+        sender: {
+          type: mongoose.Types.ObjectId,
+          ref: "user",
+        },
+        type: {
+          type: String,
+        },
+        seen: {
+          type: Boolean,
+        },
+      },
+    ],
   },
   { toJSON: { virtuals: true } }
 );

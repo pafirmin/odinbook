@@ -16,7 +16,11 @@ const MainContent = () => {
       <Route path="/createaccount" component={CreateAccount} />
       <div className="main-wrapper">
         <Route path="/user/:userID" component={UserPage} />
-        {state.isAuthenticated && <Route exact path="/" component={NewsFeed} />}
+        <Route
+          exact
+          path="/"
+          component={state.isAuthenticated ? NewsFeed : LogIn}
+        />
         <Route path="/search" component={SearchResults} />
       </div>
     </Switch>
