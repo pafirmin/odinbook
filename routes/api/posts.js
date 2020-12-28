@@ -89,6 +89,7 @@ router.get("/user/:user_id", async (req, res) => {
 router.get("/user/:user_id/wall", async (req, res) => {
   try {
     const posts = await Post.find({ recipient: req.params.user_id })
+      .populate("user", ["profilePic"])
       .populate("likes.user", ["firstName", "familyName"])
       .sort({
         date: -1,
@@ -121,6 +122,7 @@ router.get("/feed", auth, async (req, res) => {
       .sort({
         date: -1,
       })
+      .populate("user", ["profilePic"])
       .populate("likes.user", ["firstName", "familyName"]);
 
     res.json(posts);

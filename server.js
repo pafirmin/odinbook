@@ -2,7 +2,6 @@ const express = require("express");
 const connectDB = require("./db");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const User = require("./models/User");
 
 const app = express();
 const http = require("http").createServer(app);
@@ -11,7 +10,6 @@ const io = require("socket.io")(http, {
     origin: "*",
   },
 });
-
 mongoose.set("useCreateIndex", true);
 
 connectDB();
@@ -44,5 +42,11 @@ io.on("connection", (socket) => {
     const user = users[request.self];
 
     user && socket.broadcast.to(user).emit("recieveRequest", request);
+  });
+
+  io.on("disconnect", (socket) => {
+    for (const socketID in users) {
+      if (users[socketID] === socket.id) delete users[socketID];
+    }
   });
 });

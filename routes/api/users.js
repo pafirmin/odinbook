@@ -3,6 +3,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
+const gravatar = require("gravatar");
 const Friend = require("../../models/Friend");
 const auth = require("../../middleware/auth");
 require("dotenv").config();
@@ -40,8 +41,14 @@ router.get("/:id", async (req, res) => {
 router.post(
   "/",
   [
-    check("firstName", "Please provide your first name").not().isEmpty(),
-    check("familyName", "Please provide your family name").not().isEmpty(),
+    check("firstName", "Please provide your first name!")
+      .trim()
+      .not()
+      .isEmpty(),
+    check("familyName", "Please provide your family name!")
+      .trim()
+      .not()
+      .isEmpty(),
     check("email", "Please provide a valid email address").isEmail(),
     check("password", "Password must be at least 6 characters")
       .trim()
@@ -74,11 +81,18 @@ router.post(
           .json({ errors: [{ msg: "Email alreay in use" }] });
       }
 
+      const profilePic = gravatar.url(email, {
+        s: "200",
+        r: "x",
+        d: "indenticon",
+      });
+
       user = await new User({
         firstName,
         familyName,
         email,
         password,
+        profilePic,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -125,6 +139,27 @@ router.post("/profile", auth, async (req, res) => {
       },
       { new: true }
     ).select("-password");
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
+
+router.post("/profilepic/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    const avatar = gravatar.url(user.email, {
+      s: "200",
+      r: "pg",
+      d: "identicon",
+    });
+
+    user.profilePic = avatar;
+
+    await user.save();
 
     res.json(user);
   } catch (err) {

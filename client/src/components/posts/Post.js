@@ -54,6 +54,14 @@ const SocialBtn = styled.button`
   }
 `;
 
+const ProfilePic = styled.div`
+  height: 40px;
+  width: 40px;
+  background-image: url("${({ url }) => url}");
+  background-size: 100%;
+  border-radius: 50%;
+`;
+
 const Post = ({ post }) => {
   const { state } = useContext(AuthContext);
   const [likes, setLikes] = useState(post.likes);
@@ -86,13 +94,22 @@ const Post = ({ post }) => {
 
   return (
     <PostContainer>
-      <div>
-        <Link to={`/user/${post.user}`}>
-          <h3 style={{ fontSize: "1.2em" }}>{post.name}</h3>
-        </Link>
-        <time style={{ fontSize: "0.8em", color: "#626262" }}>
-          {moment(post.date).fromNow()}
-        </time>
+      <div style={{ display: "flex", gap: "8px" }}>
+        <ProfilePic url={post.user.profilePic} />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <Link to={`/user/${post.user._id}`}>
+            <h3 style={{ fontSize: "1.2em" }}>{post.name}</h3>
+          </Link>
+          <time style={{ fontSize: "0.8em", color: "#626262" }}>
+            {moment(post.date).fromNow()}
+          </time>
+        </div>
       </div>
       <div style={{ margin: ".8rem 0" }}>{post.text}</div>
       <SocialDiv>

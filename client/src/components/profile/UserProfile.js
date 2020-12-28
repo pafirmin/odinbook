@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button } from "../Utils";
@@ -10,13 +10,46 @@ const ProfileBtn = styled(Button)`
   border-radius: 20px;
 `;
 
+const ProfileWrapper = styled.div`
+  margin-top: 16px;
+  padding: 0.8rem;
+  position: sticky;
+  top: 86px;
+  height: 50vh;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 2px 2px 8px #7d7d7d;
+`;
+
+const ProfileHeader = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ProfilePic = styled.img`
+  height: 120px;
+  width: 120px;
+  padding: 8px;
+  box-shadow: 2px 2px 8px #7d7d7d;
+`;
+
 const Profile = ({ user }) => {
+  const [requestSent, setRequestSent] = useState(false);
   const { state } = useContext(AuthContext);
   const { location, bio, occupation } = user.profile;
+
   const isCurrentUserProfile = state.userID === user._id;
   const userIsFriend = user.friends.some(
     (friend) => friend.user === state.userID && friend.status === "accepted"
   );
+  const requestIsPending = user.friends.some(
+    (friend) => friend.user === state.userID && friend.status === "recieved"
+  );
+
+  useEffect(() => {
+    if (requestIsPending) setRequestSent(true);
+  }, []);
 
   const addFriend = async () => {
     try {
@@ -37,47 +70,33 @@ const Profile = ({ user }) => {
   const getButton = () => {
     if (userIsFriend) {
       return <ProfileBtn variant="success">Friends</ProfileBtn>;
-    } else if (!isCurrentUserProfile) {
+    } else if (isCurrentUserProfile) {
+      return <ProfileBtn>Edit profile</ProfileBtn>;
+    } else if (requestSent) {
+      return <ProfileBtn>Request sent!</ProfileBtn>;
+    } else {
       return (
         <ProfileBtn onClick={addFriend}>
           {" "}
           <i className="fas fa-user-friends" /> Add as friend
         </ProfileBtn>
       );
-    } else {
-      return <ProfileBtn>Edit profile</ProfileBtn>;
     }
   };
 
   return (
-    <div
-      style={{
-        marginTop: "16px",
-        padding: ".8rem",
-        position: "sticky",
-        top: "86px",
-        height: "50vh",
-        background: "#fff",
-        borderRadius: "8px",
-        boxShadow: "2px 2px 8px #7d7d7d",
-      }}
-    >
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+    <ProfileWrapper>
+      <ProfilePic src={user.profilePic} />
+      <ProfileHeader>
         <h2>{user.fullName}</h2>
         {getButton()}
-      </header>
+      </ProfileHeader>
       <ul>
         <li>{location}</li>
         <li>{bio}</li>
         <li>{occupation}</li>
       </ul>
-    </div>
+    </ProfileWrapper>
   );
 };
 
