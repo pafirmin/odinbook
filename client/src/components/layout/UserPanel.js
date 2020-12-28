@@ -1,8 +1,9 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, { Fragment, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import FriendRequests from "../FriendRequests";
 import { Button } from "../Utils";
+import Notifications from "../Notifications";
 
 const UserPanel = () => {
   const { state, dispatch } = useContext(AuthContext);
@@ -19,6 +20,7 @@ const UserPanel = () => {
     >
       {state.isAuthenticated ? (
         <Fragment>
+          <Notifications />
           <FriendRequests />
           <Link to={`/user/${state.userID}`}>Your profile</Link>
           <Button onClick={() => dispatch({ type: "logout" })}>Sign out</Button>

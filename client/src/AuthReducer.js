@@ -1,16 +1,17 @@
 const authReducer = (state, action) => {
   switch (action.type) {
     case "login":
-      const token = action.payload.token;
-      const userID = action.payload.userID;
+      const { token, userID, userName } = action.payload;
 
       localStorage.setItem("token", token);
       localStorage.setItem("userID", userID);
+      localStorage.setItem("userName", userName);
       return {
         ...state,
         isAuthenticated: true,
-        token: token,
-        userID: userID,
+        token,
+        userID,
+        userName,
       };
     case "logout":
       localStorage.clear();

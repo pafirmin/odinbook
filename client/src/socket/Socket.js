@@ -24,3 +24,17 @@ export const listenForRequests = (setRequests) => {
     })
   );
 };
+
+export const sendNotification = (notification) => {
+  socket.emit("notification", notification);
+};
+
+export const listenForNotifications = (setNotifications) => {
+  socket.on("recieveNotification", (notifications) => {
+    setNotifications(notifications);
+  });
+};
+
+export const disconnectFromSocket = () => {
+  socket.disconnect();
+};

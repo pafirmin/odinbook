@@ -28,16 +28,15 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ errors: [{ msg: "Invalid credentials" }] });
     }
 
-    const passwordsMatch = bcrypt.compare(password, user.password);
+    const passwordsMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordsMatch) {
-      return res.status(400).json({ erors: [{ msg: "Invalid credentials" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid credentials" }] });
     }
 
     const payload = {
       user: {
         id: user._id,
-        name: `${user.firstName} ${user.familyName}`,
       },
     };
 
@@ -47,7 +46,11 @@ router.post("/", async (req, res) => {
       { expiresIn: 360000 },
       (err, token) => {
         if (err) throw err;
-        res.json({ token, userID: user._id });
+        res.json({
+          token,
+          userID: user._id,
+          userName: `${user.firstName} ${user.familyName}`,
+        });
       }
     );
   } catch (err) {

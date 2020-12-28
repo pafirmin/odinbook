@@ -34,12 +34,14 @@ const LogIn = () => {
       const body = JSON.stringify(userDetails);
 
       const res = await axios.post("/api/auth", body, config);
+      const { token, userID, userName } = res.data;
 
       dispatch({
         type: "login",
         payload: {
-          token: res.data.token,
-          userID: res.data.userID,
+          token,
+          userID,
+          userName,
         },
       });
 

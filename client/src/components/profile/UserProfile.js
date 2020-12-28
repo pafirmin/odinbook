@@ -28,8 +28,9 @@ const ProfileHeader = styled.header`
 `;
 
 const ProfilePic = styled.img`
-  height: 120px;
-  width: 120px;
+  margin: auto;
+  height: auto;
+  width: 70%;
   padding: 8px;
   box-shadow: 2px 2px 8px #7d7d7d;
 `;
@@ -49,7 +50,7 @@ const Profile = ({ user }) => {
 
   useEffect(() => {
     if (requestIsPending) setRequestSent(true);
-  }, []);
+  }, [requestIsPending]);
 
   const addFriend = async () => {
     try {

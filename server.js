@@ -2,6 +2,7 @@ const express = require("express");
 const connectDB = require("./db");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const User = require("./models/User");
 
 const app = express();
 const http = require("http").createServer(app);
@@ -39,9 +40,27 @@ io.on("connection", (socket) => {
   });
 
   socket.on("friendRequest", async (request) => {
-    const user = users[request.self];
+    const userSocket = users[request.self];
 
-    user && socket.broadcast.to(user).emit("recieveRequest", request);
+    userSocket &&
+      socket.broadcast.to(userSocket).emit("recieveRequest", request);
+  });
+
+  socket.on("notification", async ({ sender, recipientID, post, type }) => {
+    const recipient = await User.findByIdAndUpdate(
+      recipientID,
+      {
+        $addToSet: { notifications: { sender, post, type } },
+      },
+      { new: true }
+    );
+
+    const userSocket = users[recipientID];
+
+    user &&
+      socket.broadcast
+        .to(userSocket)
+        .emit("recieveNotification", recipient.notifications);
   });
 
   io.on("disconnect", (socket) => {

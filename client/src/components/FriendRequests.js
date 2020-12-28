@@ -3,7 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../contexts/AuthContext";
 import styled from "styled-components";
 import FriendRequestListItem from "./FriendRequestListItem";
-import { listenForRequests } from "../socket/Socket";
+import { disconnectFromSocket, listenForRequests } from "../socket/Socket";
 
 const Notification = styled.div`
   border-radius: 50%;
@@ -47,6 +47,8 @@ const FriendRequests = () => {
 
   useEffect(() => {
     listenForRequests(setRequests);
+
+    return () => disconnectFromSocket();
   }, []);
 
   const fetchRequests = async () => {

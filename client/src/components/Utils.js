@@ -34,6 +34,7 @@ export const AlertContainer = styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
+  z-index: 1000;
 `;
 
 const getColour = (variant) => {

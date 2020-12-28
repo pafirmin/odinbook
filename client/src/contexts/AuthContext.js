@@ -8,19 +8,23 @@ const AuthProvider = ({ children }) => {
   const initialState = {
     isAuthenticated: false,
     token: null,
-    user: null,
+    userID: null,
+    userName: null,
   };
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userID = localStorage.getItem("userID");
+    const userName = localStorage.getItem("userName");
+
     token &&
       dispatch({
         type: "login",
         payload: {
           token,
           userID,
+          userName,
         },
       });
     connectSocket(userID);

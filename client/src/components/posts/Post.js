@@ -5,6 +5,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import Comments from "../comments/CommentSection";
+import { sendNotification } from "../../socket/Socket";
 
 const PostContainer = styled.div`
   box-shadow: 2px 2px 8px #7d7d7d;
@@ -83,6 +84,13 @@ const Post = ({ post }) => {
 
       setLikes(res.data);
       setIsLiked(!isLiked);
+
+      sendNotification({
+        sender: state.userID,
+        recipientID: post.user._id,
+        post: post._id,
+        type: "like",
+      });
     } catch (err) {
       console.error(err);
     }
