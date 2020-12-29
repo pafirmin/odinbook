@@ -4,7 +4,6 @@ import { AlertContainer, Alert } from "./Utils";
 
 const Alerts = () => {
   const { alerts } = useContext(AlertContext);
-  console.log(alerts);
   return (
     <AlertContainer>
       {alerts.map((alert, i) => (

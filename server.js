@@ -24,6 +24,7 @@ app.use("/api/posts", require("./routes/api/posts"));
 app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/search", require("./routes/api/search"));
 app.use("/api/requests", require("./routes/api/requests"));
+app.use("/api/notifications", require("./routes/api/notifications"));
 
 const PORT = process.env.PORT || 8080;
 
@@ -47,17 +48,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("notification", async ({ sender, recipientID, post, type }) => {
+    if (sender === recipientID) return;
+
     const recipient = await User.findByIdAndUpdate(
       recipientID,
       {
         $addToSet: { notifications: { sender, post, type } },
       },
       { new: true }
-    );
+    ).populate("notifications.sender");
 
     const userSocket = users[recipientID];
 
-    user &&
+    userSocket &&
       socket.broadcast
         .to(userSocket)
         .emit("recieveNotification", recipient.notifications);

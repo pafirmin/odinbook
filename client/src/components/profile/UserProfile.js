@@ -1,21 +1,18 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button } from "../Utils";
 import { sendFriendRequest } from "../../socket/Socket";
+import FriendCard from "./FriendCard";
 
 const ProfileBtn = styled(Button)`
   font-size: 0.8em;
   border-radius: 20px;
 `;
 
-const ProfileWrapper = styled.div`
-  margin-top: 16px;
+const ProfileSection = styled.section`
   padding: 0.8rem;
-  position: sticky;
-  top: 86px;
-  height: 50vh;
   background: #fff;
   border-radius: 8px;
   box-shadow: 2px 2px 8px #7d7d7d;
@@ -25,14 +22,23 @@ const ProfileHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 12px;
 `;
 
-const ProfilePic = styled.img`
+const ProfilePic = styled.div`
   margin: auto;
   height: auto;
+  background-image: url("${({ src }) => src}");
+  background-size: 100%;
   width: 70%;
   padding: 8px;
   box-shadow: 2px 2px 8px #7d7d7d;
+
+  &:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+  }
 `;
 
 const Profile = ({ user }) => {
@@ -47,6 +53,8 @@ const Profile = ({ user }) => {
   const requestIsPending = user.friends.some(
     (friend) => friend.user === state.userID && friend.status === "recieved"
   );
+
+  console.log(user.friends);
 
   useEffect(() => {
     if (requestIsPending) setRequestSent(true);
@@ -86,18 +94,56 @@ const Profile = ({ user }) => {
   };
 
   return (
-    <ProfileWrapper>
-      <ProfilePic src={user.profilePic} />
-      <ProfileHeader>
-        <h2>{user.fullName}</h2>
-        {getButton()}
-      </ProfileHeader>
-      <ul>
-        <li>{location}</li>
-        <li>{bio}</li>
-        <li>{occupation}</li>
-      </ul>
-    </ProfileWrapper>
+    <div
+      style={{
+        marginTop: "16px",
+        position: "sticky",
+        top: "86px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+        maxHeight: "80vh",
+      }}
+    >
+      <ProfileSection>
+        <ProfilePic src={user.profilePic} />
+        <ProfileHeader>
+          <div>
+            <h2>{user.fullName}</h2>
+            <p>{location}</p>
+          </div>
+          {getButton()}
+        </ProfileHeader>
+        <div>
+          <div>
+            <h4>Occupation</h4>
+            <p>{occupation}</p>
+          </div>
+          <div>
+            <h4>Bio</h4>
+            <p>{bio}</p>
+          </div>
+        </div>
+      </ProfileSection>
+      <ProfileSection>
+        <ProfileHeader>
+          <h2>{user.firstName}'s friends</h2>
+          <span>View all</span>
+        </ProfileHeader>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "6px",
+          }}
+        >
+          {user.friends.map((friend) => (
+            <FriendCard friend={friend} />
+          ))}
+        </div>
+      </ProfileSection>
+    </div>
   );
 };
 

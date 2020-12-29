@@ -6,35 +6,33 @@ let socket;
 export const connectSocket = (userID) => {
   socket = io.connect(server);
 
-  socket.emit("userID", userID);
-};
-
-export const disconnectSocket = () => {
-  socket.disconnect();
+  socket && socket.emit("userID", userID);
 };
 
 export const sendFriendRequest = (request) => {
-  socket.emit("friendRequest", request);
+  socket && socket.emit("friendRequest", request);
 };
 
 export const listenForRequests = (setRequests) => {
-  socket.on("recieveRequest", (request) =>
-    setRequests((state) => {
-      return [request, ...state];
-    })
-  );
+  socket &&
+    socket.on("recieveRequest", (request) =>
+      setRequests((state) => {
+        return [request, ...state];
+      })
+    );
 };
 
 export const sendNotification = (notification) => {
-  socket.emit("notification", notification);
+  socket && socket.emit("notification", notification);
 };
 
 export const listenForNotifications = (setNotifications) => {
-  socket.on("recieveNotification", (notifications) => {
-    setNotifications(notifications);
-  });
+  socket &&
+    socket.on("recieveNotification", (notifications) => {
+      setNotifications(notifications);
+    });
 };
 
 export const disconnectFromSocket = () => {
-  socket.disconnect();
+  socket && socket.disconnect();
 };

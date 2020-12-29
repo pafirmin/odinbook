@@ -52,7 +52,9 @@ router.get("/:user_id", auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({
       user: req.params.user_id,
-    }).populate("user", ["firstName", "familyName"]);
+    })
+      .populate("user", ["firstName", "familyName"])
+      .populate("friends.user", ["firstName", "familyName", "profilePic"]);
 
     if (!profile) {
       return res

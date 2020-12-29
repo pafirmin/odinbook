@@ -28,7 +28,7 @@ router.get("/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
       .select("-password")
-      .populate("friends");
+      .populate({ path: "friends", populate: "user" });
 
     res.json(user);
   } catch (err) {

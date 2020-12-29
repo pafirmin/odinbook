@@ -1,40 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../contexts/AuthContext";
-import styled from "styled-components";
 import FriendRequestListItem from "./FriendRequestListItem";
 import { disconnectFromSocket, listenForRequests } from "../socket/Socket";
-
-const Notification = styled.div`
-  border-radius: 50%;
-  background-color: #f00;
-  color: #fff;
-  font-size: 0.8rem;
-  width: 1.6em;
-  height: 1.6em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  margin-left: -3px;
-  box-shadow: 2px 1px 3px #616161;
-  position: absolute;
-  top: -0.1em;
-  right: -1.2em;
-`;
-
-const DropDown = styled.div`
-  display: ${({ show }) => (show ? "block" : "none")};
-  color: #434343;
-  position: absolute;
-  right: 0;
-  width: 300px;
-  height: 200px;
-  background-color: #fff;
-  box-shadow: 2px 2px 8px #7d7d7d;
-  padding: 0.5rem;
-  text-align: center;
-`;
+import { DropDown, Notification } from "./Utils";
 
 const FriendRequests = () => {
   const [requests, setRequests] = useState([]);

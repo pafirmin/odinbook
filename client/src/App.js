@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { AlertProvider } from "./contexts/AlertContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter as Router } from "react-router-dom";

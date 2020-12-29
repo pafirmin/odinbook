@@ -85,12 +85,13 @@ const Post = ({ post }) => {
       setLikes(res.data);
       setIsLiked(!isLiked);
 
-      sendNotification({
-        sender: state.userID,
-        recipientID: post.user._id,
-        post: post._id,
-        type: "like",
-      });
+      if (!isLiked)
+        sendNotification({
+          sender: state.userID,
+          recipientID: post.user._id,
+          post: post._id,
+          type: "like",
+        });
     } catch (err) {
       console.error(err);
     }

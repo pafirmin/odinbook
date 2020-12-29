@@ -27,7 +27,6 @@ const AuthProvider = ({ children }) => {
           userName,
         },
       });
-    connectSocket(userID);
   }, []);
 
   useEffect(() => {}, []);

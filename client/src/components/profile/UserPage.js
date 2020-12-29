@@ -37,7 +37,7 @@ const UserPage = () => {
 
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "3fr 8fr" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "4fr 8fr" }}>
         {user && <UserProfile user={user} />}
         <PostList posts={posts} />
       </div>
