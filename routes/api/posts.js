@@ -4,6 +4,7 @@ const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
+
 // Make a post
 router.post(
   "/",
@@ -17,13 +18,17 @@ router.post(
     }
 
     try {
+      const user = await User.findById(req.user.id).select("-password");
+
       newPost = new Post({
+        profilePic: user.profilePic,
         user: req.user.id,
         name: req.user.name,
         recipient: req.user.id,
         recipientName: req.user.name,
         text: req.body.text,
       });
+      console.log(req.user);
 
       await newPost.save();
 
@@ -52,7 +57,10 @@ router.post(
         "-password"
       );
 
+      const user = await User.findById(req.user.id).select("-password");
+
       newPost = new Post({
+        profilePic: user.profilePic,
         user: req.user.id,
         name: req.user.name,
         recipient: recipient._id,

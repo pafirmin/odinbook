@@ -48,13 +48,11 @@ const Profile = ({ user }) => {
 
   const isCurrentUserProfile = state.userID === user._id;
   const userIsFriend = user.friends.some(
-    (friend) => friend.user === state.userID && friend.status === "accepted"
+    (friend) => friend.user._id === state.userID && friend.status === "accepted"
   );
   const requestIsPending = user.friends.some(
-    (friend) => friend.user === state.userID && friend.status === "recieved"
+    (friend) => friend.user._id === state.userID && friend.status === "recieved"
   );
-
-  console.log(user.friends);
 
   useEffect(() => {
     if (requestIsPending) setRequestSent(true);
@@ -97,7 +95,6 @@ const Profile = ({ user }) => {
     <div
       style={{
         marginTop: "16px",
-        position: "sticky",
         top: "86px",
         display: "flex",
         flexDirection: "column",

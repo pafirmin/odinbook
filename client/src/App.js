@@ -5,12 +5,14 @@ import { BrowserRouter as Router } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Alerts from "./components/Alerts";
 import MainContent from "./components/layout/MainContent";
+import ScrollToTop from "./ScrollToTop";
 
 const App = () => {
   return (
     <AuthProvider>
       <AlertProvider>
         <Router>
+          <ScrollToTop />
           <Alerts />
           <Header />
           <MainContent />

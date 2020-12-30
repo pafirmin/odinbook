@@ -1,9 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { AlertContext } from "../../contexts/AlertContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button } from "../Utils";
+import { sendNotification } from "../../socket/Socket";
 
 const PostArea = styled.textarea`
   resize: none;
@@ -15,10 +16,26 @@ const PostArea = styled.textarea`
   margin: 0.5rem auto;
 `;
 
-const NewPost = ({ posts, setPosts, formShow }) => {
+const NewPostBtn = styled(Button)`
+  border-radius: 20px;
+  width: 70%;
+  margin: auto;
+
+  &:hover {
+    background-color: #2883bf;
+  }
+`;
+
+const NewPost = ({ setPosts, userID }) => {
   const [newPost, setNewPost] = useState({ text: "" });
+  const [formShow, setFormShow] = useState(false);
   const { state } = useContext(AuthContext);
   const { setAlerts } = useContext(AlertContext);
+
+  useEffect(() => {
+    setFormShow(false);
+    setNewPost({ text: "" });
+  }, [userID]);
 
   const handleChange = (e) => {
     setNewPost({ text: e.target.value });
@@ -36,11 +53,22 @@ const NewPost = ({ posts, setPosts, formShow }) => {
 
       const body = JSON.stringify(newPost);
 
-      const res = await axios.post("/api/posts", body, config);
+      const res = userID
+        ? await axios.post(`/api/posts/users/${userID}`, body, config)
+        : await axios.post("/api/posts", body, config);
 
       setNewPost({ text: "" });
-      setPosts([res.data, ...posts]);
+      setPosts((prevState) => [res.data, ...prevState]);
       setAlerts([{ text: "Post successful!", type: "success" }]);
+
+      if (userID) {
+        sendNotification({
+          sender: state.userID,
+          recipientID: userID,
+          post: res.data._id,
+          type: "post",
+        });
+      }
     } catch (err) {
       const errorArray = err.response.data.errors.map((err) => {
         return { text: err.msg, type: "warning" };
@@ -50,8 +78,15 @@ const NewPost = ({ posts, setPosts, formShow }) => {
     setTimeout(() => setAlerts([]), 5000);
   };
 
+  const toggleForm = () => {
+    setFormShow(!formShow);
+  };
+
   return (
-    <div>
+    <Fragment>
+      <div style={{ textAlign: "center" }}>
+        <NewPostBtn onClick={toggleForm}>Post something...</NewPostBtn>
+      </div>
       <form
         style={{
           width: "80%",
@@ -75,7 +110,7 @@ const NewPost = ({ posts, setPosts, formShow }) => {
         />
         <Button>Post</Button>
       </form>
-    </div>
+    </Fragment>
   );
 };
 

@@ -1,24 +1,11 @@
 import axios from "axios";
-import styled from "styled-components";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import NewPost from "./NewPost";
 import PostList from "./PostList";
-import { Button } from "../Utils";
-
-const NewPostBtn = styled(Button)`
-  border-radius: 20px;
-  width: 70%;
-  margin: auto;
-
-  &:hover {
-    background-color: #2883bf;
-  }
-`;
 
 const NewsFeed = () => {
   const [posts, setPosts] = useState([]);
-  const [formShow, setFormShow] = useState(false);
   const { state } = useContext(AuthContext);
 
   useEffect(() => {
@@ -39,16 +26,9 @@ const NewsFeed = () => {
     fetchPosts();
   }, []);
 
-  const toggleForm = () => {
-    setFormShow(!formShow);
-  };
-
   return (
     <div>
-      <div style={{ textAlign: "center" }}>
-        <NewPostBtn onClick={toggleForm}>Post something...</NewPostBtn>
-      </div>
-      <NewPost posts={posts} setPosts={setPosts} formShow={formShow} />
+      <NewPost setPosts={setPosts} />
       <PostList posts={posts} />
     </div>
   );

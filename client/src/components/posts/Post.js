@@ -104,7 +104,7 @@ const Post = ({ post }) => {
   return (
     <PostContainer>
       <div style={{ display: "flex", gap: "8px" }}>
-        <ProfilePic url={post.user.profilePic} />
+        <ProfilePic url={post.profilePic} />
         <div
           style={{
             display: "flex",
@@ -113,7 +113,13 @@ const Post = ({ post }) => {
           }}
         >
           <Link to={`/user/${post.user._id}`}>
-            <h3 style={{ fontSize: "1.2em" }}>{post.name}</h3>
+            {post.recipient !== post.user._id ? (
+              <h3 style={{ fontSize: "1.2em" }}>
+                {post.name} posted on {post.recipientName}'s wall
+              </h3>
+            ) : (
+              <h3 style={{ fontSize: "1.2em" }}>{post.name}</h3>
+            )}
           </Link>
           <time style={{ fontSize: "0.8em", color: "#626262" }}>
             {moment(post.date).fromNow()}

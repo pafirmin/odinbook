@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import UserProfile from "./UserProfile";
 import PostList from "../posts/PostList";
+import NewPost from "../posts/NewPost";
 
 const UserPage = () => {
   const { userID } = useParams();
@@ -35,10 +36,13 @@ const UserPage = () => {
     fetchPosts();
   }, [userID]);
 
+  console.log(userID);
+
   return (
-    <div>
-      <div style={{ display: "grid", gridTemplateColumns: "4fr 8fr" }}>
-        {user && <UserProfile user={user} />}
+    <div style={{ display: "grid", gridTemplateColumns: "4fr 8fr" }}>
+      {user && <UserProfile user={user} />}
+      <div>
+        <NewPost setPosts={setPosts} userID={userID} />
         <PostList posts={posts} />
       </div>
     </div>

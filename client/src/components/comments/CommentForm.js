@@ -4,6 +4,7 @@ import axios from "axios";
 import { Button, TextInput } from "../Utils";
 import { AuthContext } from "../../contexts/AuthContext";
 import { AlertContext } from "../../contexts/AlertContext";
+import { sendNotification } from "../../socket/Socket";
 
 const CommentBox = styled(TextInput)`
   width: 100%;
@@ -44,6 +45,13 @@ const Comments = ({ post, setComments }) => {
       setComments(res.data);
       setAlerts([{ text: "Comment posted!", type: "success" }]);
       setNewComment({ text: "" });
+
+      sendNotification({
+        sender: state.userID,
+        recipientID: post.user._id,
+        post: post._id,
+        type: "comment",
+      });
     } catch (err) {
       const errorArray = err.response.data.errors.map((err) => {
         return { text: err.msg, type: "warning" };
