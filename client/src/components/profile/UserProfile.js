@@ -1,10 +1,12 @@
 import axios from "axios";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { sampleSize } from "lodash";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Button } from "../Utils";
+import { Button } from "../utils/Utils";
 import { sendFriendRequest } from "../../socket/Socket";
 import FriendCard from "./FriendCard";
+import { Link } from "react-router-dom";
 
 const ProfileBtn = styled(Button)`
   font-size: 0.8em;
@@ -42,7 +44,6 @@ const ProfilePic = styled.div`
 `;
 
 const Profile = ({ user }) => {
-  const [requestSent, setRequestSent] = useState(false);
   const { state } = useContext(AuthContext);
   const { location, bio, occupation } = user.profile;
 
@@ -54,9 +55,15 @@ const Profile = ({ user }) => {
     (friend) => friend.user._id === state.userID && friend.status === "recieved"
   );
 
+  const [requestSent, setRequestSent] = useState(false);
   useEffect(() => {
     if (requestIsPending) setRequestSent(true);
   }, [requestIsPending]);
+
+  const [friends, setFriends] = useState([]);
+  useEffect(() => {
+    setFriends(sampleSize(user.friends, 6));
+  }, [user]);
 
   const addFriend = async () => {
     try {
@@ -78,7 +85,7 @@ const Profile = ({ user }) => {
     if (userIsFriend) {
       return <ProfileBtn variant="success">Friends</ProfileBtn>;
     } else if (isCurrentUserProfile) {
-      return <ProfileBtn>Edit profile</ProfileBtn>;
+      return <Link to="/editprofile">Edit profile</Link>;
     } else if (requestSent) {
       return <ProfileBtn>Request sent!</ProfileBtn>;
     } else {
@@ -135,8 +142,8 @@ const Profile = ({ user }) => {
             gap: "6px",
           }}
         >
-          {user.friends.map((friend) => (
-            <FriendCard friend={friend} />
+          {friends.map((friend) => (
+            <FriendCard key={friend._id} friend={friend} />
           ))}
         </div>
       </ProfileSection>

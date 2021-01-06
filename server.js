@@ -3,6 +3,7 @@ const connectDB = require("./db");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const User = require("./models/User");
+const helmet = require("helmet");
 
 const app = express();
 const http = require("http").createServer(app);
@@ -16,6 +17,7 @@ mongoose.set("useCreateIndex", true);
 connectDB();
 
 app.use(cors());
+app.use(helmet());
 app.use(express.json({ extended: true }));
 
 app.use("/api/users", require("./routes/api/users"));

@@ -4,17 +4,18 @@ import { AuthContext } from "../../contexts/AuthContext";
 import CreateAccount from "../auth/CreateAccount";
 import LogIn from "../auth/LogIn";
 import NewsFeed from "../posts/NewsFeed";
+import EditProfile from "../profile/EditProfile";
 import UserPage from "../profile/UserPage";
-import SearchResults from "../SearchResults";
+import SearchResults from "../search/SearchResults";
 
 const MainContent = () => {
   const { state } = useContext(AuthContext);
 
   return (
-    <Switch>
-      <Route path="/login" component={LogIn} />
-      <Route path="/createaccount" component={CreateAccount} />
-      <div className="main-wrapper">
+    <div className="main-wrapper">
+      <Switch>
+        <Route path="/login" component={LogIn} />
+        <Route path="/createaccount" component={CreateAccount} />
         <Route path="/user/:userID" component={UserPage} />
         <Route
           exact
@@ -22,8 +23,9 @@ const MainContent = () => {
           component={state.isAuthenticated ? NewsFeed : LogIn}
         />
         <Route path="/search" component={SearchResults} />
-      </div>
-    </Switch>
+        <Route path="/editprofile" component={EditProfile} />
+      </Switch>
+    </div>
   );
 };
 

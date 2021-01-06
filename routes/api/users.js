@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
       .select("-password")
-      .populate("friends");
+      .populate({ path: "friends", populate: "user" });
 
     res.json(user);
   } catch (err) {
@@ -83,11 +83,11 @@ router.post(
 
       const profilePic = gravatar.url(email, {
         s: "200",
-        r: "x",
-        d: "indenticon",
+        r: "pg",
+        d: "identicon",
       });
 
-      user = await new User({
+      user = new User({
         firstName,
         familyName,
         email,
@@ -113,7 +113,11 @@ router.post(
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
-          res.json({ token, userID: user._id });
+          res.json({
+            token,
+            userID: user._id,
+            userName: `${user.firstName} ${user.familyName}`,
+          });
         }
       );
     } catch (err) {
@@ -124,7 +128,7 @@ router.post(
 );
 
 // Update profile
-router.post("/profile", auth, async (req, res) => {
+router.put("/profile", auth, async (req, res) => {
   try {
     const { location, bio, occupation } = req.body;
 

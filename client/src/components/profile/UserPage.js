@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import UserProfile from "./UserProfile";
 import PostList from "../posts/PostList";
 import NewPost from "../posts/NewPost";
+import { LoadingContext } from "../../contexts/LoadingContext";
 
 const UserPage = () => {
   const { userID } = useParams();
-  const [user, setUser] = useState(null);
-  const [posts, setPosts] = useState([]);
+  const { setLoading } = useContext(LoadingContext);
 
+  const [user, setUser] = useState(null);
   useEffect(() => {
     const fetchUser = async () => {
+      setLoading(true);
       try {
         const res = await axios.get(`/api/users/${userID}`);
 
@@ -23,6 +25,7 @@ const UserPage = () => {
     fetchUser();
   }, [userID]);
 
+  const [posts, setPosts] = useState([]);
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -32,14 +35,15 @@ const UserPage = () => {
       } catch (err) {
         console.error(err);
       }
+      setLoading(false);
     };
     fetchPosts();
   }, [userID]);
 
-  console.log(userID);
-
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "4fr 8fr" }}>
+    <div
+      style={{ display: "grid", gridTemplateColumns: "4fr 8fr", gap: "24px" }}
+    >
       {user && <UserProfile user={user} />}
       <div>
         <NewPost setPosts={setPosts} userID={userID} />

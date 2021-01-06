@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import moment from "moment";
+import { formatDistanceToNow, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
@@ -8,9 +8,8 @@ import Comments from "../comments/CommentSection";
 import { sendNotification } from "../../socket/Socket";
 
 const PostContainer = styled.div`
-  box-shadow: 2px 2px 8px #7d7d7d;
+  box-shadow: 2px 2px 4px #7d7d7d;
   margin: 16px auto;
-  width: 90%;
   padding: 0.8rem;
   border-radius: 8px;
   background-color: #fff;
@@ -55,19 +54,12 @@ const SocialBtn = styled.button`
   }
 `;
 
-const ProfilePic = styled.div`
-  height: 40px;
-  width: 40px;
-  background-image: url("${({ url }) => url}");
-  background-size: 100%;
-  border-radius: 50%;
-`;
-
 const Post = ({ post }) => {
+  const { user, date, name, recipient, recipientName, text } = post;
   const { state } = useContext(AuthContext);
   const [likes, setLikes] = useState(post.likes);
-  const [isLiked, setIsLiked] = useState(false);
   const [comments, setComments] = useState(post.comments);
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     setIsLiked(likes.map((like) => like.user._id).includes(state.userID));
@@ -104,7 +96,7 @@ const Post = ({ post }) => {
   return (
     <PostContainer>
       <div style={{ display: "flex", gap: "8px" }}>
-        <ProfilePic url={post.profilePic} />
+        <img className="small round thumbnail" src={user.profilePic} />
         <div
           style={{
             display: "flex",
@@ -112,21 +104,24 @@ const Post = ({ post }) => {
             justifyContent: "space-between",
           }}
         >
-          <Link to={`/user/${post.user._id}`}>
-            {post.recipient !== post.user._id ? (
+          <Link to={`/user/${user._id}`}>
+            {recipient !== user._id ? (
               <h3 style={{ fontSize: "1.2em" }}>
-                {post.name} posted on {post.recipientName}'s wall
+                {name} posted on {recipientName}'s wall
               </h3>
             ) : (
-              <h3 style={{ fontSize: "1.2em" }}>{post.name}</h3>
+              <h3 style={{ fontSize: "1.2em" }}>{name}</h3>
             )}
           </Link>
           <time style={{ fontSize: "0.8em", color: "#626262" }}>
-            {moment(post.date).fromNow()}
+            {formatDistanceToNow(parseISO(date), {
+              includeSeconds: true,
+              addSuffix: true,
+            })}
           </time>
         </div>
       </div>
-      <div style={{ margin: ".8rem 0" }}>{post.text}</div>
+      <div style={{ margin: ".8rem 0" }}>{text}</div>
       <SocialDiv>
         <span>
           {likes.length} like{likes.length !== 1 && "s"}

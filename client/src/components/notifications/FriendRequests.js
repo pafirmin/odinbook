@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import FriendRequestListItem from "./FriendRequestListItem";
-import { disconnectFromSocket, listenForRequests } from "../socket/Socket";
-import { DropDown, Notification } from "./Utils";
+import { disconnectFromSocket, listenForRequests } from "../../socket/Socket";
+import { DropDown, Notification } from "../utils/Utils";
 
 const FriendRequests = () => {
   const [requests, setRequests] = useState([]);

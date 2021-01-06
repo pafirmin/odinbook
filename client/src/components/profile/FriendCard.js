@@ -1,22 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
-
-const FriendProfilePic = styled.div`
-  background-image: url("${({ img }) => img}");
-  background-size: 100%;
-  height: 90px;
-  width: 90px;
-`;
-
 const FriendCard = ({ friend }) => {
   return (
-    <Link to={`/user/${friend.user._id}`}>
-      <div>
-        <FriendProfilePic img={friend.user.profilePic}></FriendProfilePic>
-        {friend.user.fullName}
-      </div>
-    </Link>
+    <div style={{ width: "30%" }}>
+      <Link to={`/user/${friend.user._id}`}>
+        <img className="large thumbnail" src={friend.user.profilePic} />
+        <figcaption>{friend.user.fullName}</figcaption>
+      </Link>
+    </div>
   );
 };
 

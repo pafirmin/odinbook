@@ -28,9 +28,10 @@ router.post(
         recipientName: req.user.name,
         text: req.body.text,
       });
-      console.log(req.user);
 
       await newPost.save();
+
+      newPost.user = user;
 
       res.json(newPost);
     } catch (err) {
@@ -69,6 +70,8 @@ router.post(
       });
 
       await newPost.save();
+
+      newPost.user = user;
 
       res.json(newPost);
     } catch (err) {

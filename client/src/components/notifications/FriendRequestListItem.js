@@ -2,8 +2,8 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Button } from "./Utils";
-import { AuthContext } from "../contexts/AuthContext";
+import { Button } from "../utils/Utils";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const DropDownItem = styled.li`
   display: flex;

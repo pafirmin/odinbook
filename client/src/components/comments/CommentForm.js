@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Button, TextInput } from "../Utils";
+import { Button, TextInput } from "../utils/Utils";
 import { AuthContext } from "../../contexts/AuthContext";
 import { AlertContext } from "../../contexts/AlertContext";
 import { sendNotification } from "../../socket/Socket";

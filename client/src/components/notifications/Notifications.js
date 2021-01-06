@@ -1,8 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { disconnectFromSocket, listenForNotifications } from "../socket/Socket";
+import {
+  disconnectFromSocket,
+  listenForNotifications,
+} from "../../socket/Socket";
 import axios from "axios";
-import { AuthContext } from "../contexts/AuthContext";
-import { Notification, DropDown } from "./Utils";
+import { AuthContext } from "../../contexts/AuthContext";
+import { Notification, DropDown } from "../utils/Utils";
 import NotificationListItem from "./NotificationListItem";
 
 const Notifications = () => {

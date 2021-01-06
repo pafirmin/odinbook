@@ -1,4 +1,4 @@
-import { connectSocket } from "./socket/Socket";
+import { connectSocket, disconnectFromSocket } from "./socket/Socket";
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -17,6 +17,7 @@ const authReducer = (state, action) => {
       };
     case "logout":
       localStorage.clear();
+      disconnectFromSocket();
       return {
         ...state,
         isAuthenticated: false,

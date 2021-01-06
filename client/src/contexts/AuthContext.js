@@ -1,6 +1,5 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import authReducer from "../AuthReducer";
-import { connectSocket } from "../socket/Socket";
 
 const AuthContext = createContext();
 

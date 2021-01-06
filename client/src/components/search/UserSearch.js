@@ -1,6 +1,6 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
-import { TextInput, Button } from "./Utils";
+import { TextInput, Button } from "../utils/Utils";
 
 const UserSearch = () => {
   const [query, setQuery] = useState("");
@@ -9,6 +9,7 @@ const UserSearch = () => {
   const handleChange = (e) => {
     setQuery(e.target.value);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 

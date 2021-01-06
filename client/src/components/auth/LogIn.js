@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
-import { TextInput, Button } from "../Utils";
+import { TextInput, Button } from "../utils/Utils";
 import { AuthContext } from "../../contexts/AuthContext";
 import { AlertContext } from "../../contexts/AlertContext";
 
@@ -59,7 +59,7 @@ const LogIn = () => {
   return (
     <div>
       {successfulLogin && <Redirect to="/" />}
-      <form className="auth-form" onSubmit={(e) => handleSubmit(e)}>
+      <form className="user-form" onSubmit={(e) => handleSubmit(e)}>
         <header className="form-header">
           <h2>Log in</h2>
           <span>
