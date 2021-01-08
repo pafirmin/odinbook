@@ -49,7 +49,8 @@ io.on("connection", (socket) => {
       socket.broadcast.to(userSocket).emit("recieveRequest", request);
   });
 
-  socket.on("notification", async ({ sender, recipientID, post, type }) => {
+  socket.on("notification", async (notification) => {
+    const { sender, recipientID, post, type } = notification;
     if (sender === recipientID) return;
 
     const recipient = await User.findByIdAndUpdate(

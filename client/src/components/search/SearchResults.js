@@ -22,7 +22,7 @@ const SearchResults = () => {
       }
     };
     fetchResults();
-  }, []);
+  }, [query]);
 
   return (
     <div>
