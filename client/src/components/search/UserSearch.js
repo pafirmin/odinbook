@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { TextInput, Button } from "../utils/Utils";
 
 const UserSearch = () => {

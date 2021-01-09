@@ -26,10 +26,10 @@ export const sendNotification = (notification) => {
   socket && socket.emit("notification", notification);
 };
 
-export const listenForNotifications = (setNotifications) => {
+export const listenForNotifications = (callback) => {
   socket &&
-    socket.on("recieveNotification", (notifications) => {
-      setNotifications(notifications);
+    socket.on("recieveNotification", () => {
+      callback();
     });
 };
 

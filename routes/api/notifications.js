@@ -8,13 +8,14 @@ router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
       .populate("notifications.sender", ["firstName", "familyName"])
-      .select("-password");
+      .select("-password")
+      .limit(15);
 
-    user.notifications.sort((a, b) => {
+    const notifications = user.notifications.slice(-20).sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
     });
 
-    res.json(user.notifications);
+    res.json(notifications);
   } catch (err) {
     console.error(err);
     res.status(500).json({ errors: [{ msg: "500: Server error" }] });

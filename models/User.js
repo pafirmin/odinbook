@@ -29,10 +29,6 @@ const UserSchema = new Schema(
       },
     ],
     profile: {
-      picture: {
-        type: String,
-        default: "",
-      },
       location: {
         type: String,
         default: "",

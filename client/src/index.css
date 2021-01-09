@@ -146,6 +146,9 @@ a:visited {
 h2 {
   font-size: 1.3rem;
 }
+h4 {
+  font-weight: 900;
+}
 * {
   box-sizing: border-box;
 }

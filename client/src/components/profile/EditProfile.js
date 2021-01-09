@@ -4,12 +4,14 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { Button, TextInput } from "../utils/Utils";
 import { LoadingContext } from "../../contexts/LoadingContext";
 import { useHistory } from "react-router-dom";
+import { AlertContext } from "../../contexts/AlertContext";
 
 const EditProfile = () => {
   const history = useHistory();
   const { token } = useContext(AuthContext).state;
+  const { setAlerts } = useContext(AlertContext);
   const { setLoading } = useContext(LoadingContext);
-  const [user, setUser] = useState();
+  const [image, setImage] = useState("");
   const [profileData, setProfileData] = useState({
     location: "",
     occupation: "",
@@ -21,7 +23,7 @@ const EditProfile = () => {
   }, []);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchProfile = async () => {
       setLoading(true);
       try {
         const config = {
@@ -30,18 +32,26 @@ const EditProfile = () => {
             Authorization: `bearer ${token}`,
           },
         };
-        const res = await axios.get(`/api/users/`, config);
-        const user = res.data;
-        const profile = user.profile;
-        setUser(user);
+        const res = await axios.get(`/api/users/profile`, config);
+        const profile = res.data;
+
         setProfileData(profile);
       } catch (err) {
         console.error(err);
       }
       setLoading(false);
     };
-    fetchUser();
+    fetchProfile();
   }, []);
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setImage(reader.result);
+    };
+  };
 
   const handleChange = (e) => {
     setProfileData({
@@ -60,16 +70,21 @@ const EditProfile = () => {
           Authorization: `bearer ${token}`,
         },
       };
+      const { location, occupation, bio } = profileData;
+      const body = JSON.stringify({ location, occupation, bio, image });
 
-      const body = JSON.stringify(profileData);
+      const res = await axios.put(`/api/users/profile`, body, config);
+      const userID = res.data;
 
-      axios.put(`/api/users/profile`, body, config);
-
-      history.push(`/user/${user._id}`);
+      history.push(`/user/${userID}`);
     } catch (err) {
-      console.error(err);
+      const errorArray = err.response.data.errors.map((err) => {
+        return { text: err.msg, type: "danger" };
+      });
+      setAlerts(errorArray);
     }
     setLoading(false);
+    setTimeout(() => setAlerts([]), 5000);
   };
 
   return (
@@ -97,14 +112,24 @@ const EditProfile = () => {
           />
         </div>
         <div className="form-group">
-          <label for="bio">A little about yourself:</label>
+          <label htmlFor="bio">A little about yourself:</label>
           <TextInput
             id="bio"
             name="bio"
-            onChange={(e) => handleChange(e)}
             value={profileData.bio}
+            onChange={(e) => handleChange(e)}
           />
         </div>
+        <div className="form-group">
+          <label htmlFor="file">Profile pic:</label>
+          <input
+            type="file"
+            id="file"
+            name="file"
+            onChange={(e) => handleFile(e)}
+          />
+        </div>
+        {image && <img src={image} className="large thumbnail" />}
         <Button>Update profile</Button>
       </form>
     </div>

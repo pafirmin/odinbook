@@ -32,6 +32,8 @@ const ProfilePic = styled.div`
   height: auto;
   background-image: url("${({ src }) => src}");
   background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
   width: 70%;
   padding: 8px;
   box-shadow: 2px 2px 8px #7d7d7d;
@@ -124,12 +126,12 @@ const Profile = ({ user }) => {
           </div>
           {getButton()}
         </ProfileHeader>
-        <div>
+        <div style={{ marginTop: ".8rem" }}>
           <div>
             <h4>Occupation</h4>
             <p>{occupation}</p>
           </div>
-          <div>
+          <div style={{ marginTop: ".8rem" }}>
             <h4>Bio</h4>
             <p>{bio}</p>
           </div>

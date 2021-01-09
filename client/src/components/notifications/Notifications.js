@@ -16,9 +16,13 @@ const Notifications = () => {
   const { state } = useContext(AuthContext);
 
   useEffect(() => {
-    listenForNotifications(setNotifications);
+    listenForNotifications(fetchNotifications);
 
     return () => disconnectFromSocket();
+  }, []);
+
+  useEffect(() => {
+    fetchNotifications();
   }, []);
 
   useEffect(() => {
@@ -30,24 +34,21 @@ const Notifications = () => {
     );
   }, [notifications]);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const config = {
-          headers: {
-            Authorization: `bearer ${state.token}`,
-          },
-        };
+  const fetchNotifications = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `bearer ${state.token}`,
+        },
+      };
 
-        const res = await axios.get(`/api/notifications`, config);
+      const res = await axios.get(`/api/notifications`, config);
 
-        setNotifications(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchNotifications();
-  }, []);
+      setNotifications(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const markNotificationsAsSeen = async () => {
     try {

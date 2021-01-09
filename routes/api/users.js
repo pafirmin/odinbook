@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 const gravatar = require("gravatar");
 const Friend = require("../../models/Friend");
-const cloud = require("../../cloud");
+const { cloudinary } = require("../../cloud");
 const auth = require("../../middleware/auth");
 require("dotenv").config();
 const router = express.Router();
@@ -18,6 +18,18 @@ router.get("/", auth, async (req, res) => {
       .populate({ path: "friends", populate: "user" });
 
     res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+// Get current user profile
+router.get("/profile", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    res.json(user.profile);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
@@ -131,7 +143,7 @@ router.post(
 // Update profile
 router.put("/profile", auth, async (req, res) => {
   try {
-    const { location, bio, occupation } = req.body;
+    const { location, bio, occupation, image } = req.body;
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
@@ -145,46 +157,21 @@ router.put("/profile", auth, async (req, res) => {
       { new: true }
     ).select("-password");
 
-    res.json(user);
+    if (image) {
+      const fileString = req.body.image;
+      const uploadResponse = await cloudinary.uploader.upload(fileString, {
+        upload_preset: "odinbook-profile-pics",
+      });
+
+      user.profilePic = uploadResponse.url;
+
+      await user.save();
+    }
+
+    res.json(user._id);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
-  }
-});
-
-router.post("/profilepic", auth, cloud.single("image"), (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(req.user.id, {
-      profile: {
-        profilePic: req.file.url,
-      },
-    });
-
-    res.json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
-  }
-});
-
-router.post("/profilepic/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-
-    const avatar = gravatar.url(user.email, {
-      s: "200",
-      r: "pg",
-      d: "identicon",
-    });
-
-    user.profilePic = avatar;
-
-    await user.save();
-
-    res.json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+    res.status(500).json({ errors: [{ msg: err.message }] });
   }
 });
 
