@@ -5,12 +5,13 @@ const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 const gravatar = require("gravatar");
 const Friend = require("../../models/Friend");
+const cloud = require("../../cloud");
 const auth = require("../../middleware/auth");
 require("dotenv").config();
 const router = express.Router();
 
 // Get current user
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
       .select("-password")
@@ -143,6 +144,21 @@ router.put("/profile", auth, async (req, res) => {
       },
       { new: true }
     ).select("-password");
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
+
+router.post("/profilepic", auth, cloud.single("image"), (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.user.id, {
+      profile: {
+        profilePic: req.file.url,
+      },
+    });
 
     res.json(user);
   } catch (err) {

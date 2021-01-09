@@ -85,7 +85,13 @@ const Profile = ({ user }) => {
     if (userIsFriend) {
       return <ProfileBtn variant="success">Friends</ProfileBtn>;
     } else if (isCurrentUserProfile) {
-      return <Link to="/editprofile">Edit profile</Link>;
+      return (
+        <Link
+          to={{ pathname: "/editprofile", state: { profile: user.profile } }}
+        >
+          Edit profile
+        </Link>
+      );
     } else if (requestSent) {
       return <ProfileBtn>Request sent!</ProfileBtn>;
     } else {

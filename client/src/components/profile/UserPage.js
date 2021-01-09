@@ -17,6 +17,7 @@ const UserPage = () => {
       try {
         const res = await axios.get(`/api/users/${userID}`);
 
+        document.title = `Odinbook - ${res.data.fullName}`;
         setUser(res.data);
       } catch (err) {
         console.error(err);

@@ -12,6 +12,10 @@ const SearchResults = () => {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
+    document.title = `Search results - ${query.get("user")}`;
+  }, [query]);
+
+  useEffect(() => {
     const fetchResults = async () => {
       try {
         const res = await axios.get(`/api/search?user=${query.get("user")}`);

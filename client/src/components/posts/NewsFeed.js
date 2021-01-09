@@ -9,6 +9,10 @@ const NewsFeed = () => {
   const { state } = useContext(AuthContext);
   const { setLoading } = useContext(LoadingContext);
 
+  useEffect(() => {
+    document.title = "Odinbook - Newsfeed";
+  }, []);
+
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     const fetchPosts = async () => {

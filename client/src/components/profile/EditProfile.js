@@ -1,17 +1,47 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button, TextInput } from "../utils/Utils";
 import { LoadingContext } from "../../contexts/LoadingContext";
+import { useHistory } from "react-router-dom";
 
 const EditProfile = () => {
-  const { state } = useContext(AuthContext);
+  const history = useHistory();
+  const { token } = useContext(AuthContext).state;
   const { setLoading } = useContext(LoadingContext);
+  const [user, setUser] = useState();
   const [profileData, setProfileData] = useState({
     location: "",
     occupation: "",
     bio: "",
   });
+
+  useEffect(() => {
+    document.title = "Edit Profile";
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setLoading(true);
+      try {
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `bearer ${token}`,
+          },
+        };
+        const res = await axios.get(`/api/users/`, config);
+        const user = res.data;
+        const profile = user.profile;
+        setUser(user);
+        setProfileData(profile);
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
+    };
+    fetchUser();
+  }, []);
 
   const handleChange = (e) => {
     setProfileData({
@@ -27,13 +57,15 @@ const EditProfile = () => {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${token}`,
         },
       };
 
       const body = JSON.stringify(profileData);
 
       axios.put(`/api/users/profile`, body, config);
+
+      history.push(`/user/${user._id}`);
     } catch (err) {
       console.error(err);
     }
@@ -51,6 +83,7 @@ const EditProfile = () => {
           <TextInput
             id="location"
             name="location"
+            value={profileData.location}
             onChange={(e) => handleChange(e)}
           />
         </div>
@@ -59,12 +92,18 @@ const EditProfile = () => {
           <TextInput
             id="occupation"
             name="occupation"
+            value={profileData.occupation}
             onChange={(e) => handleChange(e)}
           />
         </div>
         <div className="form-group">
           <label for="bio">A little about yourself:</label>
-          <TextInput id="bio" name="bio" onChange={(e) => handleChange(e)} />
+          <TextInput
+            id="bio"
+            name="bio"
+            onChange={(e) => handleChange(e)}
+            value={profileData.bio}
+          />
         </div>
         <Button>Update profile</Button>
       </form>
