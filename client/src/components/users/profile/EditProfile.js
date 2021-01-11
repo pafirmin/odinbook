@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { AuthContext } from "../../contexts/AuthContext";
-import { Button, TextInput } from "../utils/Utils";
-import { LoadingContext } from "../../contexts/LoadingContext";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { Button, TextInput } from "../../utils/Utils";
+import { LoadingContext } from "../../../contexts/LoadingContext";
 import { useHistory } from "react-router-dom";
-import { AlertContext } from "../../contexts/AlertContext";
+import { AlertContext } from "../../../contexts/AlertContext";
 
 const EditProfile = () => {
   const history = useHistory();

@@ -1,0 +1,60 @@
+import axios from "axios";
+import React, { useContext } from "react";
+import styled from "styled-components";
+import useFriendshipStatus from "../../../hooks/useFriendshipStatus";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { Button } from "../../utils/Utils";
+import { sendFriendRequest } from "../../../socket/Socket";
+import { Link } from "react-router-dom";
+
+const ProfileBtn = styled(Button)`
+  font-size: 0.8em;
+  border-radius: 20px;
+  padding: 0 8px;
+`;
+
+const AddFriendBtn = ({ user }) => {
+  const { state } = useContext(AuthContext);
+  const [friendshipStatus, setFriendshipStatus] = useFriendshipStatus(
+    state.userID,
+    user
+  );
+
+  const addFriend = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `bearer ${state.token}`,
+        },
+      };
+
+      const res = await axios.post(`/api/requests/${user._id}`, {}, config);
+
+      sendFriendRequest(res.data);
+      setFriendshipStatus("pending");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getButton = () => {
+    switch (friendshipStatus) {
+      case "isUser":
+        return <Link to="/editprofile">Edit profile</Link>;
+      case "isFriend":
+        return <ProfileBtn variant="success">Friends</ProfileBtn>;
+      case "isPending":
+        return <ProfileBtn>Request sent!</ProfileBtn>;
+      default:
+        return (
+          <ProfileBtn onClick={addFriend}>
+            {" "}
+            <i className="fas fa-user-friends" /> Add as friend
+          </ProfileBtn>
+        );
+    }
+  };
+  return getButton();
+};
+
+export default AddFriendBtn;

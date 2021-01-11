@@ -165,6 +165,7 @@ h4 {
   color: #fff;
   padding: 12px;
   height: 60px;
+  z-index: 2;
 }
 
 .main-title {
@@ -243,4 +244,11 @@ h4 {
 
 .bold {
   font-weight: 900;
+}
+
+.card {
+  padding: 0.8rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 1px 2px #9d9d9d;
 }

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from "../../../../contexts/AuthContext";
 
 const CommentContainer = styled.div`
   display: ${(props) => (props.commentShow ? "flex" : "none")};

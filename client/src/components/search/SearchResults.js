@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
-import UserResult from "./UserResult";
+import UserCard from "../users/UserCard";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -28,13 +28,7 @@ const SearchResults = () => {
     fetchResults();
   }, [query]);
 
-  return (
-    <div>
-      {results.map((user) => (
-        <UserResult user={user} />
-      ))}
-    </div>
-  );
+  return results.map((user) => <UserCard user={user} />);
 };
 
 export default SearchResults;

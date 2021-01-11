@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Button, TextInput } from "../utils/Utils";
-import { AuthContext } from "../../contexts/AuthContext";
-import { AlertContext } from "../../contexts/AlertContext";
-import { sendNotification } from "../../socket/Socket";
+import { Button, TextInput } from "../../../utils/Utils";
+import { AuthContext } from "../../../../contexts/AuthContext";
+import { AlertContext } from "../../../../contexts/AlertContext";
+import { sendNotification } from "../../../../socket/Socket";
 
 const CommentBox = styled(TextInput)`
   width: 100%;
