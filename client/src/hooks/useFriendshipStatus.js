@@ -1,4 +1,4 @@
-const { useState, useEffect } = require("react");
+import { useEffect, useState } from "react";
 
 const useFriendShipStatus = (currentUserID, user) => {
   const [friendshipStatus, setFriendshipStatus] = useState(null);
