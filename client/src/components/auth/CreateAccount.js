@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
@@ -25,6 +25,10 @@ const CreateAccount = () => {
     password: "",
     password2: "",
   });
+
+  useEffect(() => {
+    document.title = "Odinbook - Create Account";
+  }, []);
 
   const handleChange = (e) => {
     setUserData({

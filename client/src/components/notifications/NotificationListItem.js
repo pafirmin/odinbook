@@ -30,19 +30,29 @@ const NotificationListItem = ({ notification }) => {
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            textAlign: "left",
-            padding: "6px 0",
-            backgroundColor: seen ? "#fff" : "#c3c3c3",
+            alignItems: "center",
+            borderBottom: "1px solid #d9d9d9",
+            padding: ".4rem 0",
+            gap: ".4rem",
           }}
         >
-          {sender.fullName + state.message}
-          <time>
-            {formatDistanceToNow(parseISO(date), {
-              includeSeconds: true,
-              addSuffix: true,
-            })}
-          </time>
+          <img className="small round thumbnail" src={sender.profilePic} />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              textAlign: "left",
+              backgroundColor: seen ? "#fff" : "#c3c3c3",
+            }}
+          >
+            {sender.fullName + state.message}
+            <time style={{ color: "#7a7a7a" }}>
+              {formatDistanceToNow(parseISO(date), {
+                includeSeconds: true,
+                addSuffix: true,
+              })}
+            </time>
+          </div>
         </div>
       </Link>
     </li>

@@ -4,6 +4,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import CreateAccount from "../auth/CreateAccount";
 import LogIn from "../auth/LogIn";
 import NewsFeed from "../posts/NewsFeed";
+import PostPage from "../posts/PostPage";
 import EditProfile from "../profile/EditProfile";
 import UserPage from "../profile/UserPage";
 import SearchResults from "../search/SearchResults";
@@ -24,6 +25,7 @@ const MainContent = () => {
         />
         <Route path="/search" component={SearchResults} />
         <Route path="/editprofile" component={EditProfile} />
+        <Route path="/posts/:postID" component={PostPage} />
       </Switch>
     </div>
   );

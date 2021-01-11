@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import useFriendshipStatus from "../../hooks/useFriendshipStatus";
 import { sampleSize } from "lodash";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button } from "../utils/Utils";
@@ -11,24 +12,28 @@ import { Link } from "react-router-dom";
 const ProfileBtn = styled(Button)`
   font-size: 0.8em;
   border-radius: 20px;
+  padding: 0 8px;
 `;
 
 const ProfileSection = styled.section`
   padding: 0.8rem;
   background: #fff;
   border-radius: 8px;
-  box-shadow: 2px 2px 8px #7d7d7d;
+  box-shadow: 0px 1px 2px #9d9d9d;
+
+  & a:hover {
+    text-decoration: underline;
+  }
 `;
 
 const ProfileHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 12px;
 `;
 
 const ProfilePic = styled.div`
-  margin: auto;
+  margin: auto auto 16px auto;
   height: auto;
   background-image: url("${({ src }) => src}");
   background-size: 100%;
@@ -48,19 +53,10 @@ const ProfilePic = styled.div`
 const Profile = ({ user }) => {
   const { state } = useContext(AuthContext);
   const { location, bio, occupation } = user.profile;
-
-  const isCurrentUserProfile = state.userID === user._id;
-  const userIsFriend = user.friends.some(
-    (friend) => friend.user._id === state.userID && friend.status === "accepted"
+  const [friendshipStatus, setFriendshipStatus] = useFriendshipStatus(
+    state.userID,
+    user
   );
-  const requestIsPending = user.friends.some(
-    (friend) => friend.user._id === state.userID && friend.status === "recieved"
-  );
-
-  const [requestSent, setRequestSent] = useState(false);
-  useEffect(() => {
-    if (requestIsPending) setRequestSent(true);
-  }, [requestIsPending]);
 
   const [friends, setFriends] = useState([]);
   useEffect(() => {
@@ -78,31 +74,36 @@ const Profile = ({ user }) => {
       const res = await axios.post(`/api/requests/${user._id}`, {}, config);
 
       sendFriendRequest(res.data);
+      setFriendshipStatus("pending");
     } catch (err) {
       console.error(err);
     }
   };
 
   const getButton = () => {
-    if (userIsFriend) {
-      return <ProfileBtn variant="success">Friends</ProfileBtn>;
-    } else if (isCurrentUserProfile) {
-      return (
-        <Link
-          to={{ pathname: "/editprofile", state: { profile: user.profile } }}
-        >
-          Edit profile
-        </Link>
-      );
-    } else if (requestSent) {
-      return <ProfileBtn>Request sent!</ProfileBtn>;
-    } else {
-      return (
-        <ProfileBtn onClick={addFriend}>
-          {" "}
-          <i className="fas fa-user-friends" /> Add as friend
-        </ProfileBtn>
-      );
+    switch (friendshipStatus) {
+      case "isUser":
+        return (
+          <Link
+            to={{
+              pathname: "/editprofile",
+              state: { profile: user.profile },
+            }}
+          >
+            Edit profile
+          </Link>
+        );
+      case "isFriend":
+        return <ProfileBtn variant="success">Friends</ProfileBtn>;
+      case "isPending":
+        return <ProfileBtn>Request sent!</ProfileBtn>;
+      default:
+        return (
+          <ProfileBtn onClick={addFriend}>
+            {" "}
+            <i className="fas fa-user-friends" /> Add as friend
+          </ProfileBtn>
+        );
     }
   };
 
@@ -110,18 +111,16 @@ const Profile = ({ user }) => {
     <div
       style={{
         marginTop: "16px",
-        top: "86px",
         display: "flex",
         flexDirection: "column",
         gap: "12px",
-        maxHeight: "80vh",
       }}
     >
       <ProfileSection>
         <ProfilePic src={user.profilePic} />
         <ProfileHeader>
           <div>
-            <h2>{user.fullName}</h2>
+            <h2 className="bold">{user.fullName}</h2>
             <p>{location}</p>
           </div>
           {getButton()}
@@ -137,9 +136,9 @@ const Profile = ({ user }) => {
           </div>
         </div>
       </ProfileSection>
-      <ProfileSection>
+      <ProfileSection style={{ position: "", top: "" }}>
         <ProfileHeader>
-          <h2>{user.firstName}'s friends</h2>
+          <h2 className="bold">Friends</h2>
           <span>View all</span>
         </ProfileHeader>
         <div
@@ -147,7 +146,8 @@ const Profile = ({ user }) => {
             display: "flex",
             justifyContent: "space-between",
             flexWrap: "wrap",
-            gap: "6px",
+            marginTop: "10px",
+            gap: "8px",
           }}
         >
           {friends.map((friend) => (

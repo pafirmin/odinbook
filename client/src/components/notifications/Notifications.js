@@ -12,7 +12,6 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [showDropDown, setShowDropdown] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
-
   const { state } = useContext(AuthContext);
 
   useEffect(() => {
@@ -67,7 +66,7 @@ const Notifications = () => {
   };
 
   const toggleDropDown = () => {
-    !showDropDown && markNotificationsAsSeen();
+    if (!showDropDown) markNotificationsAsSeen();
 
     setShowDropdown(!showDropDown);
   };
@@ -83,7 +82,7 @@ const Notifications = () => {
         <Notification>{notificationCount}</Notification>
       )}
       <DropDown show={showDropDown}>
-        <span>Notifications</span>
+        <h4>Notifications</h4>
         <ul>
           {notifications.map((notification) => (
             <NotificationListItem
@@ -99,7 +98,7 @@ const Notifications = () => {
               marginTop: "3em",
             }}
           >
-            You have no pending friend requests
+            You have no notifications
           </div>
         )}
       </DropDown>

@@ -14,12 +14,14 @@ const PostArea = styled.textarea`
   border: none;
   border-bottom: 1px solid #c6c6c6;
   margin: 0.5rem auto;
+  background: transparent;
 `;
 
 const NewPostBtn = styled(Button)`
   border-radius: 20px;
   width: 100%;
   margin: auto;
+  box-shadow: 0px 1px 2px #9d9d9d;
 
   &:hover {
     background-color: #2883bf;
@@ -32,13 +34,13 @@ const NewPostBtn = styled(Button)`
 
 const NewPostForm = styled.form`
   text-align: center;
-  background: #fff;
   margin: auto;
-  margin-top: -0.7rem;
+  margin-top: -1.1rem;
   padding: 8px;
   display: ${({ formShow }) => (formShow ? "block" : "none")};
-  box-shadow: 2px 2px 8px #7d7d7d;
-  border-radius: 8px;
+  box-shadow: 0px 1px 2px #9d9d9d;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 `;
 
 const NewPost = ({ setPosts, userID }) => {

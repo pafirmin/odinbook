@@ -81,6 +81,21 @@ router.post(
   }
 );
 
+// Get a post
+router.get("/viewpost/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id).populate("likes.user", [
+      "firstName",
+      "familyName",
+    ]);
+
+    res.json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
+
 // Get posts by user
 router.get("/user/:user_id", async (req, res) => {
   try {

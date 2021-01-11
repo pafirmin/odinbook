@@ -29,6 +29,7 @@ export const Alert = styled.div`
 `;
 
 export const AlertContainer = styled.div`
+  margin-top: 72px;
   position: fixed;
   top: 10px;
   left: 50%;

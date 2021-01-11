@@ -5,10 +5,12 @@ const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 const gravatar = require("gravatar");
 const Friend = require("../../models/Friend");
+const axios = require("axios");
 const { cloudinary } = require("../../cloud");
 const auth = require("../../middleware/auth");
-require("dotenv").config();
 const router = express.Router();
+const { sample } = require("lodash");
+require("dotenv").config();
 
 // Get current user
 router.get("/", auth, async (req, res) => {
@@ -175,4 +177,67 @@ router.put("/profile", auth, async (req, res) => {
   }
 });
 
+router.post("/:id/profilepic", async (req, res) => {
+  try {
+    const user = await axios.get("https://randomuser.me/api/");
+
+    const profilePic = user.data.results[0].picture.large;
+    const firstName = user.data.results[0].name.first;
+    const familyName = user.data.results[0].name.last;
+    const location = user.data.results[0].location.country;
+
+    await User.findByIdAndUpdate(req.params.id, {
+      profile: { location: location },
+    });
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+router.post("/random", async (req, res) => {
+  try {
+    const user = await axios.get("https://randomuser.me/api/");
+
+    const profilePic = user.data.results[0].picture.large;
+    const firstName = user.data.results[0].name.first;
+    const familyName = user.data.results[0].name.last;
+    const email = user.data.results[0].email;
+    const password = "123456";
+    const profile = {
+      location: user.data.results[0].location.country,
+      occupation: sample([
+        "Builder",
+        "Bartender",
+        "Lion Tamer",
+        "Journalist",
+        "Photographer",
+      ]),
+      bio: "Hi, I'm using Odinbook",
+    };
+
+    const newUser = new User({
+      profilePic,
+      firstName,
+      familyName,
+      email,
+      profile,
+      password,
+    });
+
+    const salt = await bcrypt.genSalt(10);
+    newUser.password = await bcrypt.hash(password, salt);
+
+    await newUser.save();
+
+    res.json(newUser);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+router.put("/acceptall", async (req, res) => {
+  const friends = await Friend.updateMany({}, { $set: { status: "accepted" } });
+
+  res.json(friends);
+});
 module.exports = router;

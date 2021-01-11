@@ -7,9 +7,12 @@ const User = require("../../models/User");
 router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
-      .populate("notifications.sender", ["firstName", "familyName"])
-      .select("-password")
-      .limit(15);
+      .populate("notifications.sender", [
+        "firstName",
+        "familyName",
+        "profilePic",
+      ])
+      .select("-password");
 
     const notifications = user.notifications.slice(-20).sort((a, b) => {
       return new Date(b.date) - new Date(a.date);

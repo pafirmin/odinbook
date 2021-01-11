@@ -130,7 +130,7 @@ const EditProfile = () => {
           />
         </div>
         {image && <img src={image} className="large thumbnail" />}
-        <Button>Update profile</Button>
+        <Button>Save changes</Button>
       </form>
     </div>
   );

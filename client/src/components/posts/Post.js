@@ -8,7 +8,7 @@ import Comments from "../comments/CommentSection";
 import { sendNotification } from "../../socket/Socket";
 
 const PostContainer = styled.div`
-  box-shadow: 2px 2px 4px #7d7d7d;
+  box-shadow: 0px 1px 2px #9d9d9d;
   margin: 16px auto;
   padding: 0.8rem;
   border-radius: 8px;
@@ -55,7 +55,7 @@ const SocialBtn = styled.button`
 `;
 
 const Post = ({ post }) => {
-  const { user, date, name, recipient, recipientName, text } = post;
+  const { user, date, name, recipient, recipientName, text, profilePic } = post;
   const { state } = useContext(AuthContext);
   const [likes, setLikes] = useState(post.likes);
   const [comments, setComments] = useState(post.comments);
@@ -63,7 +63,7 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     setIsLiked(likes.map((like) => like.user._id).includes(state.userID));
-  }, []);
+  }, [likes]);
 
   const handleLike = async () => {
     try {
@@ -96,7 +96,7 @@ const Post = ({ post }) => {
   return (
     <PostContainer>
       <div style={{ display: "flex", gap: "8px" }}>
-        <img className="small round thumbnail" src={user.profilePic} />
+        <img className="small round thumbnail" src={profilePic} />
         <div
           style={{
             display: "flex",
@@ -106,8 +106,9 @@ const Post = ({ post }) => {
         >
           <Link to={`/user/${user._id}`}>
             {recipient !== user._id ? (
-              <h3 style={{ fontSize: "1.2em" }}>
-                {name} posted on {recipientName}'s wall
+              <h3 style={{ fontSize: "1.1em" }}>
+                <span className="bold">{name}</span> posted on{" "}
+                <span className="bold">{recipientName}</span>'s wall
               </h3>
             ) : (
               <h3 style={{ fontSize: "1.2em" }}>{name}</h3>
