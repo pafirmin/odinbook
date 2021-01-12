@@ -27,6 +27,7 @@ app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/search", require("./routes/api/search"));
 app.use("/api/requests", require("./routes/api/requests"));
 app.use("/api/notifications", require("./routes/api/notifications"));
+app.use("/api/messaging", require("./routes/api/messaging"));
 
 const PORT = process.env.PORT || 8080;
 

@@ -52,6 +52,21 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Get a user's friends
+router.get("/:id/friends", async (req, res) => {
+  try {
+    const friends = await Friend.find({ self: req.params.id }).populate({
+      path: "user",
+      populate: "friends",
+    });
+
+    res.json(friends);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
 // Make a new user
 router.post(
   "/",

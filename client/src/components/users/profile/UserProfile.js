@@ -44,6 +44,7 @@ const ProfilePic = styled.div`
 const Profile = ({ user }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
   const { location, bio, occupation } = user.profile;
+  const [friends, setFriends] = useState([]);
 
   useEffect(() => {
     if (!isMobile) {
@@ -55,9 +56,11 @@ const Profile = ({ user }) => {
     }
   });
 
-  const [friends, setFriends] = useState([]);
   useEffect(() => {
-    setFriends(sampleSize(user.friends, isMobile ? 6 : 9));
+    const filteredFriends = user.friends.filter(
+      (friend) => friend.status === "accepted"
+    );
+    setFriends(sampleSize(filteredFriends, isMobile ? 6 : 9));
   }, [user]);
 
   return (

@@ -31,7 +31,7 @@ const AddFriendBtn = ({ user }) => {
       const res = await axios.post(`/api/requests/${user._id}`, {}, config);
 
       sendFriendRequest(res.data);
-      setFriendshipStatus("pending");
+      setFriendshipStatus("isPending");
     } catch (err) {
       console.error(err);
     }

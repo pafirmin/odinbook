@@ -54,6 +54,7 @@ export const Notification = styled.div`
   position: absolute;
   top: -0.1em;
   right: -1em;
+  cursor: pointer;
 `;
 
 export const DropDown = styled.div`

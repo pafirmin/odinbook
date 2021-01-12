@@ -46,7 +46,7 @@ const PostInteraction = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
-    setIsLiked(likes.map((like) => like.user).includes(state.userID));
+    setIsLiked(likes.map((like) => like.user._id).includes(state.userID));
   }, [likes]);
 
   const handleLike = async () => {
@@ -58,7 +58,7 @@ const PostInteraction = ({ post }) => {
       };
 
       const res = await axios.post(`/api/posts/${post._id}/like`, {}, config);
-
+      console.log(res.data);
       setLikes(res.data);
 
       if (!isLiked)

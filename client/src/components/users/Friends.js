@@ -10,7 +10,7 @@ const Friends = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetchFriends();
+    fetchUser();
   }, []);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const Friends = () => {
     }
   });
 
-  const fetchFriends = async () => {
+  const fetchUser = async () => {
     const config = {
       headers: {
         Authorization: `bearer ${state.token}`,
@@ -33,7 +33,7 @@ const Friends = () => {
 
   return (
     <div>
-      <h2>{user && user.fullName}'s friends</h2>
+      {user && <h2>{user.fullName}'s friends</h2>}
       {user && user.friends.map((friend) => <UserCard user={friend.user} />)}
     </div>
   );

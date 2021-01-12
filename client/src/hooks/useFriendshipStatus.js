@@ -10,6 +10,8 @@ const useFriendShipStatus = (currentUserID, user) => {
       setFriendshipStatus("isFriend");
     } else if (requestIsPending) {
       setFriendshipStatus("isPending");
+    } else {
+      setFriendshipStatus(null);
     }
   }, [user]);
 

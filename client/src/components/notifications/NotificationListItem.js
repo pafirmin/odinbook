@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow, parseISO } from "date-fns";
 
@@ -16,24 +16,28 @@ const notificationReducer = (state, action) => {
 };
 
 const NotificationListItem = ({ notification }) => {
-  const { sender, post, type, date, seen } = notification;
+  const { sender, post, type, date } = notification;
   const initialState = { message: null };
   const [state, dispatch] = useReducer(notificationReducer, initialState);
+  const [seen, setSeen] = useState(notification.seen);
 
   useEffect(() => {
     dispatch({ type });
   }, []);
 
   return (
-    <li>
+    <li onClick={() => setSeen(true)}>
       <Link to={`/posts/${post}`}>
         <div
           style={{
             display: "flex",
             alignItems: "center",
             borderBottom: "1px solid #d9d9d9",
-            padding: ".4rem 0",
+            borderRadius: "6px",
+            padding: ".4rem",
             gap: ".4rem",
+            margin: ".2rem 0",
+            backgroundColor: seen ? "#fff" : "#e6efff",
           }}
         >
           <img className="small round thumbnail" src={sender.profilePic} />
@@ -42,10 +46,11 @@ const NotificationListItem = ({ notification }) => {
               display: "flex",
               flexDirection: "column",
               textAlign: "left",
-              backgroundColor: seen ? "#fff" : "#c3c3c3",
             }}
           >
-            {sender.fullName + state.message}
+            <span>
+              <span className="bold">{sender.fullName}</span> {state.message}
+            </span>
             <time style={{ color: "#7a7a7a" }}>
               {formatDistanceToNow(parseISO(date), {
                 includeSeconds: true,

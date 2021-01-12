@@ -68,6 +68,7 @@ router.post(
         recipientName: recipient.fullName,
         text: req.body.text,
       });
+      console.log(newPost);
 
       await newPost.save();
 
@@ -84,10 +85,9 @@ router.post(
 // Get a post
 router.get("/viewpost/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("likes.user", [
-      "firstName",
-      "familyName",
-    ]);
+    const post = await Post.findById(req.params.id)
+      .populate("user", ["profilePic"])
+      .populate("likes.user", ["firstName", "familyName"]);
 
     res.json(post);
   } catch (err) {
@@ -161,10 +161,10 @@ router.get("/feed", auth, async (req, res) => {
 // Like or unlike a post
 router.post("/:id/like", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate("likes.user");
 
     // Unlike post if already liked
-    if (post.likes.some((like) => like.user.toString() === req.user.id)) {
+    if (post.likes.some((like) => like.user._id.toString() === req.user.id)) {
       post.likes = post.likes.filter(
         (like) => like.user._id.toString() !== req.user.id
       );
@@ -173,7 +173,7 @@ router.post("/:id/like", auth, async (req, res) => {
       return res.json(post.likes);
     }
 
-    post.likes.unshift({ user: req.user.id });
+    post.likes.unshift({ user: { _id: req.user.id } });
 
     await post.save();
 

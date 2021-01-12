@@ -7,7 +7,7 @@ const PostHeader = ({ post }) => {
 
   return (
     <div style={{ display: "flex", gap: "8px" }}>
-      <img className="small round thumbnail" src={profilePic} />
+      <img className="small round thumbnail" src={user.profilePic} />
       <div
         style={{
           display: "flex",
