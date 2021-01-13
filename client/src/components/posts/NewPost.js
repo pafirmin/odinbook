@@ -46,7 +46,7 @@ const NewPostForm = styled.form`
 const NewPost = ({ setPosts, userID }) => {
   const [newPost, setNewPost] = useState({ text: "" });
   const [formShow, setFormShow] = useState(false);
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
   const { setAlerts } = useContext(AlertContext);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const NewPost = ({ setPosts, userID }) => {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${authState.token}`,
         },
       };
 
@@ -80,8 +80,8 @@ const NewPost = ({ setPosts, userID }) => {
 
       if (userID) {
         sendNotification({
-          sender: state.userID,
-          recipientID: userID,
+          sender: authState.userID,
+          recipient: userID,
           post: res.data._id,
           type: "post",
         });

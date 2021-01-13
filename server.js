@@ -2,7 +2,7 @@ const express = require("express");
 const connectDB = require("./db");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const User = require("./models/User");
+const Notification = require("./models/Notification");
 const helmet = require("helmet");
 
 const app = express();
@@ -51,19 +51,21 @@ io.on("connection", (socket) => {
   });
 
   socket.on("notification", async (notification) => {
-    const { sender, recipientID, post, type } = notification;
-    if (sender === recipientID) return;
+    if (notification.sender === notification.recipient) return;
 
-    await User.findByIdAndUpdate(
-      recipientID,
-      {
-        $addToSet: { notifications: { sender, post, type } },
-      },
-      { new: true }
-    );
+    const newNotification = await Notification.findOneAndUpdate(
+      notification,
+      { $setOnInsert: notification },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    ).populate("sender", ["firstName", "familyName", "profilePic"]);
+
+    const recipientID = notification.recipient;
     const userSocket = users[recipientID];
 
-    userSocket && socket.broadcast.to(userSocket).emit("recieveNotification");
+    userSocket &&
+      socket.broadcast
+        .to(userSocket)
+        .emit("recieveNotification", newNotification);
   });
 
   io.on("disconnect", (socket) => {

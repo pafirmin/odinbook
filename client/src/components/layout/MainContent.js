@@ -11,7 +11,7 @@ import SearchResults from "../search/SearchResults";
 import Friends from "../users/Friends";
 
 const MainContent = () => {
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
 
   return (
     <div className="main-wrapper">
@@ -23,7 +23,7 @@ const MainContent = () => {
         <Route
           exact
           path="/"
-          component={state.isAuthenticated ? NewsFeed : LogIn}
+          component={authState.isAuthenticated ? NewsFeed : LogIn}
         />
         <Route path="/search" component={SearchResults} />
         <Route path="/editprofile" component={EditProfile} />

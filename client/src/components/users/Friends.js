@@ -5,7 +5,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import UserCard from "./UserCard";
 
 const Friends = () => {
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
   const { userID } = useParams();
   const [user, setUser] = useState(null);
 

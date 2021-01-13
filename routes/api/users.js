@@ -42,8 +42,11 @@ router.get("/profile", auth, async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
-      .select("-password")
-      .populate({ path: "friends", populate: "user" });
+      .select("-password -notifications")
+      .populate({
+        path: "friends",
+        populate: [{ path: "user", select: "firstName familyName profilePic" }],
+      });
 
     res.json(user);
   } catch (err) {

@@ -1,22 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
+const Notification = require("../../models/Notification");
 const User = require("../../models/User");
 
 // Get notifications
 router.get("/", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id)
-      .populate("notifications.sender", [
-        "firstName",
-        "familyName",
-        "profilePic",
-      ])
-      .select("-password");
-
-    const notifications = user.notifications.slice(-20).sort((a, b) => {
-      return new Date(b.date) - new Date(a.date);
-    });
+    const notifications = await Notification.find({
+      recipient: req.user.id,
+    })
+      .limit(20)
+      .populate("sender", ["firstName", "familyName", "profilePic"])
+      .sort({ date: -1 });
 
     res.json(notifications);
   } catch (err) {
@@ -28,17 +24,16 @@ router.get("/", auth, async (req, res) => {
 // Set notifications as seen
 router.put("/", auth, async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.user.id, {
-      $set: { "notifications.$[].seen": true },
-    })
-      .populate("notifications.sender", ["firstName", "familyName"])
-      .select("-password");
+    const notifications = await Notification.updateMany(
+      { recipient: req.user.id },
+      {
+        $set: { seen: true },
+      }
+    )
+      .populate("sender", ["firstName", "familyName", "profilePic"])
+      .sort({ date: -1 });
 
-    user.notifications.sort((a, b) => {
-      return new Date(b.date) - new Date(a.date);
-    });
-
-    res.json(user.notifications);
+    res.json(notifications);
   } catch (err) {
     console.error(err);
     res.status(500).json({ errors: [{ msg: "500: Server error" }] });

@@ -21,7 +21,7 @@ const ShowCommentsBtn = styled.button`
 `;
 
 const CommentSection = ({ post, comments, setComments }) => {
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
   const { setAlerts } = useContext(AlertContext);
   const [commentShow, setCommentShow] = useState(false);
 
@@ -29,7 +29,7 @@ const CommentSection = ({ post, comments, setComments }) => {
     try {
       const config = {
         headers: {
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${authState.token}`,
         },
       };
       const res = await axios.delete(

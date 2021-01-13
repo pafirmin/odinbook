@@ -23,14 +23,14 @@ const FriendAccepted = styled(DropDownItem)`
 `;
 
 const FriendRequestListItem = ({ user, requests, setRequests, requestID }) => {
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
   const [accepted, setAccepted] = useState(false);
 
   const handleAccept = async (userID) => {
     try {
       const config = {
         headers: {
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${authState.token}`,
         },
       };
 

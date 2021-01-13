@@ -40,20 +40,20 @@ const SocialBtn = styled.button`
 `;
 
 const PostInteraction = ({ post }) => {
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
   const { comments } = post;
   const [likes, setLikes] = useState(post.likes);
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
-    setIsLiked(likes.map((like) => like.user._id).includes(state.userID));
+    setIsLiked(likes.map((like) => like.user._id).includes(authState.userID));
   }, [likes]);
 
   const handleLike = async () => {
     try {
       const config = {
         headers: {
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${authState.token}`,
         },
       };
 
@@ -63,8 +63,8 @@ const PostInteraction = ({ post }) => {
 
       if (!isLiked)
         sendNotification({
-          sender: state.userID,
-          recipientID: post.user._id,
+          sender: authState.userID,
+          recipient: post.user._id,
           post: post._id,
           type: "like",
         });

@@ -12,10 +12,10 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [showDropDown, setShowDropdown] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
 
   useEffect(() => {
-    listenForNotifications(fetchNotifications);
+    listenForNotifications(setNotifications);
 
     return () => disconnectFromSocket();
   }, []);
@@ -37,7 +37,7 @@ const Notifications = () => {
     try {
       const config = {
         headers: {
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${authState.token}`,
         },
       };
 
@@ -53,7 +53,7 @@ const Notifications = () => {
     try {
       const config = {
         headers: {
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${authState.token}`,
         },
       };
 

@@ -8,11 +8,11 @@ import { DropDown, Notification } from "../utils/Utils";
 const FriendRequests = () => {
   const [requests, setRequests] = useState([]);
   const [showDropDown, setShowDropdown] = useState(false);
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
 
   useEffect(() => {
     fetchRequests();
-  }, [state.user]);
+  }, [authState.user]);
 
   useEffect(() => {
     listenForRequests(setRequests);
@@ -24,7 +24,7 @@ const FriendRequests = () => {
     try {
       const config = {
         headers: {
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${authState.token}`,
         },
       };
 

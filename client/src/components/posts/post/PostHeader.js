@@ -3,7 +3,7 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
 
 const PostHeader = ({ post }) => {
-  const { user, date, name, recipient, recipientName, profilePic } = post;
+  const { user, date, name, recipient, recipientName } = post;
 
   return (
     <div style={{ display: "flex", gap: "8px" }}>

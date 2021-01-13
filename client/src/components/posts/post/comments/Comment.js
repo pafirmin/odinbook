@@ -23,7 +23,7 @@ const DeleteBtn = styled.button`
 `;
 
 const Comment = ({ comment, handleDelete, commentShow }) => {
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
 
   return (
     <CommentContainer commentShow={commentShow}>
@@ -31,7 +31,7 @@ const Comment = ({ comment, handleDelete, commentShow }) => {
         <h4 style={{ fontWeight: "800" }}>{comment.name}</h4>
         <div>{comment.text}</div>
       </div>
-      {comment.user === state.userID && (
+      {comment.user === authState.userID && (
         <DeleteBtn onClick={() => handleDelete(comment._id)}>
           <i className="fas fa-trash-alt"></i>
         </DeleteBtn>

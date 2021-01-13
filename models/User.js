@@ -46,29 +46,6 @@ const UserSchema = new Schema(
       type: Date,
       default: Date.now,
     },
-    notifications: [
-      {
-        sender: {
-          type: mongoose.Types.ObjectId,
-          ref: "user",
-        },
-        post: {
-          type: mongoose.Types.ObjectId,
-          ref: "post",
-        },
-        type: {
-          type: String,
-        },
-        seen: {
-          type: Boolean,
-          default: false,
-        },
-        date: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
   },
   { toJSON: { virtuals: true } }
 );

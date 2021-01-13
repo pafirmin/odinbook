@@ -14,9 +14,9 @@ const ProfileBtn = styled(Button)`
 `;
 
 const AddFriendBtn = ({ user }) => {
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
   const [friendshipStatus, setFriendshipStatus] = useFriendshipStatus(
-    state.userID,
+    authState.userID,
     user
   );
 
@@ -24,7 +24,7 @@ const AddFriendBtn = ({ user }) => {
     try {
       const config = {
         headers: {
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${authState.token}`,
         },
       };
 

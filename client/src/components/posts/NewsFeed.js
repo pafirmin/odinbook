@@ -6,7 +6,7 @@ import NewPost from "./NewPost";
 import PostList from "./PostList";
 
 const NewsFeed = () => {
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
   const { setLoading } = useContext(LoadingContext);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const NewsFeed = () => {
       try {
         const config = {
           headers: {
-            Authorization: `bearer ${state.token}`,
+            Authorization: `bearer ${authState.token}`,
           },
         };
         const res = await axios.get("/api/posts/feed", config);

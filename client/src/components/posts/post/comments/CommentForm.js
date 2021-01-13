@@ -15,7 +15,7 @@ const CommentBox = styled(TextInput)`
 `;
 
 const Comments = ({ post, setComments }) => {
-  const { state } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
   const { setAlerts } = useContext(AlertContext);
   const [newComment, setNewComment] = useState({ text: "" });
 
@@ -30,7 +30,7 @@ const Comments = ({ post, setComments }) => {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `bearer ${state.token}`,
+          Authorization: `bearer ${authState.token}`,
         },
       };
 
@@ -47,8 +47,8 @@ const Comments = ({ post, setComments }) => {
       setNewComment({ text: "" });
 
       sendNotification({
-        sender: state.userID,
-        recipientID: post.user._id,
+        sender: authState.userID,
+        recipient: post.user._id,
         post: post._id,
         type: "comment",
       });

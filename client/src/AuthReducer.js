@@ -1,6 +1,6 @@
 import { connectSocket, disconnectFromSocket } from "./socket/Socket";
 
-const authReducer = (state, action) => {
+const authReducer = (authState, action) => {
   switch (action.type) {
     case "login":
       const { token, userID, userName } = action.payload;
@@ -9,7 +9,7 @@ const authReducer = (state, action) => {
       localStorage.setItem("userID", userID);
       localStorage.setItem("userName", userName);
       return {
-        ...state,
+        ...authState,
         isAuthenticated: true,
         token,
         userID,
@@ -19,11 +19,11 @@ const authReducer = (state, action) => {
       localStorage.clear();
       disconnectFromSocket();
       return {
-        ...state,
+        ...authState,
         isAuthenticated: false,
       };
     default:
-      return state;
+      return authState;
   }
 };
 

@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const Message = require("../../models/Message");
-const User = require("../../models/User");
 const Conversation = require("../../models/Conversation");
+const mongoose = require("mongoose");
 
 // Send message
-router.post("/:userID", auth, async (req, res) => {
+router.post("/send/:userID", auth, async (req, res) => {
   try {
     const message = new Message({
       sender: req.user.id,
@@ -17,8 +17,8 @@ router.post("/:userID", auth, async (req, res) => {
       {
         participants: {
           $all: [
-            { $elemMatch: { $eq: req.user.id } },
-            { $elemMatch: { $eq: req.params.userID } },
+            { $elemMatch: { $eq: mongoose.Types.ObjectId(req.user.id) } },
+            { $elemMatch: { $eq: mongoose.Types.ObjectId(req.params.userID) } },
           ],
         },
       },
@@ -41,7 +41,7 @@ router.post("/:userID", auth, async (req, res) => {
 });
 
 // Get conversations
-router.get("/chats", auth, async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const conversations = await Conversation.find({
       participants: req.user.id,
@@ -60,7 +60,9 @@ router.get("/chats", auth, async (req, res) => {
 // Get messages from a conversation
 router.get("/chats/:id", auth, async (req, res) => {
   try {
-    const messages = await Message.find({ conversation: req.params.id });
+    const messages = await Message.find({ conversation: req.params.id }).limit(
+      20
+    );
 
     res.json(messages);
   } catch (err) {

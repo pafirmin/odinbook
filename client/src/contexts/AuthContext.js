@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
     userID: null,
     userName: null,
   };
-  const [state, dispatch] = useReducer(authReducer, initialState);
+  const [authState, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {}, []);
 
   return (
-    <AuthContext.Provider value={{ state, dispatch }}>
+    <AuthContext.Provider value={{ authState, dispatch }}>
       {children}
     </AuthContext.Provider>
   );
