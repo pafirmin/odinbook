@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { DropDown, Notification } from "../utils/Utils";
+import MessagesListItem from "./MessagesListItem";
 
 const Messages = () => {
   const { authState } = useContext(AuthContext);
@@ -15,6 +16,10 @@ const Messages = () => {
   }, []);
 
   useEffect(() => {
+    const unreadConvos = conversations.reduce(
+      (count, convo) => (convo.lastMessage.seen ? count : count + 1),
+      0
+    );
     setUnreadCount(conversations.length);
   }, [conversations]);
 
@@ -40,6 +45,10 @@ const Messages = () => {
     setShowDropdown(!showDropDown);
   };
 
+  const getParticipant = (participants) => {
+    return participants.find((user) => user._id !== authState.userID);
+  };
+
   return (
     <div
       style={{ position: "relative", display: "flex", alignItems: "center" }}
@@ -49,20 +58,15 @@ const Messages = () => {
           style={{ fontSize: "1.2em", cursor: "pointer" }}
           className={icon}
           onClick={toggleDropDown}
-          // onMouseEnter={() => {
-          //   setIcon("fas fa-envelope-open");
-          // }}
-          // onMouseLeave={() => {
-          //   setIcon("fas fa-envelope");
-          // }}
         />
         {unreadCount > 0 && <Notification>{unreadCount}</Notification>}
-        <DropDown show={showDropDown}>
+        <DropDown show={showDropDown} style={{ overflow: "visible" }}>
           <ul>
             {conversations.map((convo) => (
-              <li>
-                {convo.lastMessage.sender.fullName}: {convo.lastMessage.text}
-              </li>
+              <MessagesListItem
+                convo={convo}
+                participant={getParticipant(convo.participants)}
+              />
             ))}
           </ul>
         </DropDown>

@@ -229,6 +229,11 @@ text-shadow: 0px 0px 8px #56e7ff, 0px 0px 16px #7be1f9, 0px 0px 24px #90eaff, 0p
   box-shadow: 0px 0px 1px #9d9d9d;
 }
 
+.thumbnail.tiny {
+  width: 20px;
+  height: 20px;
+}
+
 .thumbnail.small {
   width: 40px;
   height: 40px;

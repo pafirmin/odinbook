@@ -68,6 +68,13 @@ io.on("connection", (socket) => {
         .emit("recieveNotification", newNotification);
   });
 
+  socket.on("message", async (message, recipientID) => {
+    const userSocket = users[recipientID];
+
+    userSocket &&
+      socket.broadcast.to(userSocket).emit("recieveMessage", message);
+  });
+
   io.on("disconnect", (socket) => {
     for (const socketID in users) {
       if (users[socketID] === socket.id) delete users[socketID];

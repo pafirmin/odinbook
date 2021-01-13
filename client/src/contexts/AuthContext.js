@@ -28,8 +28,6 @@ const AuthProvider = ({ children }) => {
       });
   }, []);
 
-  useEffect(() => {}, []);
-
   return (
     <AuthContext.Provider value={{ authState, dispatch }}>
       {children}

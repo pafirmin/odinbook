@@ -33,6 +33,12 @@ router.post("/send/:userID", auth, async (req, res) => {
 
     await message.save();
 
+    await Message.populate(message, {
+      path: "sender",
+      select: "firstName familyName profilePic",
+    });
+    console.log(message);
+
     res.json(message);
   } catch (err) {
     console.error(err);
@@ -45,10 +51,12 @@ router.get("/", auth, async (req, res) => {
   try {
     const conversations = await Conversation.find({
       participants: req.user.id,
-    }).populate({
-      path: "lastMessage",
-      populate: [{ path: "sender", select: "firstName familyName" }],
-    });
+    })
+      .populate("participants", ["firstName", "familyName"])
+      .populate({
+        path: "lastMessage",
+        populate: [{ path: "sender", select: "firstName familyName" }],
+      });
 
     res.json(conversations);
   } catch (err) {
@@ -60,9 +68,9 @@ router.get("/", auth, async (req, res) => {
 // Get messages from a conversation
 router.get("/chats/:id", auth, async (req, res) => {
   try {
-    const messages = await Message.find({ conversation: req.params.id }).limit(
-      20
-    );
+    const messages = await Message.find({
+      conversation: req.params.id,
+    }).populate("sender", ["firstName", "familyName", "profilePic"]);
 
     res.json(messages);
   } catch (err) {
