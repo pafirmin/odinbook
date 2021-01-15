@@ -1,8 +1,10 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../contexts/AuthContext";
+import { format, formatDistanceToNow, parseISO } from "date-fns";
 
 const MessageWrapper = styled.div`
+  position: relative;
   background-color: #f3f3f3;
   border-radius: 20px;
   padding: 1rem;
@@ -12,10 +14,25 @@ const MessageWrapper = styled.div`
     sender === user ? "flex-end" : "flex-start"};
 `;
 
+const TimeStamp = styled.time`
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  transform: translate(-50%);
+  font-size: 0.7rem;
+  color: #525252;
+`;
+
 const ChatMessage = ({ message }) => {
   const { authState } = useContext(AuthContext);
   return (
     <MessageWrapper sender={message.sender._id} user={authState.userID}>
+      <TimeStamp title={format(parseISO(message.date), "PPPppp")}>
+        {formatDistanceToNow(parseISO(message.date), {
+          includeSeconds: true,
+          addSuffix: true,
+        })}
+      </TimeStamp>
       <div
         style={{
           display: "flex",

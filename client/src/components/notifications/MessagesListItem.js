@@ -22,7 +22,12 @@ const MessagesListItem = ({ convo, participant }) => {
           textAlign: "left",
         }}
       >
-        <div style={{ display: "flex", gap: ".5rem" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: ".5rem",
+          }}
+        >
           <img
             className="small round thumbnail"
             src={lastMessage.sender.profilePic}

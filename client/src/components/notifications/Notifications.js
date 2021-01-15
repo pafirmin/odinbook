@@ -4,9 +4,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { Notification, DropDown } from "../utils/Utils";
 import NotificationListItem from "./NotificationListItem";
 
-const Notifications = () => {
+const Notifications = ({ activeDropdown, toggleDropdown }) => {
   const [notifications, setNotifications] = useState([]);
-  const [showDropDown, setShowDropdown] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const { authState } = useContext(AuthContext);
 
@@ -22,8 +21,8 @@ const Notifications = () => {
   }, [authState]);
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    activeDropdown === 2 && fetchNotifications();
+  }, [activeDropdown]);
 
   useEffect(() => {
     setNotificationCount(
@@ -54,43 +53,39 @@ const Notifications = () => {
     }
   };
 
-  const toggleDropDown = () => {
-    if (!showDropDown) markNotificationsAsSeen();
-
-    setShowDropdown(!showDropDown);
-  };
-
   return (
     <div style={{ position: "relative" }}>
       <i
         className="fas fa-bell"
         style={{ fontSize: "1.2em", cursor: "pointer" }}
-        onClick={toggleDropDown}
+        onClick={toggleDropdown}
       ></i>
       {notificationCount > 0 && (
         <Notification>{notificationCount}</Notification>
       )}
-      <DropDown show={showDropDown}>
-        <h4>Notifications</h4>
-        <ul>
-          {notifications.map((notification) => (
-            <NotificationListItem
-              key={notification._id}
-              notification={notification}
-            />
-          ))}
-        </ul>
-        {!notifications.length && (
-          <div
-            style={{
-              color: "#9d9d9d",
-              marginTop: "3em",
-            }}
-          >
-            You have no notifications
-          </div>
-        )}
-      </DropDown>
+      {activeDropdown === 2 && (
+        <DropDown>
+          <h4>Notifications</h4>
+          <ul>
+            {notifications.map((notification) => (
+              <NotificationListItem
+                key={notification._id}
+                notification={notification}
+              />
+            ))}
+          </ul>
+          {!notifications.length && (
+            <div
+              style={{
+                color: "#9d9d9d",
+                marginTop: "3em",
+              }}
+            >
+              You have no notifications
+            </div>
+          )}
+        </DropDown>
+      )}
     </div>
   );
 };

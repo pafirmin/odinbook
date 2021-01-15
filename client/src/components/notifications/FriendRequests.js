@@ -4,16 +4,15 @@ import { AuthContext } from "../../contexts/AuthContext";
 import FriendRequestListItem from "./FriendRequestListItem";
 import { DropDown, Notification } from "../utils/Utils";
 
-const FriendRequests = () => {
+const FriendRequests = ({ activeDropdown, toggleDropdown }) => {
   const [requests, setRequests] = useState([]);
-  const [showDropDown, setShowDropdown] = useState(false);
   const { authState } = useContext(AuthContext);
 
   const handleRecieveRequest = (request) => setRequests([request, ...requests]);
 
   useEffect(() => {
-    fetchRequests();
-  }, [authState.user]);
+    activeDropdown === 3 && fetchRequests();
+  }, [authState.user, activeDropdown]);
 
   useEffect(() => {
     const { socket } = authState;
@@ -32,11 +31,6 @@ const FriendRequests = () => {
     }
   };
 
-  const toggleDropDown = () => {
-    !showDropDown && fetchRequests();
-    setShowDropdown(!showDropDown);
-  };
-
   return (
     <div
       style={{ position: "relative", display: "flex", alignItems: "center" }}
@@ -45,33 +39,35 @@ const FriendRequests = () => {
         <i
           style={{ fontSize: "1.2em", cursor: "pointer" }}
           className="fas fa-user-friends"
-          onClick={toggleDropDown}
+          onClick={toggleDropdown}
         />
         {requests.length > 0 && <Notification>{requests.length}</Notification>}
-        <DropDown show={showDropDown}>
-          <span>Friend requests</span>
-          <ul>
-            {requests.map((request) => (
-              <FriendRequestListItem
-                key={request._id}
-                user={request.user}
-                requests={requests}
-                setRequests={setRequests}
-                requestID={request._id}
-              />
-            ))}
-          </ul>
-          {!requests.length && (
-            <div
-              style={{
-                color: "#9d9d9d",
-                marginTop: "3em",
-              }}
-            >
-              You have no pending friend requests
-            </div>
-          )}
-        </DropDown>
+        {activeDropdown === 3 && (
+          <DropDown>
+            <span>Friend requests</span>
+            <ul>
+              {requests.map((request) => (
+                <FriendRequestListItem
+                  key={request._id}
+                  user={request.user}
+                  requests={requests}
+                  setRequests={setRequests}
+                  requestID={request._id}
+                />
+              ))}
+            </ul>
+            {!requests.length && (
+              <div
+                style={{
+                  color: "#9d9d9d",
+                  marginTop: "3em",
+                }}
+              >
+                You have no pending friend requests
+              </div>
+            )}
+          </DropDown>
+        )}
       </div>
     </div>
   );

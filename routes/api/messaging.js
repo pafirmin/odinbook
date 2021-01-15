@@ -90,9 +90,12 @@ router.get("/chats/:id", auth, async (req, res) => {
 
     const messages = await Message.find({
       conversation: req.params.id,
-    }).populate("sender", ["firstName", "familyName", "profilePic"]);
+    })
+      .sort({ date: -1 })
+      .limit(20)
+      .populate("sender", ["firstName", "familyName", "profilePic"]);
 
-    res.json(messages);
+    res.json(messages.reverse());
   } catch (err) {
     console.error(err);
     res.status(500).json("Server error");

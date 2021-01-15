@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button } from "../utils/Utils";
@@ -8,6 +8,7 @@ import Messages from "../notifications/Messages";
 
 const UserPanel = () => {
   const { authState, dispatch } = useContext(AuthContext);
+  const [activeDropdown, setActiveDropdown] = useState(0);
 
   return (
     <div
@@ -21,9 +22,24 @@ const UserPanel = () => {
     >
       {authState.isAuthenticated ? (
         <Fragment>
-          <Messages />
-          <Notifications />
-          <FriendRequests />
+          <Messages
+            activeDropdown={activeDropdown}
+            toggleDropdown={() =>
+              setActiveDropdown(activeDropdown === 1 ? 0 : 1)
+            }
+          />
+          <Notifications
+            activeDropdown={activeDropdown}
+            toggleDropdown={() =>
+              setActiveDropdown(activeDropdown === 2 ? 0 : 2)
+            }
+          />
+          <FriendRequests
+            activeDropdown={activeDropdown}
+            toggleDropdown={() =>
+              setActiveDropdown(activeDropdown === 3 ? 0 : 3)
+            }
+          />
           <Link to={`/user/${authState.userID}`}>{authState.userName}</Link>
           <Button onClick={() => dispatch({ type: "logout" })}>Sign out</Button>
         </Fragment>

@@ -57,8 +57,8 @@ export const Notification = styled.div`
   cursor: pointer;
 `;
 
+// display: ${({ show }) => (show ? "flex" : "none")};
 export const DropDown = styled.div`
-  display: ${({ show }) => (show ? "flex" : "none")};
   color: #434343;
   position: fixed;
   flex-direction: column;

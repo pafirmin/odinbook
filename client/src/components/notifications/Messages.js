@@ -4,10 +4,9 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { DropDown, Notification } from "../utils/Utils";
 import MessagesListItem from "./MessagesListItem";
 
-const Messages = () => {
+const Messages = ({ activeDropdown, toggleDropdown }) => {
   const { authState } = useContext(AuthContext);
   const [conversations, setConversations] = useState([]);
-  const [showDropDown, setShowDropdown] = useState(false);
   const [icon, setIcon] = useState("fas fa-envelope");
   const [unreadMessage, setUnreadMessage] = useState(false);
 
@@ -16,8 +15,12 @@ const Messages = () => {
   };
 
   useEffect(() => {
-    fetchConversations();
-  }, []);
+    setIcon(activeDropdown === 1 ? "fas fa-envelope-open" : "fas fa-envelope");
+  }, [activeDropdown]);
+
+  useEffect(() => {
+    activeDropdown === 1 && fetchConversations();
+  }, [activeDropdown]);
 
   useEffect(() => {
     setUnreadMessage(conversations.some((convo) => !convo.lastMessage.seen));
@@ -40,12 +43,6 @@ const Messages = () => {
     }
   };
 
-  const toggleDropDown = () => {
-    !showDropDown && fetchConversations();
-    setIcon(showDropDown ? "fas fa-envelope" : "fas fa-envelope-open");
-    setShowDropdown(!showDropDown);
-  };
-
   const getParticipant = (participants) => {
     return participants.find((user) => user._id !== authState.userID);
   };
@@ -58,20 +55,22 @@ const Messages = () => {
         <i
           style={{ fontSize: "1.2em", cursor: "pointer" }}
           className={icon}
-          onClick={toggleDropDown}
+          onClick={toggleDropdown}
         />
         {unreadMessage && <Notification />}
-        <DropDown show={showDropDown} style={{ overflow: "visible" }}>
-          <ul>
-            {conversations.map((convo) => (
-              <MessagesListItem
-                key={convo._id}
-                convo={convo}
-                participant={getParticipant(convo.participants)}
-              />
-            ))}
-          </ul>
-        </DropDown>
+        {activeDropdown === 1 && (
+          <DropDown style={{ overflow: "visible" }}>
+            <ul>
+              {conversations.map((convo) => (
+                <MessagesListItem
+                  key={convo._id}
+                  convo={convo}
+                  participant={getParticipant(convo.participants)}
+                />
+              ))}
+            </ul>
+          </DropDown>
+        )}
       </div>
     </div>
   );

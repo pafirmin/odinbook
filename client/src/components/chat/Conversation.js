@@ -16,7 +16,8 @@ const ConvoWrapper = styled.div`
   top: 100px;
   z-index: 5;
   text-align: left;
-  cursor: pointer;
+  background: #fff;
+  box-shadow: 0px 1px 2px #9d9d9d;
 `;
 
 const Conversation = ({
@@ -111,23 +112,22 @@ const Conversation = ({
 
   return (
     <Draggable handle=".handle">
-      <ConvoWrapper className="card">
-        <div
+      <ConvoWrapper>
+        <header
+          className="bold handle"
           style={{
-            position: "absolute",
-            top: "0",
-            width: "100%",
-            height: "40px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer",
+            background: "rgb(62, 133, 209)",
+            color: "#fff",
+            padding: "1rem",
+            fontSize: "1.2rem",
           }}
-          className="handle"
-        />
-        <header className="bold" style={{ textAlign: "center" }}>
+        >
           {participant.fullName}
-          <i
-            className="far fa-times-circle"
-            style={{ position: "absolute", top: "8px", right: "8px" }}
-            onClick={() => setActive(false)}
-          />
+          <i className="far fa-times-circle" onClick={() => setActive(false)} />
         </header>
         <div
           style={{
@@ -135,8 +135,7 @@ const Conversation = ({
             height: "400px",
             display: "flex",
             flexDirection: "column",
-            borderBottom: "1px solid #c3c3c3",
-            marginBottom: ".5rem",
+            padding: "0 .4rem",
           }}
         >
           {messages.map((msg) => (
