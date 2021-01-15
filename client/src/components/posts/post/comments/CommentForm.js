@@ -27,20 +27,9 @@ const Comments = ({ post, setComments }) => {
     e.preventDefault();
 
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
       const body = JSON.stringify(newComment);
 
-      const res = await axios.post(
-        `/api/posts/${post._id}/comment`,
-        body,
-        config
-      );
+      const res = await axios.post(`/api/posts/${post._id}/comment`, body);
 
       setComments(res.data);
       setAlerts([{ text: "Comment posted!", type: "success" }]);
@@ -65,6 +54,7 @@ const Comments = ({ post, setComments }) => {
     <div style={{ marginTop: "8px" }}>
       <form style={{ display: "flex" }} onSubmit={(e) => handleSubmit(e)}>
         <CommentBox
+          autoComplete="off"
           id={`comment-box-${post._id}`}
           name="text"
           placeholder="Post a comment"

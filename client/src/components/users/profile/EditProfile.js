@@ -8,7 +8,6 @@ import { AlertContext } from "../../../contexts/AlertContext";
 
 const EditProfile = () => {
   const history = useHistory();
-  const { token } = useContext(AuthContext).state;
   const { setAlerts } = useContext(AlertContext);
   const { setLoading } = useContext(LoadingContext);
   const [image, setImage] = useState("");
@@ -26,13 +25,7 @@ const EditProfile = () => {
     const fetchProfile = async () => {
       setLoading(true);
       try {
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `bearer ${token}`,
-          },
-        };
-        const res = await axios.get(`/api/users/profile`, config);
+        const res = await axios.get(`/api/users/profile`);
         const profile = res.data;
 
         setProfileData(profile);
@@ -64,16 +57,10 @@ const EditProfile = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `bearer ${token}`,
-        },
-      };
       const { location, occupation, bio } = profileData;
       const body = JSON.stringify({ location, occupation, bio, image });
 
-      const res = await axios.put(`/api/users/profile`, body, config);
+      const res = await axios.put(`/api/users/profile`, body);
       const userID = res.data;
 
       history.push(`/user/${userID}`);
@@ -82,9 +69,10 @@ const EditProfile = () => {
         return { text: err.msg, type: "danger" };
       });
       setAlerts(errorArray);
+    } finally {
+      setLoading(false);
+      setTimeout(() => setAlerts([]), 5000);
     }
-    setLoading(false);
-    setTimeout(() => setAlerts([]), 5000);
   };
 
   return (

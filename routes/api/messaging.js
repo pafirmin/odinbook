@@ -4,47 +4,59 @@ const auth = require("../../middleware/auth");
 const Message = require("../../models/Message");
 const Conversation = require("../../models/Conversation");
 const mongoose = require("mongoose");
+const { check, validationResult } = require("express-validator");
 
 // Send message
-router.post("/send/:userID", auth, async (req, res) => {
-  try {
-    const message = new Message({
-      sender: req.user.id,
-      text: req.body.text,
-    });
+router.post(
+  "/send/:userID",
+  auth,
+  [check("text", "Message text cannot be empty").trim().not().isEmpty()],
+  async (req, res) => {
+    const errors = validationResult(req);
 
-    const conversation = await Conversation.findOneAndUpdate(
-      {
-        participants: {
-          $all: [
-            { $elemMatch: { $eq: mongoose.Types.ObjectId(req.user.id) } },
-            { $elemMatch: { $eq: mongoose.Types.ObjectId(req.params.userID) } },
-          ],
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      const message = new Message({
+        sender: req.user.id,
+        text: req.body.text,
+      });
+
+      const conversation = await Conversation.findOneAndUpdate(
+        {
+          participants: {
+            $all: [
+              { $elemMatch: { $eq: mongoose.Types.ObjectId(req.user.id) } },
+              {
+                $elemMatch: { $eq: mongoose.Types.ObjectId(req.params.userID) },
+              },
+            ],
+          },
         },
-      },
-      {
-        $set: { lastMessage: message._id },
-        $setOnInsert: { participants: [req.user.id, req.params.userID] },
-      },
-      { upsert: true, new: true }
-    );
+        {
+          $set: { lastMessage: message._id, lastUpdated: Date.now() },
+          $setOnInsert: { participants: [req.user.id, req.params.userID] },
+        },
+        { upsert: true, new: true }
+      );
 
-    message.conversation = conversation._id;
+      message.conversation = conversation._id;
 
-    await message.save();
+      await message.save();
 
-    await Message.populate(message, {
-      path: "sender",
-      select: "firstName familyName profilePic",
-    });
-    console.log(message);
+      await Message.populate(message, {
+        path: "sender",
+        select: "firstName familyName profilePic",
+      });
 
-    res.json(message);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json("Server error");
+      res.json(message);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json("Server error");
+    }
   }
-});
+);
 
 // Get conversations
 router.get("/", auth, async (req, res) => {
@@ -55,8 +67,11 @@ router.get("/", auth, async (req, res) => {
       .populate("participants", ["firstName", "familyName"])
       .populate({
         path: "lastMessage",
-        populate: [{ path: "sender", select: "firstName familyName" }],
-      });
+        populate: [
+          { path: "sender", select: "firstName familyName profilePic" },
+        ],
+      })
+      .sort({ lastUpdated: -1 });
 
     res.json(conversations);
   } catch (err) {
@@ -68,6 +83,11 @@ router.get("/", auth, async (req, res) => {
 // Get messages from a conversation
 router.get("/chats/:id", auth, async (req, res) => {
   try {
+    await Message.updateMany(
+      { conversation: req.params.id },
+      { $set: { seen: true } }
+    );
+
     const messages = await Message.find({
       conversation: req.params.id,
     }).populate("sender", ["firstName", "familyName", "profilePic"]);

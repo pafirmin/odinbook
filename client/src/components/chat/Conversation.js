@@ -1,74 +1,76 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import axios from "axios";
+import Draggable from "react-draggable";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button, TextInput } from "../utils/Utils";
-import {
-  disconnectFromSocket,
-  listenForMessages,
-  sendMessage,
-} from "../../socket/Socket";
+import { sendMessage } from "../../socket/Socket";
+import ChatMessage from "./ChatMessage";
+import styled from "styled-components";
+import { AlertContext } from "../../contexts/AlertContext";
 
-const Conversation = ({ conversation, participant, setLastMessage }) => {
+const ConvoWrapper = styled.div`
+  position: fixed;
+  color: #000;
+  width: 350px;
+  left: 70px;
+  top: 100px;
+  z-index: 5;
+  text-align: left;
+  cursor: pointer;
+`;
+
+const Conversation = ({
+  conversation,
+  participant,
+  setLastMessage,
+  setActive,
+}) => {
   const { authState } = useContext(AuthContext);
+  const { setAlerts } = useContext(AlertContext);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState({ text: "" });
+  const [isTyping, setIsTyping] = useState(false);
   const scrollBottom = useRef(null);
+  const { socket } = authState;
 
   useEffect(() => {
     fetchMessages();
   }, []);
 
   useEffect(() => {
-    listenForMessages(setMessages, setLastMessage);
+    socket.on("recieveMessage", handleRecieveMessage);
 
-    return () => disconnectFromSocket();
+    return () => socket.off("recieveMessage", handleRecieveMessage);
+  }, []);
+
+  useEffect(() => {
+    socket.on("typing", handleTyping);
+
+    return () => socket.off("typing", handleTyping);
   }, []);
 
   useEffect(() => {
     scrollBottom.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleChange = (e) => {
-    setNewMessage({ text: e.target.value });
+  const handleRecieveMessage = (newMessage) => {
+    setMessages((prev) => [...prev, newMessage]);
+
+    setLastMessage(newMessage);
+    setIsTyping(false);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
+  const handleTyping = () => {
+    if (!isTyping) {
+      setIsTyping(true);
 
-      const res = await axios.post(
-        `/api/messaging/send/${participant._id}`,
-        newMessage,
-        config
-      );
-
-      setMessages([...messages, res.data]);
-      setNewMessage({ text: "" });
-      setLastMessage(res.data);
-
-      sendMessage(res.data, participant._id);
-    } catch (err) {
-      console.error(err);
+      setTimeout(() => setIsTyping(false), 4000);
     }
   };
 
   const fetchMessages = async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
-      const res = await axios.get(
-        `/api/messaging/chats/${conversation._id}`,
-        config
-      );
+      const res = await axios.get(`/api/messaging/chats/${conversation._id}`);
 
       setMessages(res.data);
     } catch (err) {
@@ -76,51 +78,86 @@ const Conversation = ({ conversation, participant, setLastMessage }) => {
     }
   };
 
+  const handleChange = (e) => {
+    setNewMessage({ text: e.target.value });
+
+    socket.emit("typing", participant._id);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const body = JSON.stringify(newMessage);
+
+      const res = await axios.post(
+        `/api/messaging/send/${participant._id}`,
+        body
+      );
+
+      setMessages([...messages, res.data]);
+      setLastMessage(res.data);
+      setNewMessage({ text: "" });
+
+      sendMessage(res.data, participant._id);
+    } catch (err) {
+      const errorArray = err.response.data.errors.map((err) => {
+        return { text: err.msg, type: "warning" };
+      });
+      setAlerts(errorArray);
+    } finally {
+      setTimeout(() => setAlerts([]), 5000);
+    }
+  };
+
   return (
-    <div
-      className="card"
-      style={{
-        position: "absolute",
-        color: "#000",
-        width: "300px",
-        left: "-300px",
-        top: "0",
-        zIndex: "5",
-        textAlign: "left",
-      }}
-    >
-      <div
-        style={{ overflowY: "scroll", height: "500px", scrollbarColor: "#000" }}
-      >
-        {messages.map((msg) => (
-          <div>
-            <div
-              style={{
-                display: "flex",
-                alignContent: "space-between",
-              }}
-            >
-              <img
-                className="tiny round thumbnail"
-                src={msg.sender.profilePic}
-              />{" "}
-              {msg.sender.fullName}:
-            </div>{" "}
-            {msg.text}
-          </div>
-        ))}
-        <div ref={scrollBottom} />
-      </div>
-      <form onSubmit={(e) => handleSubmit(e)} style={{ display: "flex" }}>
-        <TextInput
-          type="text"
-          name="text"
-          value={newMessage.text}
-          onChange={(e) => handleChange(e)}
+    <Draggable handle=".handle">
+      <ConvoWrapper className="card">
+        <div
+          style={{
+            position: "absolute",
+            top: "0",
+            width: "100%",
+            height: "40px",
+          }}
+          className="handle"
         />
-        <Button>Send</Button>
-      </form>
-    </div>
+        <header className="bold" style={{ textAlign: "center" }}>
+          {participant.fullName}
+          <i
+            className="far fa-times-circle"
+            style={{ position: "absolute", top: "8px", right: "8px" }}
+            onClick={() => setActive(false)}
+          />
+        </header>
+        <div
+          style={{
+            overflowY: "scroll",
+            height: "400px",
+            display: "flex",
+            flexDirection: "column",
+            borderBottom: "1px solid #c3c3c3",
+            marginBottom: ".5rem",
+          }}
+        >
+          {messages.map((msg) => (
+            <ChatMessage key={msg._id} message={msg} />
+          ))}
+          <div ref={scrollBottom} />
+        </div>
+        {isTyping && <span>{participant.firstName} is typing...</span>}
+        <form onSubmit={(e) => handleSubmit(e)} style={{ display: "flex" }}>
+          <TextInput
+            autoComplete="off"
+            type="text"
+            name="text"
+            value={newMessage.text}
+            onChange={(e) => handleChange(e)}
+            style={{ flexGrow: "1" }}
+          />
+          <Button>Send</Button>
+        </form>
+      </ConvoWrapper>
+    </Draggable>
   );
 };
 

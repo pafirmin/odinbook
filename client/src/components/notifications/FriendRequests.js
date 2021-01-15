@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import FriendRequestListItem from "./FriendRequestListItem";
-import { disconnectFromSocket, listenForRequests } from "../../socket/Socket";
 import { DropDown, Notification } from "../utils/Utils";
 
 const FriendRequests = () => {
@@ -10,25 +9,22 @@ const FriendRequests = () => {
   const [showDropDown, setShowDropdown] = useState(false);
   const { authState } = useContext(AuthContext);
 
+  const handleRecieveRequest = (request) => setRequests([request, ...requests]);
+
   useEffect(() => {
     fetchRequests();
   }, [authState.user]);
 
   useEffect(() => {
-    listenForRequests(setRequests);
+    const { socket } = authState;
+    socket.on("recieveRequest", handleRecieveRequest);
 
-    return () => disconnectFromSocket();
+    return () => socket.off("recieveRequest", handleRecieveRequest);
   }, []);
 
   const fetchRequests = async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
-      const res = await axios.get(`/api/requests`, config);
+      const res = await axios.get(`/api/requests`);
 
       setRequests(res.data);
     } catch (err) {

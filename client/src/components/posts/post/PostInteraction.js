@@ -51,13 +51,7 @@ const PostInteraction = ({ post }) => {
 
   const handleLike = async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
-      const res = await axios.post(`/api/posts/${post._id}/like`, {}, config);
+      const res = await axios.post(`/api/posts/${post._id}/like`, {});
       console.log(res.data);
       setLikes(res.data);
 

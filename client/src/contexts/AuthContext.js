@@ -9,6 +9,7 @@ const AuthProvider = ({ children }) => {
     token: null,
     userID: null,
     userName: null,
+    socket: null,
   };
   const [authState, dispatch] = useReducer(authReducer, initialState);
 

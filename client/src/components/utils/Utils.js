@@ -43,8 +43,8 @@ export const Notification = styled.div`
   background-color: #f00;
   color: #fff;
   font-size: 0.8rem;
-  width: 1.4em;
-  height: 1.4em;
+  width: 1.2em;
+  height: 1.2em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,7 +53,7 @@ export const Notification = styled.div`
   box-shadow: 2px 1px 3px #616161;
   position: absolute;
   top: -0.1em;
-  right: -1em;
+  right: -0.8em;
   cursor: pointer;
 `;
 

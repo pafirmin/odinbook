@@ -8,30 +8,31 @@ const Messages = () => {
   const { authState } = useContext(AuthContext);
   const [conversations, setConversations] = useState([]);
   const [showDropDown, setShowDropdown] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
   const [icon, setIcon] = useState("fas fa-envelope");
+  const [unreadMessage, setUnreadMessage] = useState(false);
+
+  const handleNewMessage = () => {
+    setUnreadMessage(true);
+  };
 
   useEffect(() => {
     fetchConversations();
   }, []);
 
   useEffect(() => {
-    const unreadConvos = conversations.reduce(
-      (count, convo) => (convo.lastMessage.seen ? count : count + 1),
-      0
-    );
-    setUnreadCount(conversations.length);
+    setUnreadMessage(conversations.some((convo) => !convo.lastMessage.seen));
   }, [conversations]);
+
+  useEffect(() => {
+    const { socket } = authState;
+    socket.on("recieveMessage", handleNewMessage);
+
+    return () => socket.off("recieveMessage", handleNewMessage);
+  }, []);
 
   const fetchConversations = async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
-      const res = await axios.get(`/api/messaging`, config);
+      const res = await axios.get(`/api/messaging`);
 
       setConversations(res.data);
     } catch (err) {
@@ -59,11 +60,12 @@ const Messages = () => {
           className={icon}
           onClick={toggleDropDown}
         />
-        {unreadCount > 0 && <Notification>{unreadCount}</Notification>}
+        {unreadMessage && <Notification />}
         <DropDown show={showDropDown} style={{ overflow: "visible" }}>
           <ul>
             {conversations.map((convo) => (
               <MessagesListItem
+                key={convo._id}
                 convo={convo}
                 participant={getParticipant(convo.participants)}
               />

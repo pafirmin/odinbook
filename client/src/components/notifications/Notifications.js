@@ -1,8 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  disconnectFromSocket,
-  listenForNotifications,
-} from "../../socket/Socket";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Notification, DropDown } from "../utils/Utils";
@@ -14,11 +10,16 @@ const Notifications = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const { authState } = useContext(AuthContext);
 
-  useEffect(() => {
-    listenForNotifications(setNotifications);
+  const handleRecieveNotification = (newNotification) => {
+    setNotifications((prev) => [newNotification, ...prev]);
+  };
 
-    return () => disconnectFromSocket();
-  }, []);
+  useEffect(() => {
+    const { socket } = authState;
+    socket.on("recieveNotification", handleRecieveNotification);
+
+    return () => socket.off("recieveNotification", handleRecieveNotification);
+  }, [authState]);
 
   useEffect(() => {
     fetchNotifications();
@@ -35,13 +36,7 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
-      const res = await axios.get(`/api/notifications`, config);
+      const res = await axios.get(`/api/notifications`);
 
       setNotifications(res.data);
     } catch (err) {
@@ -51,13 +46,7 @@ const Notifications = () => {
 
   const markNotificationsAsSeen = async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
-      const res = await axios.put("/api/notifications", {}, config);
+      const res = await axios.put("/api/notifications", {});
 
       setTimeout(() => setNotificationCount(res.data), 3000);
     } catch (err) {

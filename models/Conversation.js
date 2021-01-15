@@ -12,6 +12,9 @@ const ConversationSchema = new Schema({
     type: mongoose.Types.ObjectId,
     ref: "message",
   },
+  lastUpdated: {
+    type: Date,
+  },
 });
 
 module.exports = Conversation = mongoose.model(

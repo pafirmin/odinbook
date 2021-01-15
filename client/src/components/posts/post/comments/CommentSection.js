@@ -1,7 +1,6 @@
 import React, { Fragment, useContext, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { AuthContext } from "../../../../contexts/AuthContext";
 import { AlertContext } from "../../../../contexts/AlertContext";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
@@ -21,20 +20,13 @@ const ShowCommentsBtn = styled.button`
 `;
 
 const CommentSection = ({ post, comments, setComments }) => {
-  const { authState } = useContext(AuthContext);
   const { setAlerts } = useContext(AlertContext);
   const [commentShow, setCommentShow] = useState(false);
 
   const handleDelete = async (commentID) => {
     try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
       const res = await axios.delete(
-        `/api/posts/${post._id}/comments/${commentID}`,
-        config
+        `/api/posts/${post._id}/comments/${commentID}`
       );
 
       setComments(res.data);
@@ -44,8 +36,9 @@ const CommentSection = ({ post, comments, setComments }) => {
         return { text: err.msg, type: "warning" };
       });
       setAlerts(errorArray);
+    } finally {
+      setTimeout(() => setAlerts([]), 5000);
     }
-    setTimeout(() => setAlerts([]), 5000);
   };
 
   const handleClick = () => {

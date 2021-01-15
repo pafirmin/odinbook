@@ -61,18 +61,13 @@ const NewPost = ({ setPosts, userID }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
       const body = JSON.stringify(newPost);
 
+      console.log(body);
+
       const res = userID
-        ? await axios.post(`/api/posts/users/${userID}`, body, config)
-        : await axios.post("/api/posts", body, config);
+        ? await axios.post(`/api/posts/users/${userID}`, body)
+        : await axios.post("/api/posts", body);
 
       setNewPost({ text: "" });
       setPosts((prevState) => [res.data, ...prevState]);
@@ -91,8 +86,9 @@ const NewPost = ({ setPosts, userID }) => {
         return { text: err.msg, type: "warning" };
       });
       setAlerts(errorArray);
+    } finally {
+      setTimeout(() => setAlerts([]), 5000);
     }
-    setTimeout(() => setAlerts([]), 5000);
   };
 
   const toggleForm = () => {

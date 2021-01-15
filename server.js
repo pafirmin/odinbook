@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
     users[userID] = socket.id;
   });
 
-  socket.on("friendRequest", async (request) => {
+  socket.on("friendRequest", (request) => {
     const userSocket = users[request.self];
 
     userSocket &&
@@ -68,11 +68,17 @@ io.on("connection", (socket) => {
         .emit("recieveNotification", newNotification);
   });
 
-  socket.on("message", async (message, recipientID) => {
+  socket.on("message", (message, recipientID) => {
     const userSocket = users[recipientID];
 
     userSocket &&
       socket.broadcast.to(userSocket).emit("recieveMessage", message);
+  });
+
+  socket.on("typing", (recipientID) => {
+    const userSocket = users[recipientID];
+
+    userSocket && socket.broadcast.to(userSocket).emit("typing");
   });
 
   io.on("disconnect", (socket) => {

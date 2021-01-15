@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext";
 import UserCard from "./UserCard";
 
 const Friends = () => {
-  const { authState } = useContext(AuthContext);
   const { userID } = useParams();
   const [user, setUser] = useState(null);
 
@@ -17,16 +15,10 @@ const Friends = () => {
     if (user) {
       document.title = `Odinbook - ${user.firstName}'s friends`;
     }
-  });
+  }, [user]);
 
   const fetchUser = async () => {
-    const config = {
-      headers: {
-        Authorization: `bearer ${state.token}`,
-      },
-    };
-
-    const res = await axios.get(`/api/users/${userID}`, config);
+    const res = await axios.get(`/api/users/${userID}`);
 
     setUser(res.data);
   };

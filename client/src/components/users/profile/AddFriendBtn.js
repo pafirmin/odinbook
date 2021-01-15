@@ -22,13 +22,7 @@ const AddFriendBtn = ({ user }) => {
 
   const addFriend = async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
-      const res = await axios.post(`/api/requests/${user._id}`, {}, config);
+      const res = await axios.post(`/api/requests/${user._id}`, {});
 
       sendFriendRequest(res.data);
       setFriendshipStatus("isPending");

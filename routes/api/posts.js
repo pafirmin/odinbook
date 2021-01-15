@@ -21,7 +21,6 @@ router.post(
       const user = await User.findById(req.user.id).select("-password");
 
       newPost = new Post({
-        profilePic: user.profilePic,
         user: req.user.id,
         name: req.user.name,
         recipient: req.user.id,
@@ -37,6 +36,8 @@ router.post(
     } catch (err) {
       console.error(err);
       res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+    } finally {
+      setTimeout(() => setAlerts([]), 5000);
     }
   }
 );

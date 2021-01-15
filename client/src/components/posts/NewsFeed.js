@@ -1,12 +1,10 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
 import { LoadingContext } from "../../contexts/LoadingContext";
 import NewPost from "./NewPost";
 import PostList from "./PostList";
 
 const NewsFeed = () => {
-  const { authState } = useContext(AuthContext);
   const { setLoading } = useContext(LoadingContext);
 
   useEffect(() => {
@@ -16,20 +14,17 @@ const NewsFeed = () => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     const fetchPosts = async () => {
-      setLoading(true);
       try {
-        const config = {
-          headers: {
-            Authorization: `bearer ${authState.token}`,
-          },
-        };
-        const res = await axios.get("/api/posts/feed", config);
+        setLoading(true);
+
+        const res = await axios.get("/api/posts/feed");
 
         setPosts(res.data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchPosts();
   }, []);
