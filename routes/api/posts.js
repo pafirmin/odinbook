@@ -145,12 +145,16 @@ router.get("/feed", auth, async (req, res) => {
 
     friends.push(user._id);
 
+    const skip = parseInt(req.query.skip);
+
     const posts = await Post.find({ user: { $in: friends } })
       .sort({
         date: -1,
       })
       .populate("user", ["profilePic"])
-      .populate("likes.user", ["firstName", "familyName"]);
+      .populate("likes.user", ["firstName", "familyName"])
+      .skip(skip)
+      .limit(10);
 
     res.json(posts);
   } catch (err) {

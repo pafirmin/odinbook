@@ -144,7 +144,7 @@ a:visited {
   color: inherit;
 }
 h2 {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
 }
 h4 {
   font-weight: 900;
@@ -180,12 +180,6 @@ text-shadow: 0px 0px 8px #56e7ff, 0px 0px 16px #7be1f9, 0px 0px 24px #90eaff, 0p
   margin: 12px auto;
   width: 1100px;
   min-height: 100vh;
-}
-
-@media screen and (max-width: 700px) {
-  .main-wrapper {
-    width: 100%;
-  }
 }
 
 .user-form {
@@ -258,4 +252,13 @@ text-shadow: 0px 0px 8px #56e7ff, 0px 0px 16px #7be1f9, 0px 0px 24px #90eaff, 0p
   background: #fff;
   border-radius: 8px;
   box-shadow: 0px 1px 2px #9d9d9d;
+}
+
+@media screen and (max-width: 700px) {
+  .main-wrapper {
+    width: 100vw;
+  }
+  .user-form {
+    width: 100vw;
+  }
 }

@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Draggable from "react-draggable";
+import { AlertContext } from "../../contexts/AlertContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button, TextInput } from "../utils/Utils";
 import { sendMessage } from "../../socket/Socket";
-import ChatMessage from "./ChatMessage";
 import styled from "styled-components";
-import { AlertContext } from "../../contexts/AlertContext";
+import ChatMessage from "./ChatMessage";
 
 const ConvoWrapper = styled.div`
   position: fixed;
@@ -26,12 +26,12 @@ const Conversation = ({
   setLastMessage,
   setActive,
 }) => {
+  const scrollBottom = useRef(null);
   const { authState } = useContext(AuthContext);
   const { setAlerts } = useContext(AlertContext);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState({ text: "" });
-  const [isTyping, setIsTyping] = useState(false);
-  const scrollBottom = useRef(null);
+  const [partnerIsTyping, setPartnerIsTyping] = useState(false);
   const { socket } = authState;
 
   useEffect(() => {
@@ -58,14 +58,14 @@ const Conversation = ({
     setMessages((prev) => [...prev, newMessage]);
 
     setLastMessage(newMessage);
-    setIsTyping(false);
+    setPartnerIsTyping(false);
   };
 
   const handleTyping = () => {
-    if (!isTyping) {
-      setIsTyping(true);
+    if (!partnerIsTyping) {
+      setPartnerIsTyping(true);
 
-      setTimeout(() => setIsTyping(false), 4000);
+      setTimeout(() => setPartnerIsTyping(false), 4000);
     }
   };
 
@@ -82,7 +82,7 @@ const Conversation = ({
   const handleChange = (e) => {
     setNewMessage({ text: e.target.value });
 
-    socket.emit("typing", participant._id);
+    !partnerIsTyping && socket.emit("typing", participant._id);
   };
 
   const handleSubmit = async (e) => {
@@ -143,7 +143,7 @@ const Conversation = ({
           ))}
           <div ref={scrollBottom} />
         </div>
-        {isTyping && <span>{participant.firstName} is typing...</span>}
+        {partnerIsTyping && <span>{participant.firstName} is typing...</span>}
         <form onSubmit={(e) => handleSubmit(e)} style={{ display: "flex" }}>
           <TextInput
             autoComplete="off"

@@ -2,13 +2,16 @@ import React, { Fragment, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Button } from "../utils/Utils";
+import { useMediaQuery } from "react-responsive";
 import FriendRequests from "../notifications/FriendRequests";
 import Notifications from "../notifications/Notifications";
 import Messages from "../notifications/Messages";
+import MobileMenu from "./MobileMenu";
 
 const UserPanel = () => {
   const { authState, dispatch } = useContext(AuthContext);
   const [activeDropdown, setActiveDropdown] = useState(0);
+  const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
 
   return (
     <div
@@ -40,8 +43,21 @@ const UserPanel = () => {
               setActiveDropdown(activeDropdown === 3 ? 0 : 3)
             }
           />
-          <Link to={`/user/${authState.userID}`}>{authState.userName}</Link>
-          <Button onClick={() => dispatch({ type: "logout" })}>Sign out</Button>
+          {isMobile ? (
+            <MobileMenu
+              activeDropdown={activeDropdown}
+              toggleDropdown={() =>
+                setActiveDropdown(activeDropdown === 4 ? 0 : 4)
+              }
+            />
+          ) : (
+            <Fragment>
+              <Link to={`/user/${authState.userID}`}>{authState.userName}</Link>
+              <Button onClick={() => dispatch({ type: "logout" })}>
+                Sign out
+              </Button>
+            </Fragment>
+          )}
         </Fragment>
       ) : (
         <Link to="/login">Log in</Link>

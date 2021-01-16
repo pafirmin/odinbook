@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import styled from "styled-components";
 import { sampleSize } from "lodash";
 import { Link } from "react-router-dom";
 import AddFriendBtn from "./AddFriendBtn";
 import FriendCard from "./FriendCard";
+import { Button } from "../../utils/Utils";
 
 const ProfileSection = styled.section`
   padding: 0.8rem;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0px 1px 2px #9d9d9d;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 
   & a:hover {
     text-decoration: underline;
@@ -24,7 +28,6 @@ const ProfileHeader = styled.header`
 `;
 
 const ProfilePic = styled.div`
-  margin: auto auto 16px auto;
   height: auto;
   background-image: url("${({ src }) => src}");
   background-size: 100%;
@@ -32,7 +35,9 @@ const ProfilePic = styled.div`
   background-position: center;
   width: 70%;
   padding: 8px;
-  box-shadow: 2px 2px 8px #7d7d7d;
+  box-shadow: 0px 1px 2px #9d9d9d;
+  border-radius: 50%;
+  align-self: center;
 
   &:after {
     content: "";
@@ -42,31 +47,33 @@ const ProfilePic = styled.div`
 `;
 
 const Profile = ({ user }) => {
-  const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
   const { location, bio, occupation } = user.profile;
   const [friends, setFriends] = useState([]);
+  const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
+  const profileRef = useRef(null);
+
+  const filteredFriends = useCallback(() => {
+    return user.friends.filter((friend) => friend.status === "accepted");
+  }, [user, friends]);
+
+  useEffect(() => {
+    setFriends(sampleSize(filteredFriends(), isMobile ? 6 : 9));
+  }, [user, isMobile]);
 
   useEffect(() => {
     if (!isMobile) {
-      const profileHeight = document.getElementById("profile").scrollHeight;
+      const profileHeight = profileRef.current.scrollHeight;
       const vh = window.innerHeight;
       const stickyTop = vh - profileHeight;
 
-      document.getElementById("profile").style.top = `${stickyTop}px`;
+      profileRef.current.style.top = `${stickyTop}px`;
     }
-  });
-
-  useEffect(() => {
-    const filteredFriends = user.friends.filter(
-      (friend) => friend.status === "accepted"
-    );
-    setFriends(sampleSize(filteredFriends, isMobile ? 6 : 9));
-  }, [user]);
+  }, [user, friends, isMobile]);
 
   return (
     <div>
       <div
-        id="profile"
+        ref={profileRef}
         style={{
           marginTop: "16px",
           display: "flex",
@@ -75,24 +82,45 @@ const Profile = ({ user }) => {
           position: "sticky",
         }}
       >
+        <ProfilePic src={user.profilePic} />
+        <h2 className="bold" style={{ textAlign: "center" }}>
+          {user.fullName}
+        </h2>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "4px",
+            width: "70%",
+            alignSelf: "center",
+          }}
+        >
+          <AddFriendBtn user={user} />
+          <Button
+            style={{
+              padding: "2px 8px",
+              fontSize: ".8rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <i className="fas fa-envelope" /> Message
+          </Button>
+        </div>
         <ProfileSection>
-          <ProfilePic src={user.profilePic} />
-          <ProfileHeader>
-            <div>
-              <h2 className="bold">{user.fullName}</h2>
-              <p>{location}</p>
-            </div>
-            <AddFriendBtn user={user} />
-          </ProfileHeader>
-          <div style={{ marginTop: ".8rem" }}>
-            <div>
-              <h4>Occupation</h4>
-              <p>{occupation}</p>
-            </div>
-            <div style={{ marginTop: ".8rem" }}>
-              <h4>Bio</h4>
-              <p>{bio}</p>
-            </div>
+          <div>
+            <h4>Location</h4>
+            <p>{location}</p>
+          </div>
+
+          <div>
+            <h4>Occupation</h4>
+            <p>{occupation}</p>
+          </div>
+          <div>
+            <h4>Bio</h4>
+            <p>{bio}</p>
           </div>
         </ProfileSection>
         <ProfileSection>

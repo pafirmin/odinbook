@@ -27,7 +27,7 @@ const useFriendShipStatus = (currentUserID, user) => {
       friend.user._id === currentUserID && friend.status === "recieved"
   );
 
-  return [friendshipStatus, setFriendshipStatus];
+  return { friendshipStatus, setFriendshipStatus };
 };
 
 export default useFriendShipStatus;

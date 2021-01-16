@@ -9,13 +9,12 @@ import { Link } from "react-router-dom";
 
 const ProfileBtn = styled(Button)`
   font-size: 0.8em;
-  border-radius: 20px;
-  padding: 0 8px;
+  padding: 2px 8px;
 `;
 
 const AddFriendBtn = ({ user }) => {
   const { authState } = useContext(AuthContext);
-  const [friendshipStatus, setFriendshipStatus] = useFriendshipStatus(
+  const { friendshipStatus, setFriendshipStatus } = useFriendshipStatus(
     authState.userID,
     user
   );
@@ -36,7 +35,11 @@ const AddFriendBtn = ({ user }) => {
       case "isUser":
         return <Link to="/editprofile">Edit profile</Link>;
       case "isFriend":
-        return <ProfileBtn variant="success">Friends</ProfileBtn>;
+        return (
+          <ProfileBtn variant="success">
+            <i className="fas fa-check" /> Friends
+          </ProfileBtn>
+        );
       case "isPending":
         return <ProfileBtn>Request sent!</ProfileBtn>;
       default:
