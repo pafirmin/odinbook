@@ -1,4 +1,5 @@
-import React, { Fragment, useContext, useState, useEffect } from "react";
+import React, { Fragment, useContext, useState } from "react";
+import useIsLiked from "../../../hooks/useIsLiked";
 import axios from "axios";
 import styled from "styled-components";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -43,17 +44,11 @@ const PostInteraction = ({ post }) => {
   const { authState } = useContext(AuthContext);
   const { comments } = post;
   const [likes, setLikes] = useState(post.likes);
-  const [isLiked, setIsLiked] = useState(false);
-
-  useEffect(() => {
-    setIsLiked(likes.map((like) => like.user._id).includes(authState.userID));
-  }, [likes]);
+  const isLiked = useIsLiked(likes, authState.userID);
 
   const handleLike = async () => {
     try {
       const res = await axios.post(`/api/posts/${post._id}/like`, {});
-      console.log(res.data);
-      setLikes(res.data);
 
       if (!isLiked)
         sendNotification({
@@ -62,6 +57,8 @@ const PostInteraction = ({ post }) => {
           post: post._id,
           type: "like",
         });
+
+      setLikes(res.data);
     } catch (err) {
       console.error(err);
     }

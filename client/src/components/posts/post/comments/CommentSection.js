@@ -57,6 +57,7 @@ const CommentSection = ({ post, comments, setComments }) => {
       {comments.map((comment, i) => (
         <Comment
           key={comment._id}
+          post={post}
           comment={comment}
           handleDelete={handleDelete}
           commentShow={i < comments.length - 1 ? commentShow : true}

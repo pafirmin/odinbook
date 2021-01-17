@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import UserProfile from "./UserProfile";
-import PostList from "../../posts/PostList";
-import NewPost from "../../posts/NewPost";
-import { LoadingContext } from "../../../contexts/LoadingContext";
+import UserProfile from "./profile/UserProfile";
+import PostList from "../posts/PostList";
+import NewPost from "../posts/NewPost";
+import { LoadingContext } from "../../contexts/LoadingContext";
 import styled from "styled-components";
 
 const UserPageWrapper = styled.div`

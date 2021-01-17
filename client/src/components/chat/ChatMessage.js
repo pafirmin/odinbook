@@ -21,6 +21,8 @@ const TimeStamp = styled.time`
   transform: translate(-50%);
   font-size: 0.7rem;
   color: #525252;
+  width: 100%;
+  text-align: center;
 `;
 
 const ChatMessage = ({ message }) => {

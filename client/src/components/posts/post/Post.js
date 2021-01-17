@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Comments from "./comments/CommentSection";
+import CommentSection from "./comments/CommentSection";
 import PostHeader from "./PostHeader";
 import PostInteraction from "./PostInteraction";
 
@@ -25,7 +25,11 @@ const Post = ({ post }) => {
       <PostHeader post={post} />
       <div style={{ margin: ".8rem 0" }}>{text}</div>
       <PostInteraction post={post} />
-      <Comments comments={comments} setComments={setComments} post={post} />
+      <CommentSection
+        comments={comments}
+        setComments={setComments}
+        post={post}
+      />
     </PostContainer>
   );
 };

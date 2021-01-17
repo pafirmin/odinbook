@@ -45,7 +45,9 @@ router.get("/:id", async (req, res) => {
       .select("-password -notifications")
       .populate({
         path: "friends",
-        populate: [{ path: "user", select: "firstName familyName profilePic" }],
+        populate: [
+          { path: "user", select: "firstName familyName profilePic profile" },
+        ],
       });
 
     res.json(user);

@@ -33,7 +33,7 @@ const AddFriendBtn = ({ user }) => {
   const getButton = () => {
     switch (friendshipStatus) {
       case "isUser":
-        return <Link to="/editprofile">Edit profile</Link>;
+        return null;
       case "isFriend":
         return (
           <ProfileBtn variant="success">

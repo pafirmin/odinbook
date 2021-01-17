@@ -6,7 +6,7 @@ import LogIn from "../auth/LogIn";
 import NewsFeed from "../posts/NewsFeed";
 import PostPage from "../posts/PostPage";
 import EditProfile from "../users/profile/EditProfile";
-import UserPage from "../users/profile/UserPage";
+import UserPage from "../users/UserPage";
 import SearchResults from "../search/SearchResults";
 import Friends from "../users/Friends";
 

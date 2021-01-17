@@ -44,10 +44,14 @@ const PostSchema = new Schema({
         type: String,
         required: true,
       },
-      likes: {
-        type: mongoose.Types.ObjectId,
-        ref: "user",
-      },
+      likes: [
+        {
+          user: {
+            type: mongoose.Types.ObjectId,
+            ref: "user",
+          },
+        },
+      ],
       date: {
         type: Date,
         default: Date.now,

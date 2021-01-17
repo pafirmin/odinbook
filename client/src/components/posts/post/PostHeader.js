@@ -1,5 +1,5 @@
 import React from "react";
-import { formatDistanceToNow, parseISO } from "date-fns";
+import { format, formatDistanceToNow, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
 
 const PostHeader = ({ post }) => {
@@ -15,17 +15,26 @@ const PostHeader = ({ post }) => {
           justifyContent: "space-between",
         }}
       >
-        <Link to={`/user/${user._id}`}>
-          {recipient !== user._id ? (
-            <h3 style={{ fontSize: "1.1em" }}>
-              <span className="bold">{name}</span> posted on{" "}
-              <span className="bold">{recipientName}</span>'s wall
-            </h3>
-          ) : (
+        {recipient !== user._id ? (
+          <h3 style={{ fontSize: "1.1em" }}>
+            <Link className="bold" to={`/user/${user._id}`}>
+              {name}
+            </Link>{" "}
+            posted on{" "}
+            <Link className="bold" to={`/user/${recipient}`}>
+              {recipientName}
+            </Link>
+            's wall
+          </h3>
+        ) : (
+          <Link to={`/user/${user._id}`}>
             <h3 style={{ fontSize: "1.2em" }}>{name}</h3>
-          )}
-        </Link>
-        <time style={{ fontSize: "0.8em", color: "#626262" }}>
+          </Link>
+        )}
+        <time
+          title={format(parseISO(date), "PPPppp")}
+          style={{ fontSize: "0.8em", color: "#626262" }}
+        >
           {formatDistanceToNow(parseISO(date), {
             includeSeconds: true,
             addSuffix: true,

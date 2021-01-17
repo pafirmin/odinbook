@@ -4,6 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const Notification = require("./models/Notification");
 const helmet = require("helmet");
+const path = require("path");
 
 const app = express();
 const http = require("http").createServer(app);
@@ -28,6 +29,13 @@ app.use("/api/search", require("./routes/api/search"));
 app.use("/api/requests", require("./routes/api/requests"));
 app.use("/api/notifications", require("./routes/api/notifications"));
 app.use("/api/messaging", require("./routes/api/messaging"));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 const PORT = process.env.PORT || 8080;
 

@@ -18,15 +18,22 @@ const Friends = () => {
   }, [user]);
 
   const fetchUser = async () => {
-    const res = await axios.get(`/api/users/${userID}`);
+    try {
+      const res = await axios.get(`/api/users/${userID}`);
 
-    setUser(res.data);
+      setUser(res.data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <div>
       {user && <h2>{user.fullName}'s friends</h2>}
-      {user && user.friends.map((friend) => <UserCard user={friend.user} />)}
+      {user &&
+        user.friends.map((friend) => (
+          <UserCard key={friend._id} user={friend.user} />
+        ))}
     </div>
   );
 };

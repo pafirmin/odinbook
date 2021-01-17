@@ -3,19 +3,8 @@ import axios from "axios";
 import styled from "styled-components";
 import { AlertContext } from "../../contexts/AlertContext";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Button } from "../utils/Utils";
+import { Button, PostArea } from "../utils/Utils";
 import { sendNotification } from "../../socket/Socket";
-
-const PostArea = styled.textarea`
-  resize: none;
-  font: inherit;
-  padding: 0.7rem;
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #c6c6c6;
-  margin: 0.5rem auto;
-  background: transparent;
-`;
 
 const NewPostBtn = styled(Button)`
   border-radius: 20px;
@@ -63,8 +52,6 @@ const NewPost = ({ setPosts, userID }) => {
     try {
       const body = JSON.stringify(newPost);
 
-      console.log(body);
-
       const res = userID
         ? await axios.post(`/api/posts/users/${userID}`, body)
         : await axios.post("/api/posts", body);
@@ -104,7 +91,7 @@ const NewPost = ({ setPosts, userID }) => {
         <PostArea
           name="text"
           rows={3}
-          placeholder="Your message here..."
+          placeholder="What's on your mind?"
           value={newPost.text}
           onChange={(e) => handleChange(e)}
         />

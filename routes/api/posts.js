@@ -86,9 +86,9 @@ router.post(
 // Get a post
 router.get("/viewpost/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id)
-      .populate("user", ["profilePic"])
-      .populate("likes.user", ["firstName", "familyName"]);
+    const post = await Post.findById(req.params.id).populate("user", [
+      "profilePic",
+    ]);
 
     res.json(post);
   } catch (err) {
@@ -117,7 +117,6 @@ router.get("/user/:user_id/wall", async (req, res) => {
   try {
     const posts = await Post.find({ recipient: req.params.user_id })
       .populate("user", ["profilePic"])
-      .populate("likes.user", ["firstName", "familyName"])
       .sort({
         date: -1,
       });
@@ -152,7 +151,6 @@ router.get("/feed", auth, async (req, res) => {
         date: -1,
       })
       .populate("user", ["profilePic"])
-      .populate("likes.user", ["firstName", "familyName"])
       .skip(skip)
       .limit(10);
 
@@ -166,10 +164,10 @@ router.get("/feed", auth, async (req, res) => {
 // Like or unlike a post
 router.post("/:id/like", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("likes.user");
+    const post = await Post.findById(req.params.id);
 
     // Unlike post if already liked
-    if (post.likes.some((like) => like.user._id.toString() === req.user.id)) {
+    if (post.likes.some((like) => like.user.toString() === req.user.id)) {
       post.likes = post.likes.filter(
         (like) => like.user._id.toString() !== req.user.id
       );
@@ -178,7 +176,7 @@ router.post("/:id/like", auth, async (req, res) => {
       return res.json(post.likes);
     }
 
-    post.likes.unshift({ user: { _id: req.user.id } });
+    post.likes.unshift({ user: req.user.id });
 
     await post.save();
 
@@ -227,8 +225,17 @@ router.post("/:post_id/comments/:comment_id/like", auth, async (req, res) => {
   const post = await Post.findById(req.params.post_id);
 
   const comment = post.comments.find(
-    (comment) => comment._id === req.params.comment_id
+    (comment) => comment._id.toString() === req.params.comment_id
   );
+
+  if (comment.likes.some((like) => like.user.toString() === req.user.id)) {
+    comment.likes = comment.likes.filter(
+      (like) => like.user.toString() !== req.user.id
+    );
+    await post.save();
+
+    return res.json(comment.likes);
+  }
 
   comment.likes.unshift({ user: req.user.id });
 

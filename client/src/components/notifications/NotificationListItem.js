@@ -6,6 +6,8 @@ const notificationReducer = (state, action) => {
   switch (action.type) {
     case "like":
       return { message: ` liked your post` };
+    case "commentLike":
+      return { message: ` liked your comment` };
     case "comment":
       return { message: ` commented on your post` };
     case "post":

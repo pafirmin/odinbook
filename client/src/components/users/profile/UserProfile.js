@@ -1,11 +1,21 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 import { useMediaQuery } from "react-responsive";
 import styled from "styled-components";
+import { AuthContext } from "../../../contexts/AuthContext";
+import useFriendshipStatus from "../../../hooks/useFriendshipStatus";
+import ProfileTop from "./ProfileTop";
+import ProfileDetails from "./ProfileDetails";
+import ProfileFriends from "./ProfileFriends";
 import { sampleSize } from "lodash";
-import { Link } from "react-router-dom";
-import AddFriendBtn from "./AddFriendBtn";
-import FriendCard from "./FriendCard";
-import { Button } from "../../utils/Utils";
+
+const ProfileWrapper = styled.div`
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: ${({ top }) => top}px;
+`;
 
 const ProfileSection = styled.section`
   padding: 0.8rem;
@@ -21,131 +31,46 @@ const ProfileSection = styled.section`
   }
 `;
 
-const ProfileHeader = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const ProfilePic = styled.div`
-  height: auto;
-  background-image: url("${({ src }) => src}");
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 70%;
-  padding: 8px;
-  box-shadow: 0px 1px 2px #9d9d9d;
-  border-radius: 50%;
-  align-self: center;
-
-  &:after {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-  }
-`;
-
 const Profile = ({ user }) => {
-  const { location, bio, occupation } = user.profile;
+  const { authState } = useContext(AuthContext);
+  const { friendshipStatus } = useFriendshipStatus(authState.userID, user);
   const [friends, setFriends] = useState([]);
+  const [stickyTop, setStickyTop] = useState();
   const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
-  const profileRef = useRef(null);
 
   const filteredFriends = useCallback(() => {
     return user.friends.filter((friend) => friend.status === "accepted");
-  }, [user, friends]);
+  }, [user]);
+
+  const stickyRef = useCallback(
+    (node) => {
+      if (node) {
+        setStickyTop(window.innerHeight - node.scrollHeight);
+      }
+    },
+    [friends]
+  );
 
   useEffect(() => {
     setFriends(sampleSize(filteredFriends(), isMobile ? 6 : 9));
-  }, [user, isMobile]);
-
-  useEffect(() => {
-    if (!isMobile) {
-      const profileHeight = profileRef.current.scrollHeight;
-      const vh = window.innerHeight;
-      const stickyTop = vh - profileHeight;
-
-      profileRef.current.style.top = `${stickyTop}px`;
-    }
-  }, [user, friends, isMobile]);
+  }, [filteredFriends, isMobile]);
 
   return (
     <div>
-      <div
-        ref={profileRef}
-        style={{
-          marginTop: "16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-          position: "sticky",
-        }}
-      >
-        <ProfilePic src={user.profilePic} />
-        <h2 className="bold" style={{ textAlign: "center" }}>
-          {user.fullName}
-        </h2>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "4px",
-            width: "70%",
-            alignSelf: "center",
-          }}
-        >
-          <AddFriendBtn user={user} />
-          <Button
-            style={{
-              padding: "2px 8px",
-              fontSize: ".8rem",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <i className="fas fa-envelope" /> Message
-          </Button>
-        </div>
+      <ProfileWrapper top={stickyTop} ref={stickyRef}>
+        <ProfileTop user={user} friendshipStatus={friendshipStatus} />
         <ProfileSection>
-          <div>
-            <h4>Location</h4>
-            <p>{location}</p>
-          </div>
-
-          <div>
-            <h4>Occupation</h4>
-            <p>{occupation}</p>
-          </div>
-          <div>
-            <h4>Bio</h4>
-            <p>{bio}</p>
-          </div>
+          <ProfileDetails user={user} friendshipStatus={friendshipStatus} />
         </ProfileSection>
         <ProfileSection>
-          <ProfileHeader>
-            <h2 className="bold">Friends</h2>
-            <span>
-              <Link to={`/users/${user._id}/friends`}>View all</Link>
-            </span>
-          </ProfileHeader>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              marginTop: "10px",
-              gap: "8px",
-            }}
-          >
-            {friends.map((friend) => (
-              <FriendCard key={friend._id} friend={friend} />
-            ))}
-          </div>
+          <ProfileFriends user={user} friends={friends} />
         </ProfileSection>
-        'Odinbook', created by Paul Firmin, 2021
-      </div>
+        {!isMobile && (
+          <footer style={{ textAlign: "center" }}>
+            'Odinbook', created by Paul Firmin, 2021
+          </footer>
+        )}
+      </ProfileWrapper>
     </div>
   );
 };

@@ -72,6 +72,17 @@ export const DropDown = styled.div`
   text-align: center;
 `;
 
+export const PostArea = styled.textarea`
+  resize: none;
+  font: inherit;
+  padding: 0.7rem;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #c6c6c6;
+  margin: 0.5rem auto;
+  background: transparent;
+`;
+
 const getColour = (variant) => {
   switch (variant) {
     case "success":
