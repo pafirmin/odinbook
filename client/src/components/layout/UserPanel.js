@@ -7,6 +7,7 @@ import FriendRequests from "../notifications/FriendRequests";
 import Notifications from "../notifications/Notifications";
 import Messages from "../notifications/Messages";
 import MobileMenuIcon from "./MobileMenuIcon";
+import styled from "styled-components";
 
 const PanelWrapper = styled.nav`
   flex: 1;
