@@ -13,7 +13,7 @@ const ProfileFriends = ({ user, friends }) => {
   return (
     <Fragment>
       <ProfileSectionHeader>
-        <h3 className="bold">Friends ({user.friends.length})</h3>
+        <h3 className="bold">Friends ({friends.length})</h3>
         <span>
           <Link to={`/users/${user._id}/friends`}>View all</Link>
         </span>

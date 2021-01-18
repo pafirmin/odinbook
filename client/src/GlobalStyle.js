@@ -147,7 +147,7 @@ h4 {
 }
 * {
   box-sizing: border-box;
-  transition: background 0.30s linear, color 0.50s linear;;
+  transition: background 0.30s linear;
 }
 *:focus {
   outline: none;

@@ -8,21 +8,21 @@ import Notifications from "../notifications/Notifications";
 import Messages from "../notifications/Messages";
 import MobileMenuIcon from "./MobileMenuIcon";
 
+const PanelWrapper = styled.nav`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+`;
+
 const UserPanel = (props) => {
   const { authState, dispatch } = useContext(AuthContext);
   const [activeDropdown, setActiveDropdown] = useState(0);
   const isMobile = useMediaQuery({ query: "(max-width: 900px)" });
 
   return (
-    <div
-      style={{
-        flex: "1",
-        display: "flex",
-        justifyContent: "flex-end",
-        alignItems: "center",
-        gap: "1rem",
-      }}
-    >
+    <PanelWrapper>
       {authState.isAuthenticated ? (
         <Fragment>
           <Messages
@@ -63,7 +63,7 @@ const UserPanel = (props) => {
       ) : (
         <Link to="/login">Log in</Link>
       )}
-    </div>
+    </PanelWrapper>
   );
 };
 

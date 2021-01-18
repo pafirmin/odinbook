@@ -1,9 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Button } from "../utils/Utils";
-import { AuthContext } from "../../contexts/AuthContext";
 
 const DropDownItem = styled.li`
   display: flex;
@@ -11,6 +10,7 @@ const DropDownItem = styled.li`
   align-items: center;
   border-bottom: 1px solid #c3c3c3;
   padding: 0.1rem 0;
+  background: ${(props) => props.theme.cardBg}
 
   &:hover {
     background-color: #f5f5f5;

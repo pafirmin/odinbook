@@ -21,7 +21,14 @@ const Notifications = ({ activeDropdown, toggleDropdown }) => {
   }, [authState]);
 
   useEffect(() => {
-    activeDropdown === 2 && fetchNotifications();
+    fetchNotifications();
+  }, []);
+
+  useEffect(() => {
+    if (activeDropdown === 2) {
+      fetchNotifications();
+      markNotificationsAsSeen();
+    }
   }, [activeDropdown]);
 
   useEffect(() => {

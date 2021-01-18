@@ -81,8 +81,8 @@ router.post("/:id/accept", auth, async (req, res) => {
 
   await Friend.findOneAndUpdate(
     {
-      self: req.params.id,
       user: req.user.id,
+      self: req.params.id,
     },
     { $set: { status: "accepted" } },
     { upsert: true, new: true }
