@@ -10,7 +10,7 @@ const NewPostBtn = styled(Button)`
   border-radius: 20px;
   width: 100%;
   margin: auto;
-  box-shadow: 0px 1px 2px #9d9d9d;
+  box-shadow: 0px 1px 2px ${(props) => props.theme.shadowColour};
 
   &:hover {
     background-color: #2883bf;

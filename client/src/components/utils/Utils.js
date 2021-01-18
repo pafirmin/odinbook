@@ -3,9 +3,10 @@ import styled from "styled-components";
 export const TextInput = styled.input`
   font: inherit;
   padding: 0.4em;
-  border: 1px solid #c6c6c6;
+  border: 1px solid ${(props) => props.theme.borderColour};
   border-radius: 0;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.bodyBg};
+  color: ${(props) => props.theme.mainFontColour};
 `;
 
 export const Button = styled.button`
@@ -58,7 +59,7 @@ export const Notification = styled.div`
 `;
 
 export const DropDown = styled.div`
-  color: #434343;
+  color: ${(props) => props.theme.mainFontColour};
   position: fixed;
   flex-direction: column;
   top: 58px;
@@ -66,8 +67,8 @@ export const DropDown = styled.div`
   width: 300px;
   height: calc(100vh - 60px);
   overflow: auto;
-  background-color: #fff;
-  box-shadow: 2px 2px 8px #7d7d7d;
+  background-color: ${(props) => props.theme.cardBg};
+  box-shadow: 2px 2px 8px ${(props) => props.theme.shadowColour};
   padding: 0.5rem;
   text-align: center;
 `;

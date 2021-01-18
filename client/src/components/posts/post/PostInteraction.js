@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useRef, useState } from "react";
 import useIsLiked from "../../../hooks/useIsLiked";
 import axios from "axios";
 import styled from "styled-components";
@@ -14,29 +14,29 @@ const SocialDiv = styled.div`
 
 const SocialIcon = styled.i`
   font-size: 1.3em;
-  color: #6b6b6b;
+  color: ${(props) => props.theme.mainColour};
   padding-right: 0.5rem;
 `;
 
 const LikeThumb = styled(SocialIcon)`
-  color: ${({ isLiked }) => (isLiked ? "#2d9ee9" : "#6b6b6b")};
-
-  &:hover {
-    color: #2d9ee9;
-  }
+  color: ${(props) => (props.isLiked ? "#2d9ee9" : props.theme.mainColour)};
 `;
 
 const SocialBtn = styled.button`
   border: none;
   background: none;
   font: inherit;
+  color: inherit;
   cursor: pointer;
   width: 50%;
   border-radius: 20px;
   padding: 0.2rem 0;
 
-  &: hover {
-    background-color: #f5f5f5;
+  &:hover {
+    background-color: ${(props) => props.theme.secondaryBg};
+  }
+  &:hover > .fa-thumbs-up {
+    color: #2d9ee9;
   }
 `;
 
@@ -45,6 +45,7 @@ const PostInteraction = ({ post }) => {
   const { comments } = post;
   const [likes, setLikes] = useState(post.likes);
   const isLiked = useIsLiked(likes, authState.userID);
+  const likeRef = useRef(null);
 
   const handleLike = async () => {
     try {
@@ -81,7 +82,7 @@ const PostInteraction = ({ post }) => {
       <SocialDiv>
         <SocialBtn onClick={handleLike}>
           <LikeThumb isLiked={isLiked} className="fas fa-thumbs-up" />
-          {isLiked ? "You liked this" : "Like"}
+          <span>{isLiked ? "You liked this" : "Like"}</span>
         </SocialBtn>
         <SocialBtn onClick={focusCommentBox}>
           <SocialIcon className="far fa-comments" />

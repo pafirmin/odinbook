@@ -12,7 +12,7 @@ const ProfilePic = styled.div`
   background-position: center;
   width: 70%;
   padding: 8px;
-  box-shadow: 0px 1px 2px #9d9d9d;
+  box-shadow: 0px 1px 2px ${(props) => props.theme.shadowColour};
   border-radius: 50%;
   align-self: center;
 

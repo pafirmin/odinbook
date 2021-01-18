@@ -9,13 +9,14 @@ const ShowCommentsBtn = styled.button`
   border: none;
   border-radius: 8px;
   font-size: 0.8rem;
+  color: inherit;
   cursor: pointer;
-  background-color: #f4f4f4;
+  background-color: ${(props) => props.theme.bodyBg};
   margin-top: 0.4rem;
   width: 200px;
 
   &:hover {
-    background-color: #d9d9d9;
+    background-color: ${(props) => props.theme.secondaryBg};
   }
 `;
 

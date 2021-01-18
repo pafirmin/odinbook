@@ -19,9 +19,9 @@ const ProfileWrapper = styled.div`
 
 const ProfileSection = styled.section`
   padding: 0.8rem;
-  background: #fff;
+  background: ${(props) => props.theme.cardBg};
   border-radius: 8px;
-  box-shadow: 0px 1px 2px #9d9d9d;
+  box-shadow: 0px 1px 2px ${(props) => props.theme.shadowColour};
   display: flex;
   flex-direction: column;
   gap: 0.8rem;

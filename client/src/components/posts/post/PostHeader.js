@@ -27,8 +27,8 @@ const PostHeader = ({ post }) => {
             's wall
           </h3>
         ) : (
-          <Link to={`/user/${user._id}`}>
-            <h3 style={{ fontSize: "1.2em" }}>{name}</h3>
+          <Link className="bold" to={`/user/${user._id}`}>
+            <h3 style={{ fontSize: "1.1em" }}>{name}</h3>
           </Link>
         )}
         <time

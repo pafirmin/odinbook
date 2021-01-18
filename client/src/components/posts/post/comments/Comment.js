@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const CommentContainer = styled.div`
   display: ${(props) => (props.commentShow ? "flex" : "none")};
-  background-color: #f3f3f3;
+  background-color: ${(props) => props.theme.secondaryBg};
   border-radius: 20px;
   padding: 12px;
   margin: 8px 0;

@@ -11,7 +11,6 @@ const CommentBox = styled(TextInput)`
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
   padding-left: 12px;
-  border: 1px solid #d5d5d5;
 `;
 
 const Comments = ({ post, setComments }) => {

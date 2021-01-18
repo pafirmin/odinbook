@@ -5,11 +5,11 @@ import PostHeader from "./PostHeader";
 import PostInteraction from "./PostInteraction";
 
 const PostContainer = styled.div`
-  box-shadow: 0px 1px 2px #9d9d9d;
+  box-shadow: 0px 1px 2px ${(props) => props.theme.shadowColour};
   margin: 16px auto;
   padding: 0.8rem;
   border-radius: 8px;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.cardBg};
 
   @media (max-width: 700px) {
     border-radius: 0;
