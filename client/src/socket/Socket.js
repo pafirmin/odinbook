@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 
-const server = "http://localhost:8080/";
+const server = "https://gentle-savannah-57372.herokuapp.com/";
 let socket;
 
 export const connectSocket = (userID) => {
