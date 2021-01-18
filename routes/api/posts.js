@@ -36,8 +36,6 @@ router.post(
     } catch (err) {
       console.error(err);
       res.status(500).json({ errors: [{ msg: "500: Server error" }] });
-    } finally {
-      setTimeout(() => setAlerts([]), 5000);
     }
   }
 );

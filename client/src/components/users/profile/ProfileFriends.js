@@ -1,7 +1,8 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useCallback } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import FriendCard from "./FriendCard";
+import { sampleSize } from "lodash";
 
 const ProfileSectionHeader = styled.header`
   display: flex;
@@ -9,7 +10,9 @@ const ProfileSectionHeader = styled.header`
   align-items: center;
 `;
 
-const ProfileFriends = ({ user, friends }) => {
+const ProfileFriends = ({ user, friends, isMobile }) => {
+  const sampledFriends = useCallback(sampleSize(friends, isMobile ? 6 : 9));
+
   return (
     <Fragment>
       <ProfileSectionHeader>
@@ -24,10 +27,9 @@ const ProfileFriends = ({ user, friends }) => {
           justifyContent: "space-between",
           flexWrap: "wrap",
           marginTop: "10px",
-          gap: "8px",
         }}
       >
-        {friends.map((friend) => (
+        {sampledFriends.map((friend) => (
           <FriendCard key={friend._id} friend={friend} />
         ))}
       </div>

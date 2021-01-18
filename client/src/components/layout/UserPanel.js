@@ -14,7 +14,10 @@ const PanelWrapper = styled.nav`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 1rem;
+
+  & > * + * {
+    margin-left: 1rem;
+  }
 `;
 
 const UserPanel = (props) => {

@@ -1,6 +1,12 @@
 import React from "react";
 import { format, formatDistanceToNow, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+const TimeStamp = styled.time`
+  color: ${(props) => props.theme.secondaryFontColour};
+  font-size: 0.8rem;
+`;
 
 const PostHeader = ({ post }) => {
   const { user, date, name, recipient, recipientName } = post;
@@ -31,15 +37,12 @@ const PostHeader = ({ post }) => {
             <h3 style={{ fontSize: "1.1em" }}>{name}</h3>
           </Link>
         )}
-        <time
-          title={format(parseISO(date), "PPPppp")}
-          style={{ fontSize: "0.8em", color: "#626262" }}
-        >
+        <TimeStamp title={format(parseISO(date), "PPPppp")}>
           {formatDistanceToNow(parseISO(date), {
             includeSeconds: true,
             addSuffix: true,
           })}
-        </time>
+        </TimeStamp>
       </div>
     </div>
   );

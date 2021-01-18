@@ -82,6 +82,7 @@ export const PostArea = styled.textarea`
   border-bottom: 1px solid #c6c6c6;
   margin: 0.5rem auto;
   background: transparent;
+  color: ${(props) => props.theme.mainFontColour};
 `;
 
 const getColour = (variant) => {

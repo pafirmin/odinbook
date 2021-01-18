@@ -25,7 +25,7 @@ export const darkTheme = {
   cardBg: "#373737",
   secondaryBg: "#4d4d4d",
   mainFontColour: "#c4c4c4",
-  secondaryFontColour: "rgb(232, 232, 232)",
+  secondaryFontColour: "rgb(152 152 152)",
   shadowColour: "#0b0b0b",
   borderColour: "#0c0c0c",
   headerColour: "rgb(54, 70, 87)",

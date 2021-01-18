@@ -1,20 +1,22 @@
 import React, { useEffect, useContext, useState, useCallback } from "react";
-import { useMediaQuery } from "react-responsive";
 import styled from "styled-components";
 import { AuthContext } from "../../../contexts/AuthContext";
 import useFriendshipStatus from "../../../hooks/useFriendshipStatus";
 import ProfileTop from "./ProfileTop";
 import ProfileDetails from "./ProfileDetails";
 import ProfileFriends from "./ProfileFriends";
-import { sampleSize } from "lodash";
+import { useMediaQuery } from "react-responsive";
 
 const ProfileWrapper = styled.div`
   margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
   position: sticky;
   top: ${({ top }) => top}px;
+
+  & > * + * {
+    margin-top: 1rem;
+  }
 `;
 
 const ProfileSection = styled.section`
@@ -24,7 +26,10 @@ const ProfileSection = styled.section`
   box-shadow: 0px 1px 2px ${(props) => props.theme.shadowColour};
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+
+  & > * + * {
+    margin-top: 0.8rem;
+  }
 
   & a:hover {
     text-decoration: underline;
@@ -52,7 +57,7 @@ const Profile = ({ user }) => {
   );
 
   useEffect(() => {
-    setFriends(sampleSize(filteredFriends(), isMobile ? 6 : 9));
+    setFriends(filteredFriends());
   }, [filteredFriends, isMobile]);
 
   return (
@@ -63,7 +68,7 @@ const Profile = ({ user }) => {
           <ProfileDetails user={user} friendshipStatus={friendshipStatus} />
         </ProfileSection>
         <ProfileSection>
-          <ProfileFriends user={user} friends={friends} />
+          <ProfileFriends user={user} friends={friends} isMobile={isMobile} />
         </ProfileSection>
         {!isMobile && (
           <footer style={{ textAlign: "center" }}>

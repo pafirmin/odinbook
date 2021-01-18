@@ -12,6 +12,7 @@ const NotificationContainer = styled.div`
   gap: 0.4rem;
   margin: 0.2rem 0;
   background-color: ${(props) => (props.seen ? props.theme.cardBg : "#e6efff")};
+  color: ${(props) => (props.seen ? props.theme.mainFontColour : "#1c1c1c")};
 `;
 
 const notificationReducer = (state, action) => {

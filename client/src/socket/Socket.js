@@ -1,6 +1,9 @@
 import io from "socket.io-client";
 
-const server = "https://gentle-savannah-57372.herokuapp.com/";
+const server =
+  process.env.NODE_ENV === "production"
+    ? "https://gentle-savannah-57372.herokuapp.com/"
+    : "http://localhost:8080";
 let socket;
 
 export const connectSocket = (userID) => {

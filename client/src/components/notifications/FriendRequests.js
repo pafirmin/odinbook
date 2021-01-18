@@ -11,6 +11,10 @@ const FriendRequests = ({ activeDropdown, toggleDropdown }) => {
   const handleRecieveRequest = (request) => setRequests([request, ...requests]);
 
   useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  useEffect(() => {
     activeDropdown === 3 && fetchRequests();
   }, [authState.user, activeDropdown]);
 
