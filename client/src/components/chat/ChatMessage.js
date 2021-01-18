@@ -5,7 +5,8 @@ import { format, formatDistanceToNow, parseISO } from "date-fns";
 
 const MessageWrapper = styled.div`
   position: relative;
-  background-color: #f3f3f3;
+  background-color: ${(props) => props.theme.secondaryBg};
+  color: ${(props) => props.theme.mainFontColour};
   border-radius: 20px;
   padding: 1rem;
   margin: 8px 6px 8px 0;
@@ -20,9 +21,13 @@ const TimeStamp = styled.time`
   left: 50%;
   transform: translate(-50%);
   font-size: 0.7rem;
-  color: #525252;
+  color: ${(props) => props.theme.secondaryFontColour};
   width: 100%;
   text-align: center;
+`;
+
+const MessageContainer = styled.div`
+  background: ${(props) => props.theme.secondaryBg};
 `;
 
 const ChatMessage = ({ message }) => {
@@ -35,13 +40,7 @@ const ChatMessage = ({ message }) => {
           addSuffix: true,
         })}
       </TimeStamp>
-      <div
-        style={{
-          display: "flex",
-          alignContent: "space-between",
-          gap: ".3rem",
-        }}
-      >
+      <div>
         <img className="tiny round thumbnail" src={message.sender.profilePic} />{" "}
         {message.text}
       </div>{" "}

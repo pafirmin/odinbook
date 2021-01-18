@@ -25,15 +25,9 @@ const LogIn = () => {
     e.preventDefault();
 
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
       const body = JSON.stringify(userDetails);
 
-      const res = await axios.post("/api/auth", body, config);
+      const res = await axios.post("/api/auth", body);
       const { token, userID, userName } = res.data;
 
       dispatch({
@@ -52,8 +46,9 @@ const LogIn = () => {
         return { text: err.msg, type: "warning" };
       });
       setAlerts(errorArray);
+    } finally {
+      setTimeout(() => setAlerts([]), 5000);
     }
-    setTimeout(() => setAlerts([]), 5000);
   };
 
   return (

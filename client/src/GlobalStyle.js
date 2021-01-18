@@ -248,7 +248,7 @@ h4 {
   box-shadow: 0px 1px 2px ${(props) => props.theme.shadowColour};
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 1200px) {
   .main-wrapper {
     width: 100%;
   }

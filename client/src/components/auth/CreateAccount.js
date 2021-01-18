@@ -41,15 +41,9 @@ const CreateAccount = () => {
     e.preventDefault();
 
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
       const body = JSON.stringify(userData);
 
-      const res = await axios.post("/api/users", body, config);
+      const res = await axios.post("/api/users", body);
 
       const { token, userID, userName } = res.data;
 
@@ -70,8 +64,9 @@ const CreateAccount = () => {
         return { text: err.msg, type: "warning" };
       });
       setAlerts(errorArray);
+    } finally {
+      setTimeout(() => setAlerts([]), 5000);
     }
-    setTimeout(() => setAlerts([]), 5000);
   };
 
   return (

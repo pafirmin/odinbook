@@ -6,12 +6,12 @@ import { useMediaQuery } from "react-responsive";
 import FriendRequests from "../notifications/FriendRequests";
 import Notifications from "../notifications/Notifications";
 import Messages from "../notifications/Messages";
-import MobileMenu from "./MobileMenu";
+import MobileMenuIcon from "./MobileMenuIcon";
 
-const UserPanel = () => {
+const UserPanel = (props) => {
   const { authState, dispatch } = useContext(AuthContext);
   const [activeDropdown, setActiveDropdown] = useState(0);
-  const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 900px)" });
 
   return (
     <div
@@ -44,7 +44,8 @@ const UserPanel = () => {
             }
           />
           {isMobile ? (
-            <MobileMenu
+            <MobileMenuIcon
+              toggleTheme={props.toggleTheme}
               activeDropdown={activeDropdown}
               toggleDropdown={() =>
                 setActiveDropdown(activeDropdown === 4 ? 0 : 4)

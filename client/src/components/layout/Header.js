@@ -47,20 +47,22 @@ const ThemeSwitch = styled.i`
 `;
 
 const Header = ({ toggleTheme }) => {
-  const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
+  const isDesktop = useMediaQuery({ query: "(min-width: 900px)" });
 
   return (
     <MainHeader>
       <MainTitle>
         <Link to="/">Odinbook</Link>
-        <Subtitle>After dark</Subtitle>
-        <ThemeSwitch
-          className="fas fa-lightbulb"
-          onClick={toggleTheme}
-        ></ThemeSwitch>
+        {isDesktop && <Subtitle>After dark</Subtitle>}
+        {isDesktop && (
+          <ThemeSwitch
+            className="fas fa-lightbulb"
+            onClick={toggleTheme}
+          ></ThemeSwitch>
+        )}
       </MainTitle>
-      {!isMobile && <UserSearch />}
-      <UserPanel />
+      {isDesktop && <UserSearch />}
+      <UserPanel toggleTheme={toggleTheme} />
     </MainHeader>
   );
 };

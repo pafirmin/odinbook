@@ -12,7 +12,7 @@ const UserPageWrapper = styled.div`
   grid-template-columns: 1fr 2fr;
   gap: 24px;
 
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 `;

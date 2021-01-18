@@ -10,7 +10,6 @@ import ChatMessage from "./ChatMessage";
 
 const ConvoWrapper = styled.div`
   position: fixed;
-  color: #000;
   width: 350px;
   left: 70px;
   top: 100px;
@@ -18,6 +17,28 @@ const ConvoWrapper = styled.div`
   text-align: left;
   background: #fff;
   box-shadow: 0px 1px 2px #9d9d9d;
+`;
+
+const ConvoHeader = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: ${(props) => props.theme.headerColour};
+  color: #fff;
+  padding: 0.6rem;
+  font-size: 1.2rem;
+`;
+
+const ConvoBody = styled.div`
+  overflow-y: scroll;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem;
+  background: ${(props) => props.theme.cardBg};
+  scrollbar-color: #bbb ${(props) => props.theme.cardBg};
+  scrollbar-width: thin;
 `;
 
 const Conversation = ({
@@ -113,36 +134,16 @@ const Conversation = ({
   return (
     <Draggable handle=".handle">
       <ConvoWrapper>
-        <header
-          className="bold handle"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            cursor: "pointer",
-            background: "rgb(62, 133, 209)",
-            color: "#fff",
-            padding: "1rem",
-            fontSize: "1.2rem",
-          }}
-        >
+        <ConvoHeader className="bold handle">
           {participant.fullName}
           <i className="far fa-times-circle" onClick={() => setActive(false)} />
-        </header>
-        <div
-          style={{
-            overflowY: "scroll",
-            height: "400px",
-            display: "flex",
-            flexDirection: "column",
-            padding: "0 .4rem",
-          }}
-        >
+        </ConvoHeader>
+        <ConvoBody>
           {messages.map((msg) => (
             <ChatMessage key={msg._id} message={msg} />
           ))}
           <div ref={scrollBottom} />
-        </div>
+        </ConvoBody>
         {partnerIsTyping && <span>{participant.firstName} is typing...</span>}
         <form onSubmit={(e) => handleSubmit(e)} style={{ display: "flex" }}>
           <TextInput

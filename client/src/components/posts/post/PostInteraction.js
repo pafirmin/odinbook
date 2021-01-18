@@ -45,7 +45,6 @@ const PostInteraction = ({ post }) => {
   const { comments } = post;
   const [likes, setLikes] = useState(post.likes);
   const isLiked = useIsLiked(likes, authState.userID);
-  const likeRef = useRef(null);
 
   const handleLike = async () => {
     try {

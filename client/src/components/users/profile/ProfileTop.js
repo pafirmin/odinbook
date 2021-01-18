@@ -21,6 +21,10 @@ const ProfilePic = styled.div`
     display: block;
     padding-bottom: 100%;
   }
+
+  @media screen and (max-width: 900px) {
+    width: 300px;
+  }
 `;
 
 const UserInteraction = styled.div`

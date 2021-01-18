@@ -1,6 +1,18 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow, parseISO } from "date-fns";
+import styled from "styled-components";
+
+const NotificationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid ${(props) => props.theme.borderColour};
+  border-radius: 6px;
+  padding: 0.4rem;
+  gap: 0.4rem;
+  margin: 0.2rem 0;
+  background-color: ${(props) => (props.seen ? props.theme.cardBg : "#e6efff")};
+`;
 
 const notificationReducer = (state, action) => {
   switch (action.type) {
@@ -30,18 +42,7 @@ const NotificationListItem = ({ notification }) => {
   return (
     <li onClick={() => setSeen(true)}>
       <Link to={`/posts/${post}`}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            borderBottom: "1px solid #d9d9d9",
-            borderRadius: "6px",
-            padding: ".4rem",
-            gap: ".4rem",
-            margin: ".2rem 0",
-            backgroundColor: seen ? "#fff" : "#e6efff",
-          }}
-        >
+        <NotificationContainer seen={seen}>
           <img className="small round thumbnail" src={sender.profilePic} />
           <div
             style={{
@@ -60,7 +61,7 @@ const NotificationListItem = ({ notification }) => {
               })}
             </time>
           </div>
-        </div>
+        </NotificationContainer>
       </Link>
     </li>
   );

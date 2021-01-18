@@ -17,7 +17,7 @@ const UserSearch = () => {
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
+    <form style={{ display: "flex" }} onSubmit={(e) => handleSubmit(e)}>
       <TextInput
         placeholder="Find your friends..."
         type="text"

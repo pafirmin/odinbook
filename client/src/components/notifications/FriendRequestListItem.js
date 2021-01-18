@@ -23,18 +23,11 @@ const FriendAccepted = styled(DropDownItem)`
 `;
 
 const FriendRequestListItem = ({ user, requests, setRequests, requestID }) => {
-  const { authState } = useContext(AuthContext);
   const [accepted, setAccepted] = useState(false);
 
   const handleAccept = async (userID) => {
     try {
-      const config = {
-        headers: {
-          Authorization: `bearer ${authState.token}`,
-        },
-      };
-
-      await axios.post(`/api/requests/${userID}/accept`, {}, config);
+      await axios.post(`/api/requests/${userID}/accept`, {});
 
       setAccepted(true);
 
