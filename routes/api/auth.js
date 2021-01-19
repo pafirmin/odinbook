@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const auth = require("../../middleware/auth");
 const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
+const { sample } = require("lodash");
 const router = express.Router();
 
 //Get current user from jwt
@@ -62,8 +63,17 @@ router.post("/", async (req, res) => {
 
 router.post("/guest", async (req, res) => {
   try {
-    const user = await User.findOne({ email: "lukas.thomas@example.com" });
-
+    const users = await User.find({
+      email: {
+        $in: [
+          "lukas.thomas@example.com",
+          "madison.smith@example.com",
+          "simon.gill@example.com",
+          "oliver.larsen@example.com",
+        ],
+      },
+    });
+    const user = sample(users);
     const payload = {
       user: {
         id: user._id,

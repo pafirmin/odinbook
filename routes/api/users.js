@@ -197,67 +197,52 @@ router.put("/profile", auth, async (req, res) => {
   }
 });
 
-router.post("/:id/profilepic", async (req, res) => {
-  try {
-    const user = await axios.get("https://randomuser.me/api/");
+// Testing routes
 
-    const profilePic = user.data.results[0].picture.large;
-    const firstName = user.data.results[0].name.first;
-    const familyName = user.data.results[0].name.last;
-    const location = user.data.results[0].location.country;
+// router.post("/random", async (req, res) => {
+//   try {
+//     const user = await axios.get("https://randomuser.me/api/");
 
-    await User.findByIdAndUpdate(req.params.id, {
-      profile: { location: location },
-    });
-  } catch (err) {
-    console.error(err);
-  }
-});
+//     const profilePic = user.data.results[0].picture.large;
+//     const firstName = user.data.results[0].name.first;
+//     const familyName = user.data.results[0].name.last;
+//     const email = user.data.results[0].email;
+//     const password = "123456";
+//     const profile = {
+//       location: user.data.results[0].location.country,
+//       occupation: sample([
+//         "Builder",
+//         "Bartender",
+//         "Lion Tamer",
+//         "Journalist",
+//         "Photographer",
+//       ]),
+//       bio: "Hi, I'm using Odinbook",
+//     };
 
-router.post("/random", async (req, res) => {
-  try {
-    const user = await axios.get("https://randomuser.me/api/");
+//     const newUser = new User({
+//       profilePic,
+//       firstName,
+//       familyName,
+//       email,
+//       profile,
+//       password,
+//     });
 
-    const profilePic = user.data.results[0].picture.large;
-    const firstName = user.data.results[0].name.first;
-    const familyName = user.data.results[0].name.last;
-    const email = user.data.results[0].email;
-    const password = "123456";
-    const profile = {
-      location: user.data.results[0].location.country,
-      occupation: sample([
-        "Builder",
-        "Bartender",
-        "Lion Tamer",
-        "Journalist",
-        "Photographer",
-      ]),
-      bio: "Hi, I'm using Odinbook",
-    };
+//     const salt = await bcrypt.genSalt(10);
+//     newUser.password = await bcrypt.hash(password, salt);
 
-    const newUser = new User({
-      profilePic,
-      firstName,
-      familyName,
-      email,
-      profile,
-      password,
-    });
+//     await newUser.save();
 
-    const salt = await bcrypt.genSalt(10);
-    newUser.password = await bcrypt.hash(password, salt);
+//     res.json(newUser);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// });
 
-    await newUser.save();
+// router.put("/acceptall", async (req, res) => {
+//   const friends = await Friend.updateMany({}, { $set: { status: "accepted" } });
 
-    res.json(newUser);
-  } catch (err) {
-    console.error(err);
-  }
-});
-
-router.put("/acceptall", async (req, res) => {
-  const friends = await Friend.updateMany({}, { $set: { status: "accepted" } });
-
-  res.json(friends);
-});
+//   res.json(friends);
+// });
 module.exports = router;
