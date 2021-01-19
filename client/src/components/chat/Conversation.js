@@ -10,7 +10,6 @@ import { useMediaQuery } from "react-responsive";
 const ConvoWrapper = styled.div`
   position: fixed;
   width: ${(props) => (props.isMobile ? "100%" : "350px")};
-  height: ${(props) => (props.isMobile ? "100vh" : "450px")};
   left: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 70)}px;
   top: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 100)}px;
   z-index: 5;
