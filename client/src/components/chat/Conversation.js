@@ -11,8 +11,9 @@ const ConvoWrapper = styled.div`
   position: fixed;
   width: ${(props) => (props.isMobile ? "100%" : "350px")};
   left: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 70)}px;
-  top: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 100)}px;
-  height: ${(props) => (props.isMobile ? "100vh" : "450px")};
+  bottom: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 100)}px;
+  top: ${(props) => (props.isMobile ? "0px" : "")};
+  height: ${(props) => (props.isMobile ? window.innerHeight : "450px")};
   z-index: 5;
   text-align: left;
   box-shadow: 0px 1px 2px #9d9d9d;
@@ -52,11 +53,6 @@ const Conversation = ({
   const [partnerIsTyping, setPartnerIsTyping] = useState(false);
   const { socket } = authState;
   const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
-  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-
-  useEffect(() => {
-    window.addEventListener("resize", (e) => setWindowHeight(e.innerHeight));
-  }, []);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -110,21 +106,29 @@ const Conversation = ({
 
   return (
     <Draggable handle=".handle">
-      <ConvoWrapper
-        offset={offset}
-        isMobile={isMobile}
-        windowHeight={windowHeight}
-      >
+      <ConvoWrapper offset={offset} isMobile={isMobile}>
         <div
           style={{
+            height: "100%",
             display: "flex",
             flexDirection: "column",
-            height: isMobile ? windowHeight + "px" : "450px",
           }}
         >
-          <ConvoHeader className="bold handle">
+          <ConvoHeader className={`bold ${!isMobile && "handle"}`}>
             {participant.fullName}
-            <i className="far fa-times-circle" onClick={handleClose} />
+            <button
+              aria-label="close"
+              className="far fa-times-circle"
+              onClick={handleClose}
+              style={{
+                zIndex: "5",
+                color: "inherit",
+                fontSize: "1.5rem",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
+            />
           </ConvoHeader>
           <ConvoBody>
             {messages.map((msg) => (

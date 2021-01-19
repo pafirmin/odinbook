@@ -30,18 +30,21 @@ const UserPanel = (props) => {
       {authState.isAuthenticated ? (
         <Fragment>
           <Messages
+            aria-label="Messages"
             activeDropdown={activeDropdown}
             toggleDropdown={() =>
               setActiveDropdown(activeDropdown === 1 ? 0 : 1)
             }
           />
           <Notifications
+            aria-label="Notifications"
             activeDropdown={activeDropdown}
             toggleDropdown={() =>
               setActiveDropdown(activeDropdown === 2 ? 0 : 2)
             }
           />
           <FriendRequests
+            aria-label="Friend Requests"
             activeDropdown={activeDropdown}
             toggleDropdown={() =>
               setActiveDropdown(activeDropdown === 3 ? 0 : 3)
@@ -49,6 +52,7 @@ const UserPanel = (props) => {
           />
           {isMobile ? (
             <MobileMenuIcon
+              aria-label="Menu"
               toggleTheme={props.toggleTheme}
               activeDropdown={activeDropdown}
               toggleDropdown={() =>

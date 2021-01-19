@@ -51,6 +51,32 @@ const LogIn = () => {
     }
   };
 
+  const handleGuestSignIn = async () => {
+    try {
+      const res = await axios.post("/api/auth/guest");
+      const { token, userID, userName } = res.data;
+
+      dispatch({
+        type: "login",
+        payload: {
+          token,
+          userID,
+          userName,
+        },
+      });
+
+      setSuccessfulLogin(true);
+      setAlerts([{ text: "Login successful!", type: "success" }]);
+    } catch (err) {
+      const errorArray = err.response.data.errors.map((err) => {
+        return { text: err.msg, type: "warning" };
+      });
+      setAlerts(errorArray);
+    } finally {
+      setTimeout(() => setAlerts([]), 5000);
+    }
+  };
+
   return (
     <div>
       {successfulLogin && <Redirect to="/" />}
@@ -59,7 +85,8 @@ const LogIn = () => {
           <h2>Log in</h2>
           <span>
             Don't have an account?{" "}
-            <Link to="/createaccount">Create one here</Link>
+            <Link to="/createaccount">Create one here</Link>. Alternatively,
+            login as a sample user by clicking the button below.
           </span>
         </header>
         <div className="form-group">
@@ -83,6 +110,13 @@ const LogIn = () => {
           />
         </div>
         <Button>Log in</Button>
+        <Button
+          style={{ background: "#24db52" }}
+          type="button"
+          onClick={handleGuestSignIn}
+        >
+          Sign in with sample account
+        </Button>
       </form>
     </div>
   );

@@ -60,4 +60,34 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/guest", async (req, res) => {
+  try {
+    const user = await User.findOne({ email: "lukas.thomas@example.com" });
+
+    const payload = {
+      user: {
+        id: user._id,
+        name: `${user.firstName} ${user.familyName}`,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: 360000 },
+      (err, token) => {
+        if (err) throw err;
+        res.json({
+          token,
+          userID: user._id,
+          userName: `${user.firstName} ${user.familyName}`,
+        });
+      }
+    );
+  } catch (error) {
+    console.error(err);
+    res.status(500).json({ errors: [{ msg: "500: Server error" }] });
+  }
+});
+
 module.exports = router;

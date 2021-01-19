@@ -190,6 +190,10 @@ h4 {
   box-shadow: 0px 1px 2px ${(props) => props.theme.shadowColour};
 }
 
+.user-form a {
+  text-decoration: underline
+}
+
 .form-header {
   text-align: center;
   line-height: 1.5rem;
