@@ -10,11 +10,11 @@ import { useMediaQuery } from "react-responsive";
 const ConvoWrapper = styled.div`
   position: fixed;
   width: ${(props) => (props.isMobile ? "100%" : "350px")};
+  height: ${(props) => (props.isMobile ? "100vh" : "350px")};
   left: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 70)}px;
   top: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 100)}px;
   z-index: 5;
   text-align: left;
-  background: #fff;
   box-shadow: 0px 1px 2px #9d9d9d;
 `;
 
@@ -31,7 +31,7 @@ const ConvoHeader = styled.header`
 
 const ConvoBody = styled.div`
   overflow-y: scroll;
-  height: 400px;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   padding: 0.4rem;
@@ -106,22 +106,26 @@ const Conversation = ({
   return (
     <Draggable handle=".handle">
       <ConvoWrapper offset={offset} isMobile={isMobile}>
-        <ConvoHeader className="bold handle">
-          {participant.fullName}
-          <i className="far fa-times-circle" onClick={handleClose} />
-        </ConvoHeader>
-        <ConvoBody>
-          {messages.map((msg) => (
-            <ChatMessage key={msg._id} message={msg} />
-          ))}
-          <div ref={scrollToBottom} />
-        </ConvoBody>
-        {partnerIsTyping && <span>{participant.firstName} is typing...</span>}
-        <ConversationInput
-          socket={socket}
-          setMessages={setMessages}
-          participant={participant}
-        />
+        <div
+          style={{ height: "100%", display: "flex", flexDirection: "column" }}
+        >
+          <ConvoHeader className="bold handle">
+            {participant.fullName}
+            <i className="far fa-times-circle" onClick={handleClose} />
+          </ConvoHeader>
+          <ConvoBody>
+            {messages.map((msg) => (
+              <ChatMessage key={msg._id} message={msg} />
+            ))}
+            <div ref={scrollToBottom} />
+          </ConvoBody>
+          {partnerIsTyping && <span>{participant.firstName} is typing...</span>}
+          <ConversationInput
+            socket={socket}
+            setMessages={setMessages}
+            participant={participant}
+          ></ConversationInput>
+        </div>
       </ConvoWrapper>
     </Draggable>
   );
