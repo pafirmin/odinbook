@@ -10,10 +10,12 @@ import { useMediaQuery } from "react-responsive";
 const ConvoWrapper = styled.div`
   position: fixed;
   width: ${(props) => (props.isMobile ? "100%" : "350px")};
-  height: ${(props) => (props.isMobile ? window.innerHeight + "px" : "450px")};
+  height: ${(props) => (props.isMobile ? "100vh" : "450px")};
   left: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 70)}px;
   top: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 100)}px;
   z-index: 5;
+  display: flex;
+  flex-direction: column;
   text-align: left;
   box-shadow: 0px 1px 2px #9d9d9d;
 `;
@@ -106,26 +108,22 @@ const Conversation = ({
   return (
     <Draggable handle=".handle">
       <ConvoWrapper offset={offset} isMobile={isMobile}>
-        <div
-          style={{ height: "100%", display: "flex", flexDirection: "column" }}
-        >
-          <ConvoHeader className="bold handle">
-            {participant.fullName}
-            <i className="far fa-times-circle" onClick={handleClose} />
-          </ConvoHeader>
-          <ConvoBody>
-            {messages.map((msg) => (
-              <ChatMessage key={msg._id} message={msg} />
-            ))}
-            <div ref={scrollToBottom} />
-          </ConvoBody>
-          {partnerIsTyping && <span>{participant.firstName} is typing...</span>}
-          <ConversationInput
-            socket={socket}
-            setMessages={setMessages}
-            participant={participant}
-          ></ConversationInput>
-        </div>
+        <ConvoHeader className="bold handle">
+          {participant.fullName}
+          <i className="far fa-times-circle" onClick={handleClose} />
+        </ConvoHeader>
+        <ConvoBody>
+          {messages.map((msg) => (
+            <ChatMessage key={msg._id} message={msg} />
+          ))}
+          <div ref={scrollToBottom} />
+        </ConvoBody>
+        {partnerIsTyping && <span>{participant.firstName} is typing...</span>}
+        <ConversationInput
+          socket={socket}
+          setMessages={setMessages}
+          participant={participant}
+        ></ConversationInput>
       </ConvoWrapper>
     </Draggable>
   );
