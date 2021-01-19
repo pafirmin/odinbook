@@ -12,10 +12,8 @@ const ConvoWrapper = styled.div`
   width: ${(props) => (props.isMobile ? "100%" : "350px")};
   left: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 70)}px;
   top: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 100)}px;
-  height: ${(props) => (props.isMobile ? props.windowHeight + "px" : "450px")};
+  height: ${(props) => (props.isMobile ? "100vh" : "450px")};
   z-index: 5;
-  display: flex;
-  flex-direction: column;
   text-align: left;
   box-shadow: 0px 1px 2px #9d9d9d;
 `;
@@ -117,22 +115,30 @@ const Conversation = ({
         isMobile={isMobile}
         windowHeight={windowHeight}
       >
-        <ConvoHeader className="bold handle">
-          {participant.fullName}
-          <i className="far fa-times-circle" onClick={handleClose} />
-        </ConvoHeader>
-        <ConvoBody>
-          {messages.map((msg) => (
-            <ChatMessage key={msg._id} message={msg} />
-          ))}
-          <div ref={scrollToBottom} />
-        </ConvoBody>
-        {partnerIsTyping && <span>{participant.firstName} is typing...</span>}
-        <ConversationInput
-          socket={socket}
-          setMessages={setMessages}
-          participant={participant}
-        ></ConversationInput>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: isMobile ? windowHeight + "px" : "450px",
+          }}
+        >
+          <ConvoHeader className="bold handle">
+            {participant.fullName}
+            <i className="far fa-times-circle" onClick={handleClose} />
+          </ConvoHeader>
+          <ConvoBody>
+            {messages.map((msg) => (
+              <ChatMessage key={msg._id} message={msg} />
+            ))}
+            <div ref={scrollToBottom} />
+          </ConvoBody>
+          {partnerIsTyping && <span>{participant.firstName} is typing...</span>}
+          <ConversationInput
+            socket={socket}
+            setMessages={setMessages}
+            participant={participant}
+          ></ConversationInput>
+        </div>
       </ConvoWrapper>
     </Draggable>
   );
