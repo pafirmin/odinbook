@@ -12,7 +12,7 @@ const ConvoWrapper = styled.div`
   width: ${(props) => (props.isMobile ? "100%" : "350px")};
   left: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 70)}px;
   top: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 100)}px;
-  height: ${(props) => (props.isMobile ? "100vh" : "450px")};
+  height: ${(props) => (props.isMobile ? props.windowHeight + "px" : "450px")};
   z-index: 5;
   display: flex;
   flex-direction: column;
@@ -54,6 +54,11 @@ const Conversation = ({
   const [partnerIsTyping, setPartnerIsTyping] = useState(false);
   const { socket } = authState;
   const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    window.addEventListener("resize", (e) => setWindowHeight(e.innerHeight));
+  }, []);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -107,7 +112,11 @@ const Conversation = ({
 
   return (
     <Draggable handle=".handle">
-      <ConvoWrapper offset={offset} isMobile={isMobile}>
+      <ConvoWrapper
+        offset={offset}
+        isMobile={isMobile}
+        windowHeight={windowHeight}
+      >
         <ConvoHeader className="bold handle">
           {participant.fullName}
           <i className="far fa-times-circle" onClick={handleClose} />
