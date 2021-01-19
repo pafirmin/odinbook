@@ -12,6 +12,7 @@ const ConvoWrapper = styled.div`
   width: ${(props) => (props.isMobile ? "100%" : "350px")};
   left: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 70)}px;
   top: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 100)}px;
+  height: ${(props) => (props.isMobile ? "100vh" : "450px")};
   z-index: 5;
   display: flex;
   flex-direction: column;
