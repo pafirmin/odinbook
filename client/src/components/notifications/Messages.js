@@ -43,10 +43,6 @@ const Messages = ({ activeDropdown, toggleDropdown }) => {
     }
   };
 
-  const getParticipant = (participants) => {
-    return participants.find((user) => user._id !== authState.userID);
-  };
-
   return (
     <div
       style={{ position: "relative", display: "flex", alignItems: "center" }}
@@ -65,7 +61,7 @@ const Messages = ({ activeDropdown, toggleDropdown }) => {
                 <MessagesListItem
                   key={convo._id}
                   convo={convo}
-                  participant={getParticipant(convo.participants)}
+                  currentUser={authState.userID}
                 />
               ))}
             </ul>

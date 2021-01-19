@@ -4,6 +4,8 @@ import { useMediaQuery } from "react-responsive";
 import UserSearch from "../search/UserSearch";
 import UserPanel from "./UserPanel";
 import styled from "styled-components";
+import { ChatProvider } from "../../contexts/ChatContext";
+import ChatHandler from "../chat/ChatHandler";
 
 const MainTitle = styled.h1`
   font-size: 2rem;
@@ -55,14 +57,14 @@ const Header = ({ toggleTheme }) => {
         <Link to="/">Odinbook</Link>
         {isDesktop && <Subtitle>After dark</Subtitle>}
         {isDesktop && (
-          <ThemeSwitch
-            className="fas fa-lightbulb"
-            onClick={toggleTheme}
-          ></ThemeSwitch>
+          <ThemeSwitch className="fas fa-lightbulb" onClick={toggleTheme} />
         )}
       </MainTitle>
       {isDesktop && <UserSearch />}
-      <UserPanel toggleTheme={toggleTheme} />
+      <ChatProvider>
+        <UserPanel toggleTheme={toggleTheme} />
+        <ChatHandler />
+      </ChatProvider>
     </MainHeader>
   );
 };

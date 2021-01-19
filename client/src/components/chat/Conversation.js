@@ -1,18 +1,17 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Draggable from "react-draggable";
-import { AlertContext } from "../../contexts/AlertContext";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Button, TextInput } from "../utils/Utils";
-import { sendMessage } from "../../socket/Socket";
 import styled from "styled-components";
 import ChatMessage from "./ChatMessage";
+import ConversationInput from "./ConversationInput";
+import { useMediaQuery } from "react-responsive";
 
 const ConvoWrapper = styled.div`
   position: fixed;
-  width: 350px;
-  left: 70px;
-  top: 100px;
+  width: ${(props) => (props.isMobile ? "100%" : "350px")};
+  left: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 70)}px;
+  top: ${(props) => (props.isMobile ? 0 : 50 * props.offset + 100)}px;
   z-index: 5;
   text-align: left;
   background: #fff;
@@ -44,18 +43,26 @@ const ConvoBody = styled.div`
 const Conversation = ({
   conversation,
   participant,
-  setLastMessage,
-  setActive,
+  setActiveChats,
+  offset,
 }) => {
-  const scrollBottom = useRef(null);
+  const scrollToBottom = useRef(null);
   const { authState } = useContext(AuthContext);
-  const { setAlerts } = useContext(AlertContext);
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState({ text: "" });
   const [partnerIsTyping, setPartnerIsTyping] = useState(false);
   const { socket } = authState;
+  const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
 
   useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await axios.get(`/api/messaging/chats/${conversation._id}`);
+
+        setMessages(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     fetchMessages();
   }, []);
 
@@ -66,23 +73,23 @@ const Conversation = ({
   }, []);
 
   useEffect(() => {
-    socket.on("typing", handleTyping);
+    socket.on("typing", handlePartnerTyping);
 
-    return () => socket.off("typing", handleTyping);
+    return () => socket.off("typing", handlePartnerTyping);
   }, []);
 
   useEffect(() => {
-    scrollBottom.current.scrollIntoView({ behavior: "smooth" });
+    scrollToBottom.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleRecieveMessage = (newMessage) => {
+    newMessage.seen = true;
     setMessages((prev) => [...prev, newMessage]);
 
-    setLastMessage(newMessage);
     setPartnerIsTyping(false);
   };
 
-  const handleTyping = () => {
+  const handlePartnerTyping = () => {
     if (!partnerIsTyping) {
       setPartnerIsTyping(true);
 
@@ -90,72 +97,31 @@ const Conversation = ({
     }
   };
 
-  const fetchMessages = async () => {
-    try {
-      const res = await axios.get(`/api/messaging/chats/${conversation._id}`);
-
-      setMessages(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleChange = (e) => {
-    setNewMessage({ text: e.target.value });
-
-    !partnerIsTyping && socket.emit("typing", participant._id);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const body = JSON.stringify(newMessage);
-
-      const res = await axios.post(
-        `/api/messaging/send/${participant._id}`,
-        body
-      );
-
-      setMessages([...messages, res.data]);
-      setLastMessage(res.data);
-      setNewMessage({ text: "" });
-
-      sendMessage(res.data, participant._id);
-    } catch (err) {
-      const errorArray = err.response.data.errors.map((err) => {
-        return { text: err.msg, type: "warning" };
-      });
-      setAlerts(errorArray);
-    } finally {
-      setTimeout(() => setAlerts([]), 5000);
-    }
+  const handleClose = () => {
+    setActiveChats((prev) =>
+      prev.filter((chat) => chat._id !== conversation._id)
+    );
   };
 
   return (
     <Draggable handle=".handle">
-      <ConvoWrapper>
+      <ConvoWrapper offset={offset} isMobile={isMobile}>
         <ConvoHeader className="bold handle">
           {participant.fullName}
-          <i className="far fa-times-circle" onClick={() => setActive(false)} />
+          <i className="far fa-times-circle" onClick={handleClose} />
         </ConvoHeader>
         <ConvoBody>
           {messages.map((msg) => (
             <ChatMessage key={msg._id} message={msg} />
           ))}
-          <div ref={scrollBottom} />
+          <div ref={scrollToBottom} />
         </ConvoBody>
         {partnerIsTyping && <span>{participant.firstName} is typing...</span>}
-        <form onSubmit={(e) => handleSubmit(e)} style={{ display: "flex" }}>
-          <TextInput
-            autoComplete="off"
-            type="text"
-            name="text"
-            value={newMessage.text}
-            onChange={(e) => handleChange(e)}
-            style={{ flexGrow: "1" }}
-          />
-          <Button>Send</Button>
-        </form>
+        <ConversationInput
+          socket={socket}
+          setMessages={setMessages}
+          participant={participant}
+        />
       </ConvoWrapper>
     </Draggable>
   );

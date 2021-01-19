@@ -64,7 +64,7 @@ router.get("/", auth, async (req, res) => {
     const conversations = await Conversation.find({
       participants: req.user.id,
     })
-      .populate("participants", ["firstName", "familyName"])
+      .populate("participants", ["firstName", "familyName", "profilePic"])
       .populate({
         path: "lastMessage",
         populate: [
